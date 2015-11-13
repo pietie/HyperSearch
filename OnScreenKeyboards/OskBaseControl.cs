@@ -16,7 +16,8 @@ namespace HyperSearch
         Backspace,
         Space,
         Clear,
-        Done
+        Done,
+        Exit
     }
 
     public delegate void OnOskKeyPressedHandler(string charRepresentation, OskSpecialKey specialKey);
@@ -85,8 +86,15 @@ namespace HyperSearch
                 
                 if (Global.ActionKey.Is(e.Key))
                 {
-                    var button = listView.SelectedItem as OnScreenKeyboardButton;
-                    HandleOskButtonPressed(button);
+                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                    {
+                        HandleOskButtonPressed(done);
+                    }
+                    else
+                    {
+                        var button = listView.SelectedItem as OnScreenKeyboardButton;
+                        HandleOskButtonPressed(button);
+                    }
                     return;
                 }
                 else if (Global.UpKey.Is(e.Key))
@@ -111,9 +119,14 @@ namespace HyperSearch
                 }
                 else if (Global.BackKey.Is(e.Key))
                 {
+                    if (string.IsNullOrEmpty(AttachedTextBox.Text))
+                    {
+                        this.RaiseOskKeyPressedEvent(null, OskSpecialKey.Exit);
+                        return;
+                    }
+
                     listView.SelectedItem = backspace;
                     HandleOskButtonPressed(backspace);
-                    //TODO: Consider this..if the current input is EMPTY and we press BACK then is this same as CLOSE/EXIT?
                 }
 
                 // if not in Cab Mode we'll allow the user to type on his keyboard
@@ -162,104 +175,6 @@ namespace HyperSearch
                         return;
                     }
                 } // if (!MainWindow.IsCabModeEnabled)
-
-
-/***************** OLD ********************
-                var cabMode = MainWindow.IsCabModeEnabled;
-                var hqSettings = MainWindow.HqSettings;
-
-                var p1Action = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P1ControlsSection.Start);
-                var p1Up = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P1ControlsSection.Up);
-                var p1Down = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P1ControlsSection.Down);
-                var p1Exit = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P1ControlsSection.Exit);
-
-                var p2Action = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P2ControlsSection.Start);
-                var p2Up = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P2ControlsSection.Up);
-                var p2Down = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P2ControlsSection.Down);
-                var p2Exit = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P2ControlsSection.Exit);
-
-                if (cabMode)
-                {// prefer HyperSpin config
-                    if (e.Key.EqAny(p1Action, p2Action) && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-                    {// shortcut to DONE
-                        e.Handled = true;
-                        listView.SelectedItem = done;
-                        HandleOskButtonPressed(done);
-                    }
-                    else if (e.Key.EqAny(Key.Enter, p1Action, p2Action))
-                    {// select current button on OSK
-                        e.Handled = true;
-                        var button = listView.SelectedItem as OnScreenKeyboardButton;
-                        HandleOskButtonPressed(button);
-                    }
-                }
-                else
-                {
-                    if (e.Key.EqAny(Key.Enter, p1Action, p2Action)
-                       && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-                    {
-                        listView.SelectedItem = done;
-                        HandleOskButtonPressed(done);
-                        e.Handled = true;
-                    }
-                    // if an alpha char?
-                    else if (((int)e.Key >= (int)Key.A && (int)e.Key <= (int)Key.Z)
-                       || e.Key == Key.OemMinus
-                       || e.Key == Key.OemComma
-                       )
-                    {
-                        var txt = e.Key.ToString();
-
-                        if (e.Key == Key.OemMinus) txt = "-";
-                        if (e.Key == Key.OemComma) txt = ",";
-
-                        var oskButtons = listView.FindVisualChildren<OnScreenKeyboardButton>().ToList();
-
-                        var button = oskButtons.Where(b => b.Text == txt).FirstOrDefault();
-
-                        if (button != null)
-                        {
-                            listView.SelectedItem = button;
-                            HandleOskButtonPressed(button);
-                            e.Handled = true;
-                        }
-                    }
-                    else if ((int)e.Key >= (int)Key.D0 && (int)e.Key <= (int)Key.D9)
-                    {
-                        var txt = e.Key.ToString().TrimStart('D');
-
-                        var oskButtons = listView.FindVisualChildren<OnScreenKeyboardButton>().ToList();
-
-                        var button = oskButtons.Where(b => b.Text == txt).FirstOrDefault();
-
-                        if (button != null)
-                        {
-                            listView.SelectedItem = button;
-                            HandleOskButtonPressed(button);
-                            e.Handled = true;
-                        }
-                    }
-                    else if (e.Key.EqAny(Key.Enter, p1Action, p2Action))
-                    {
-                        e.Handled = true;
-                        var button = listView.SelectedItem as OnScreenKeyboardButton;
-
-                        HandleOskButtonPressed(button);
-                    }
-                    else if (e.Key == Key.Space)
-                    {
-                        listView.SelectedItem = space;
-                        HandleOskButtonPressed(space);
-                        e.Handled = true;
-                    }
-                    else if (e.Key.EqAny(Key.Back))
-                    {
-                        listView.SelectedItem = backspace;
-                        HandleOskButtonPressed(backspace);
-                        e.Handled = true;
-                    }
-                }
-                *************************************/
 
             }
             catch (Exception ex)

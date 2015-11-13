@@ -681,6 +681,10 @@ namespace HyperSearch.Windows
                         PerformSearch();
                     }));
                 }
+                else if (specialKey == OskSpecialKey.Exit)
+                {
+                    this.Close();
+                }
             }
             catch (Exception ex)
             {
