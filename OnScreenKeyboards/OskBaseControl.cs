@@ -1,0 +1,335 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+
+
+namespace HyperSearch
+{
+    public enum OskSpecialKey
+    {
+        None,
+        Backspace,
+        Space,
+        Clear,
+        Done
+    }
+
+    public delegate void OnOskKeyPressedHandler(string charRepresentation, OskSpecialKey specialKey);
+
+    public class OskBaseControl : UserControl
+    {
+        public event OnOskKeyPressedHandler OnOskKeyPressed;
+        public TextBox AttachedTextBox { get; set; }
+
+        private ListView listView;
+        private OnScreenKeyboardButton space, backspace, clear, done;
+        public virtual void FocusInput()
+        {
+            Window.GetWindow(this).Activate();
+            Window.GetWindow(this).Focus();
+
+            if (listView != null)
+            {
+                listView.Focus();
+                Keyboard.Focus(listView);
+            }
+        }
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+
+            listView = FindName("listView") as ListView;
+            space = FindName("space") as OnScreenKeyboardButton;
+            backspace = FindName("backspace") as OnScreenKeyboardButton;
+            clear = FindName("clear") as OnScreenKeyboardButton;
+            done = FindName("done") as OnScreenKeyboardButton;
+
+            if (listView != null)
+            {
+                listView.Loaded += _listView_Loaded;
+                listView.PreviewKeyDown += listView_PreviewKeyDown;
+            }
+
+            this.MouseDoubleClick += OskBaseControl_MouseDoubleClick;
+        }
+
+        private void OskBaseControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var button = listView.SelectedItem as OnScreenKeyboardButton;
+
+                if (button == null) return;
+
+                HandleOskButtonPressed(button);
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleException(ex);
+            }
+        }
+
+        private void listView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (listView.SelectedItem == null) return;
+
+                e.Handled = true;
+                var elementWithFocus = Keyboard.FocusedElement as UIElement;
+                
+                if (Global.ActionKey.Is(e.Key))
+                {
+                    var button = listView.SelectedItem as OnScreenKeyboardButton;
+                    HandleOskButtonPressed(button);
+                    return;
+                }
+                else if (Global.UpKey.Is(e.Key))
+                {
+                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+                    return;
+                }
+                else if (Global.RightKey.Is(e.Key))
+                {
+                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
+                    return;
+                }
+                else if (Global.DownKey.Is(e.Key))
+                {
+                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                    return;
+                }
+                else if (Global.LeftKey.Is(e.Key))
+                {
+                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
+                    return;
+                }
+                else if (Global.BackKey.Is(e.Key))
+                {
+                    listView.SelectedItem = backspace;
+                    HandleOskButtonPressed(backspace);
+                    //TODO: Consider this..if the current input is EMPTY and we press BACK then is this same as CLOSE/EXIT?
+                }
+
+                // if not in Cab Mode we'll allow the user to type on his keyboard
+                if (!MainWindow.IsCabModeEnabled)
+                {
+                    if (((int)e.Key >= (int)Key.A && (int)e.Key <= (int)Key.Z)
+                      || e.Key == Key.OemMinus
+                      || e.Key == Key.OemComma
+                      )
+                    {
+                        var txt = e.Key.ToString();
+
+                        if (e.Key == Key.OemMinus) txt = "-";
+                        if (e.Key == Key.OemComma) txt = ",";
+
+                        var oskButtons = listView.FindVisualChildren<OnScreenKeyboardButton>().ToList();
+
+                        var button = oskButtons.Where(b => b.Text == txt).FirstOrDefault();
+
+                        if (button != null)
+                        {
+                            listView.SelectedItem = button;
+                            HandleOskButtonPressed(button);
+                            return;
+                        }
+                    }
+                    else if ((int)e.Key >= (int)Key.D0 && (int)e.Key <= (int)Key.D9) // handle Digits 0-9
+                    {
+                        var txt = e.Key.ToString().TrimStart('D');
+
+                        var oskButtons = listView.FindVisualChildren<OnScreenKeyboardButton>().ToList();
+
+                        var button = oskButtons.Where(b => b.Text == txt).FirstOrDefault();
+
+                        if (button != null)
+                        {
+                            listView.SelectedItem = button;
+                            HandleOskButtonPressed(button);
+                            return;
+                        }
+                    }
+                    else if (e.Key == Key.Space)
+                    {
+                        listView.SelectedItem = space;
+                        HandleOskButtonPressed(space);
+                        return;
+                    }
+                } // if (!MainWindow.IsCabModeEnabled)
+
+
+/***************** OLD ********************
+                var cabMode = MainWindow.IsCabModeEnabled;
+                var hqSettings = MainWindow.HqSettings;
+
+                var p1Action = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P1ControlsSection.Start);
+                var p1Up = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P1ControlsSection.Up);
+                var p1Down = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P1ControlsSection.Down);
+                var p1Exit = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P1ControlsSection.Exit);
+
+                var p2Action = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P2ControlsSection.Start);
+                var p2Up = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P2ControlsSection.Up);
+                var p2Down = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P2ControlsSection.Down);
+                var p2Exit = HyperHQSettings.ActionScriptKeyCodeToVK(hqSettings.P2ControlsSection.Exit);
+
+                if (cabMode)
+                {// prefer HyperSpin config
+                    if (e.Key.EqAny(p1Action, p2Action) && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                    {// shortcut to DONE
+                        e.Handled = true;
+                        listView.SelectedItem = done;
+                        HandleOskButtonPressed(done);
+                    }
+                    else if (e.Key.EqAny(Key.Enter, p1Action, p2Action))
+                    {// select current button on OSK
+                        e.Handled = true;
+                        var button = listView.SelectedItem as OnScreenKeyboardButton;
+                        HandleOskButtonPressed(button);
+                    }
+                }
+                else
+                {
+                    if (e.Key.EqAny(Key.Enter, p1Action, p2Action)
+                       && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                    {
+                        listView.SelectedItem = done;
+                        HandleOskButtonPressed(done);
+                        e.Handled = true;
+                    }
+                    // if an alpha char?
+                    else if (((int)e.Key >= (int)Key.A && (int)e.Key <= (int)Key.Z)
+                       || e.Key == Key.OemMinus
+                       || e.Key == Key.OemComma
+                       )
+                    {
+                        var txt = e.Key.ToString();
+
+                        if (e.Key == Key.OemMinus) txt = "-";
+                        if (e.Key == Key.OemComma) txt = ",";
+
+                        var oskButtons = listView.FindVisualChildren<OnScreenKeyboardButton>().ToList();
+
+                        var button = oskButtons.Where(b => b.Text == txt).FirstOrDefault();
+
+                        if (button != null)
+                        {
+                            listView.SelectedItem = button;
+                            HandleOskButtonPressed(button);
+                            e.Handled = true;
+                        }
+                    }
+                    else if ((int)e.Key >= (int)Key.D0 && (int)e.Key <= (int)Key.D9)
+                    {
+                        var txt = e.Key.ToString().TrimStart('D');
+
+                        var oskButtons = listView.FindVisualChildren<OnScreenKeyboardButton>().ToList();
+
+                        var button = oskButtons.Where(b => b.Text == txt).FirstOrDefault();
+
+                        if (button != null)
+                        {
+                            listView.SelectedItem = button;
+                            HandleOskButtonPressed(button);
+                            e.Handled = true;
+                        }
+                    }
+                    else if (e.Key.EqAny(Key.Enter, p1Action, p2Action))
+                    {
+                        e.Handled = true;
+                        var button = listView.SelectedItem as OnScreenKeyboardButton;
+
+                        HandleOskButtonPressed(button);
+                    }
+                    else if (e.Key == Key.Space)
+                    {
+                        listView.SelectedItem = space;
+                        HandleOskButtonPressed(space);
+                        e.Handled = true;
+                    }
+                    else if (e.Key.EqAny(Key.Back))
+                    {
+                        listView.SelectedItem = backspace;
+                        HandleOskButtonPressed(backspace);
+                        e.Handled = true;
+                    }
+                }
+                *************************************/
+
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleException(ex);
+            }
+        }
+
+        private void _listView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (listView != null)
+            {
+                if (listView.Items.Count > 0) listView.SelectedIndex = 0;
+                (listView.SelectedItem as OnScreenKeyboardButton).DelayedFocus();
+            }
+        }
+
+        
+
+        private void HandleOskButtonPressed(OnScreenKeyboardButton button)
+        {
+            if (button == space)
+            {
+                this.RaiseOskKeyPressedEvent(" ", OskSpecialKey.Space);
+            }
+            else if (button == backspace)
+            {
+                this.RaiseOskKeyPressedEvent(null, OskSpecialKey.Backspace);
+            }
+            else if (button == clear)
+            {
+                this.RaiseOskKeyPressedEvent(null, OskSpecialKey.Clear);
+            }
+            else if (button == done)
+            {
+                this.RaiseOskKeyPressedEvent(null, OskSpecialKey.Done);
+            }
+            else
+            {
+                this.RaiseOskKeyPressedEvent(button.Text, OskSpecialKey.None);
+            }
+        }
+
+        protected void RaiseOskKeyPressedEvent(string charRepresentation, OskSpecialKey specialKey)
+        {
+            if (this.AttachedTextBox != null)
+            {
+                var txt = this.AttachedTextBox;
+
+                if (specialKey == OskSpecialKey.Clear)
+                {
+                    txt.Text = "";
+                }
+                else if (specialKey == OskSpecialKey.Backspace)
+                {
+                    if (txt.Text != null && txt.Text.Length > 0)
+                    {
+                        txt.Text = txt.Text.Remove(txt.Text.Length - 1);
+                    }
+                }
+                else
+                {
+                    if (txt.Text == null) txt.Text = "";
+                    txt.Text += charRepresentation;
+                }
+
+            }
+
+            if (this.OnOskKeyPressed != null)
+                this.OnOskKeyPressed(charRepresentation, specialKey);
+        }
+    }
+}

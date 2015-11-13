@@ -1,0 +1,287 @@
+﻿<Window x:Class="HyperSearch.Windows.GameSearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="clr-namespace:HscLib.Controls"
+        xmlns:conv="clr-namespace:HyperSpinClone.Classes.Converters"
+        xmlns:conv2="clr-namespace:HyperSearch.Converters"
+        Title="GameSearchWindow" Height="480" Width="640"
+        Style="{DynamicResource DialogWindow}"        
+        ShowInTaskbar="False" Topmost="False"
+        PreviewKeyDown="Window_PreviewKeyDown" Loaded="Window_Loaded"  Focusable="True"
+        x:Name="gameSearchWindow" >
+    <Window.Resources>
+        <conv2:ClipRectConverter x:Key="clipConverter"/>
+        <Style x:Key="imgStyle" TargetType="{x:Type Image}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="True">
+                    <Setter Property="Effect" >
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="8" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>       
+        <Style x:Key="resultText"  TargetType="{x:Type TextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="6" ShadowDepth="0" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="resultTextWithImg"  TargetType="{x:Type TextBlock}" BasedOn="{StaticResource resultText}">
+            <Setter Property="Visibility" Value="Collapsed"/>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Panel}, Path=Children[1].Source}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+
+
+        </Style>
+        <conv:NullImageConverter x:Key="nullImgConverter" />
+        <conv:DoubleOffsetConverter x:Key="listViewHeightConverter" Offset="-5"/>
+        
+        <Style x:Key="resultsListViewColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+
+    </Window.Resources>
+
+    <Border x:Name="mainContainer" Style="{DynamicResource WindowBorder}">
+        <Grid x:Name="mainGrid">
+            <TextBlock x:Name="searchListIndicator" FontFamily="Arial" FontSize="14" FontWeight="Bold" Margin="10 -13 0 0" Foreground="White">(Full search)</TextBlock>
+
+            <Grid x:Name="searchSetupGrid" Visibility="Visible" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+
+                <TextBox x:Name="searchTerm" Grid.Row="0" Style="{DynamicResource WatermarkTextBox}" Tag="Name or description" FontFamily="Arial" FontSize="35" IsReadOnly="True" Margin="10" Focusable="false" />
+
+                <Border x:Name="keyboardContainer" Grid.Row="1" Padding="0" Grid.RowSpan="10">
+
+                    <!--<uc:OnScreenKeyboard.RenderTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="0"/>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </TransformGroup>
+                        </uc:OnScreenKeyboard.RenderTransform>
+                    </uc:OnScreenKeyboard>-->
+
+                </Border>
+ 
+                <!--<Border x:Name="keyLegendPanel" Grid.Row="2" BorderBrush="Silver" BorderThickness="3" CornerRadius="4" Padding="10" Margin="10">
+            
+
+                <Grid>
+
+                    <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontFamily="Arial" FontSize="20">Cycle layout</TextBlock>
+
+                    <Border Grid.Row="1" x:Name="outer" Padding="3" Width="50" Height="50" Canvas.Left="201" Canvas.Top="150" BorderThickness="1" CornerRadius="5" BorderBrush="#B0B3B3">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                                <GradientStop Color="#B1B1B2" Offset="0.5"/>
+                                <GradientStop Color="#D8D8D9" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+
+                        <Border x:Name="inner" CornerRadius="5" BorderThickness="1"   >
+                            <Border.BorderBrush>
+                                <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                                    <GradientStop Color="#CFCFCF"/>
+                                    <GradientStop Color="#EEEEEE" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="White" Offset="0"/>
+                                    <GradientStop Color="#FFC4C4C4" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <TextBlock FontFamily="Arial" FontSize="21.333" Margin="3,-1,-3,1">S</TextBlock>
+                        </Border>
+                    </Border>
+                </Grid>
+
+            </Border>
+
+
+            <Control x:Name="button1" Margin="30 0 0 0"  HorizontalAlignment="Left" Template="{StaticResource arcadeRoundPushButton}" Grid.Row="2" Width="30" Height="30">
+                <Control.Effect>
+                    <eff:HueShiftEffect HueShift="-0.145"/>
+                </Control.Effect>
+            </Control>
+
+            <Control HorizontalAlignment="Left" Margin="120 0 0 0" Template="{StaticResource arcadeRoundPushButton}" Grid.Row="2" Width="100" Height="100">
+                <Control.Effect>
+                    <eff:HueShiftEffect HueShift="0"/>
+                </Control.Effect>
+            </Control>
+
+            <Control HorizontalAlignment="Left" Margin="240 0 0 0" Template="{StaticResource arcadeRoundPushButton}" Grid.Row="2" Width="100" Height="100">
+                <Control.Effect>
+                    <eff:HueShiftEffect HueShift="0.7"/>
+                </Control.Effect>
+            </Control>
+
+            <Control HorizontalAlignment="Left" Margin="360 0 0 0" Template="{StaticResource arcadeRoundPushButton}" Grid.Row="2" Width="100" Height="100">
+                <Control.Effect>
+                    <eff:HueShiftEffect HueShift="0.15"/>
+                </Control.Effect>
+            </Control>
+
+            <Button HorizontalAlignment="Left" Grid.Row="2" Margin="480 0 0 0" Width="100" Height="100" Style="{StaticResource pushButtonBase}"/>
+            <Button HorizontalAlignment="Left" Grid.Row="2" Margin="600 0 0 0" Width="100" Height="100" Style="{StaticResource pushButtonBlue}"/>
+            <Button HorizontalAlignment="Left" Grid.Row="2" Margin="720 0 0 0" Width="100" Height="100" Style="{StaticResource pushButtonGreen}"/>
+
+            <Button HorizontalAlignment="Left" Grid.Row="2" Margin="840 0 0 0" Width="50" Height="50" Style="{StaticResource pushButtonBase}"/>-->
+
+            </Grid>
+
+            <Grid x:Name="searchingMsg" Visibility="Collapsed">
+                <Grid.Effect>
+                    <DropShadowEffect Color="#fafafa" BlurRadius="4" ShadowDepth="0"/>
+                </Grid.Effect>
+                <Grid x:Name="loadingMsg" HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Control Name="loading" Grid.Column="0" Template="{StaticResource loadingAnimation}" Width="40" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="30" FontFamily="Arial" FontWeight="Bold" Margin="15 0 0 0">Searching, please wait....</TextBlock>
+                </Grid>
+            </Grid>
+
+
+            <Grid x:Name="resultsGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.123*"/>
+                    <RowDefinition Height="0.835*"/>
+                    <RowDefinition Height="0.042*"/>
+                </Grid.RowDefinitions>
+
+                
+
+                <ctrl:ListViewHSC x:Name="systemSummaryListView" Grid.Row="0" Orientation="Horizontal" SelectionMode="Single" 
+                                  Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" ItemContainerStyle="{DynamicResource SystemSummaryListItemStyle}" 
+                                  ItemsSource="{Binding}" SelectionChanged="systemSummaryListView_SelectionChanged" PreviewKeyDown="systemSummaryListView_PreviewKeyDown" />
+
+                <Viewbox Grid.Row="2" HorizontalAlignment="Stretch">
+                    <ctrl:OutlinedTextBlock x:Name="selectedItemText" Grid.Row="2" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{DynamicResource searchResultSelectedItemTextStyle}">Selected item: MAME - BUBBLE BOBBLE, what-what</ctrl:OutlinedTextBlock>
+                </Viewbox>
+
+                <ctrl:OutlinedTextBlock x:Name="noResultsMsg" Style="{DynamicResource searchResultSelectedItemTextStyle}" Grid.Row="1" FontSize="22" Visibility="Collapsed">No results found for specified search criteria.</ctrl:OutlinedTextBlock>
+
+                <ctrl:ListViewHSC x:Name="resultListView"  Grid.Row="1" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" ItemContainerStyle="{DynamicResource gameSearchResultListViewItem}"
+                                    SelectionMode="Single"
+                              ItemsSource="{Binding}"  AlternationCount="2" Margin="0 6 0 0"
+                      SizeChanged="resultListView_SizeChanged"  SelectionChanged="resultListView_SelectionChanged" PreviewKeyDown="resultListView_PreviewKeyDown" MouseDoubleClick="resultListView_MouseDoubleClick">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource resultsListViewColumnHeaderStyle}" >
+                            <GridViewColumn Width="150" Header="System"   >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate  >
+                                        <Grid>
+                                            <TextBlock Style="{StaticResource resultTextWithImg}" Text="{Binding SystemName}" />
+                                            <Image RenderOptions.BitmapScalingMode="HighQuality" Style="{StaticResource imgStyle}" Margin="3"  Source="{Binding SystemImageSourceUri, Converter={StaticResource nullImgConverter}}" >
+                                                <Image.CacheMode>
+                                                    <BitmapCache />
+                                                </Image.CacheMode>
+                                            </Image>
+
+
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="300" Header="Game" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <TextBlock Style="{StaticResource resultTextWithImg}" Text="{Binding description}" FontSize="20"/>
+                                            <Image RenderOptions.BitmapScalingMode="HighQuality"  Style="{StaticResource imgStyle}" Margin="{Binding Path=ResultListViewItemGameImageResDependentMargin, ElementName=gameSearchWindow}" Source="{Binding GameImageSourceUri, Converter={StaticResource nullImgConverter}}"  Stretch="Uniform"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                                
+                            </GridViewColumn>
+                            <GridViewColumn Width="120" Header="Manufacturer">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource resultText}" Text="{Binding manufacturer}" FontSize="{Binding Path=ResultListViewItemFontSize, ElementName=gameSearchWindow}" TextTrimming="CharacterEllipsis"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="180" Header="Year" TextBlock.TextAlignment="Right">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource resultText}" FontSize="{Binding Path=ResultListViewItemFontSize, ElementName=gameSearchWindow}" Text="{Binding year}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+
+                </ctrl:ListViewHSC>
+            
+                <Canvas x:Name="videoCanvas" IsHitTestVisible="False" Focusable="False" Grid.Row="1" Background="Transparent">
+
+                    <Border x:Name="videoBorder" IsHitTestVisible="False" Focusable="False" Style="{DynamicResource VideoBorder}" >
+                        <Border.Background>
+                            <DrawingBrush Viewport="0,0,3,3" TileMode="Tile" ViewportUnits="Absolute" ViewboxUnits="RelativeToBoundingBox">
+                                <DrawingBrush.Drawing>
+                                    <DrawingGroup>
+                                        <GeometryDrawing Brush="#b0b0b0">
+                                            <GeometryDrawing.Geometry>
+                                                <GeometryGroup>
+                                                    <RectangleGeometry Rect="0,0,1,1" />
+                                                    <RectangleGeometry Rect="1,1,1,1" />
+                                                </GeometryGroup>
+                                            </GeometryDrawing.Geometry>
+                                        </GeometryDrawing>
+                                    </DrawingGroup>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                        </Border.Background>
+
+                        <MediaElement x:Name="video" IsHitTestVisible="False" Focusable="False" Stretch="Uniform" LoadedBehavior="Manual" MediaOpened="video_MediaOpened" MediaFailed="video_MediaFailed">
+                            <MediaElement.Clip>
+                                <RectangleGeometry x:Name="clipRect" RadiusX="10" RadiusY="10">
+                                    <RectangleGeometry.Rect>
+                                        <MultiBinding Converter="{StaticResource clipConverter}">
+                                            <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType={x:Type MediaElement}}" />
+                                            <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType={x:Type MediaElement}}" />
+                                        </MultiBinding>
+                                    </RectangleGeometry.Rect>
+                                </RectangleGeometry>
+                            </MediaElement.Clip>
+                            
+                        </MediaElement>
+                    </Border>
+                </Canvas>
+            </Grid>
+
+            
+            <!--<TextBlock FontSize="100" Grid.ColumnSpan="10" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"  FontWeight="Bold" FontFamily="Arial">
+                       <TextBlock.Resources>
+                           <Style TargetType="TextBlock">
+                               <Setter Property="Background" Value="#f0ffffff"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=a2z, Path=IsKeyboardFocused}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                           </Style>
+                           
+                       </TextBlock.Resources>
+                       No Focus!</TextBlock>-->
+        </Grid>
+    </Border>
+</Window>

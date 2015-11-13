@@ -1,0 +1,66 @@
+﻿<osk:OskBaseControl x:Class="HyperSearch.AtoZKeyboard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:osk="clr-namespace:HyperSearch"
+             mc:Ignorable="d" d:DesignWidth="700" >
+    <ListView x:Name="listView" Style="{DynamicResource kbListView}" ItemContainerStyle="{DynamicResource kbListViewItemStyle}" 
+              HorizontalContentAlignment="Stretch" HorizontalAlignment="Center" Width="550" Background="Transparent"
+               ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False"
+              >
+        <ListView.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"   ItemHeight="50"  Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+
+        <osk:OnScreenKeyboardButton Text="1"/>
+        <osk:OnScreenKeyboardButton Text="2"/>
+        <osk:OnScreenKeyboardButton Text="3"/>
+        <osk:OnScreenKeyboardButton Text="4"/>
+        <osk:OnScreenKeyboardButton Text="5"/>
+        <osk:OnScreenKeyboardButton Text="6"/>
+        <osk:OnScreenKeyboardButton Text="7"/>
+        <osk:OnScreenKeyboardButton Text="8"/>
+        <osk:OnScreenKeyboardButton Text="9"/>
+        <osk:OnScreenKeyboardButton Text="0"/>
+        <osk:OnScreenKeyboardButton Text="-"/>
+
+        <osk:OnScreenKeyboardButton Text="A"/>
+        <osk:OnScreenKeyboardButton Text="B"/>
+        <osk:OnScreenKeyboardButton Text="C"/>
+        <osk:OnScreenKeyboardButton Text="D"/>
+        <osk:OnScreenKeyboardButton Text="E"/>
+        <osk:OnScreenKeyboardButton Text="F"/>
+        <osk:OnScreenKeyboardButton Text="G"/>
+        <osk:OnScreenKeyboardButton Text="H"/>
+        <osk:OnScreenKeyboardButton Text="I"/>
+        <osk:OnScreenKeyboardButton Text="J"/>
+        <osk:OnScreenKeyboardButton Text="K"/>
+        <osk:OnScreenKeyboardButton Text="L"/>
+        <osk:OnScreenKeyboardButton Text="M"/>
+        <osk:OnScreenKeyboardButton Text="N"/>
+        <osk:OnScreenKeyboardButton Text="O"/>
+        <osk:OnScreenKeyboardButton Text="P"/>
+        <osk:OnScreenKeyboardButton Text="Q"/>
+        <osk:OnScreenKeyboardButton Text="R"/>
+        <osk:OnScreenKeyboardButton Text="S"/>
+        <osk:OnScreenKeyboardButton Text="T"/>
+        <osk:OnScreenKeyboardButton Text="U"/>
+        <osk:OnScreenKeyboardButton Text="V"/>
+        <osk:OnScreenKeyboardButton Text="W"/>
+        <osk:OnScreenKeyboardButton Text="X"/>
+        <osk:OnScreenKeyboardButton Text="Y"/>
+        <osk:OnScreenKeyboardButton Text="Z"/>
+        <osk:OnScreenKeyboardButton Text=","/>
+        <osk:OnScreenKeyboardButton x:Name="space" Text="SPC" />
+        <osk:OnScreenKeyboardButton x:Name="backspace" Text="BS"/>
+        <osk:OnScreenKeyboardButton x:Name="clear" Text="CLR"/>
+
+        <ListViewItem IsEnabled="False" Width="45" />
+        <ListViewItem IsEnabled="False" Width="500" />
+
+        <osk:OnScreenKeyboardButton x:Name="done" Text="SEARCH" Width="200" Margin="0 -40 0 0"/>
+    </ListView>
+</osk:OskBaseControl>
