@@ -68,29 +68,29 @@
     <Compile Include="OnScreenKeyboards\AzertyKeyboard.xaml.cs">
       <DependentUpon>AzertyKeyboard.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BackgroundThreadInitialiser.cs" />
+    <Compile Include="Classes\BackgroundThreadInitialiser.cs" />
     <Compile Include="Controls\ListViewHSC.cs" />
     <Compile Include="Controls\OutlinedTextBlock.cs" />
     <Compile Include="Converters\ClipRectConverter.cs" />
     <Compile Include="Converters\DoubleOffsetConverter.cs" />
     <Compile Include="Converters\NullImageConverter.cs" />
-    <Compile Include="ErrorHandler.cs" />
-    <Compile Include="Global.cs" />
-    <Compile Include="HyperHQSettings.cs" />
+    <Compile Include="Classes\ErrorHandler.cs" />
+    <Compile Include="Classes\Global.cs" />
+    <Compile Include="Classes\HyperHQSettings.cs" />
     <Compile Include="INI\IniFileElement.cs" />
     <Compile Include="INI\IniFileLight.cs" />
     <Compile Include="INI\IniFiles.cs" />
     <Compile Include="INI\IniHeaderAttribute.cs" />
-    <Compile Include="KbHook.cs" />
+    <Compile Include="Classes\KbHook.cs" />
     <Compile Include="MainWindowNativeStuff.cs" />
-    <Compile Include="MenuXmlDatabase.cs" />
-    <Compile Include="PerformanceTracker.cs" />
+    <Compile Include="Classes\MenuXmlDatabase.cs" />
+    <Compile Include="Classes\PerformanceTracker.cs" />
     <Compile Include="OnScreenKeyboards\QwertyKeyboard.xaml.cs">
       <DependentUpon>QwertyKeyboard.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShaderEffects\Saturation.cs" />
-    <Compile Include="Util.cs" />
-    <Compile Include="WheelSettings.cs" />
+    <Compile Include="Classes\Util.cs" />
+    <Compile Include="Classes\WheelSettings.cs" />
     <Compile Include="Windows\GameSearchWindow.xaml.cs">
       <DependentUpon>GameSearchWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -187,6 +187,7 @@
   <ItemGroup>
     <Content Include="ShaderEffects\Saturation.fx" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
