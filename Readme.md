@@ -42,6 +42,7 @@ The default configuration is setup with:
 Config Key|Binding|Description
 -|-|-
 Keys.Action|Enter|Confirm/Launch
+ &nbsp;| | 
 Keys.Up|Up Arrow|Moves current selection upwards
 Keys.Right|Right Arrow|Moves current selection rightwards
 Keys.Down|Down Arrow|Moves current selection downwards
