@@ -47,7 +47,7 @@ Content Cell  | Content Cell
 --
 
 Config Key | Binding | Description
-- |- | -
+------------- | ------------- | -------------
 Keys.Action | Enter | Confirm/Launch
 Keys.Back|Backspace|Confirm/Launch
 Keys.Exit|Escape|Confirm/Launch
