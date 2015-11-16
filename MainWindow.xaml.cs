@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyperSearch.Classes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -524,7 +525,8 @@ namespace HyperSearch
         {
             try
             {
-                
+                // TODO: Think this might need to move to the game search window?
+                SystemSoundPlayer.Init(mainGrid, @"C:\Hyperspin\Media\Frontend\Sounds");
             }
             catch (Exception ex)
             {

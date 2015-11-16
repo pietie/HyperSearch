@@ -1,0 +1,130 @@
+﻿<osk:OskBaseControl x:Class="HyperSearch.OnScreenKeyboards.OrbKeyboard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyperSearch.OnScreenKeyboards"
+             xmlns:osk="clr-namespace:HyperSearch"
+              mc:Ignorable="d" 
+             d:DesignHeight="380" d:DesignWidth="380"
+                    Focusable="True" KeyDown="UserControl_KeyDown" SizeChanged="UserControl_SizeChanged" PreviewKeyDown="UserControl_PreviewKeyDown" PreviewKeyUp="UserControl_PreviewKeyUp" MouseLeftButtonDown="UserControl_MouseLeftButtonDown" 
+                    >
+    <UserControl.Resources>
+        <Style  x:Key="UserControlStyle" TargetType="UserControl">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="False">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="orbStyle" TargetType="osk:OnScreenKeyboardOrb">
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="120"/>
+            <Setter Property="CornerRadius" Value="60"/>
+            <Setter Property="Background" Value="#80213846"/>
+            <Setter Property="BorderBrush" Value="#1D303E"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="15"/>
+            <Style.Triggers>
+                <Trigger Property="Selected" Value="true">
+                    <!--<Setter Property="BorderBrush" Value="Green" />
+                    <Setter Property="BorderThickness" Value="15" />-->
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="Background" Value="#C0385B70"/>
+                </Trigger>
+
+            </Style.Triggers>
+
+
+
+
+        </Style>
+        <Style x:Key="arrowPath" TargetType="Path">
+            <Setter Property="Data" Value="M25,1 L1,34.033166 L13.24,34.033166 L13.24,46 L36.76,46 L36.76,34.033166 L49,34.033166 z"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="Stretch" Value="Fill"/>
+            <Setter Property="Stroke" Value="Black"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Fill" Value="#FFF4F4F5"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="45"/>
+        </Style>
+        <Style x:Key="arrowPathSelected" BasedOn="{StaticResource arrowPath}"  TargetType="Path">
+            <Setter Property="Fill" Value="Green"/>
+
+        </Style>
+    </UserControl.Resources>
+    <Canvas x:Name="mainContainer">
+
+
+        <osk:OnScreenKeyboardOrb x:Name="top" Style="{StaticResource orbStyle}"  />
+        <osk:OnScreenKeyboardOrb x:Name="topLeft" Style="{StaticResource orbStyle}" />
+        <osk:OnScreenKeyboardOrb x:Name="topRight" Style="{StaticResource orbStyle}" />
+        <osk:OnScreenKeyboardOrb x:Name="left" Style="{StaticResource orbStyle}" />
+        <osk:OnScreenKeyboardOrb x:Name="right" Style="{StaticResource orbStyle}" />
+        <osk:OnScreenKeyboardOrb x:Name="bottomLeft" Style="{StaticResource orbStyle}" />
+        <osk:OnScreenKeyboardOrb x:Name="bottomRight" Style="{StaticResource orbStyle}" />
+        <osk:OnScreenKeyboardOrb x:Name="bottom" Style="{StaticResource orbStyle}" />
+
+        <Path x:Name="arrowT" Style="{StaticResource arrowPath}" Canvas.Left="0" Canvas.Top="250.5" />
+        <Path x:Name="arrowTR" Style="{StaticResource arrowPath}" Canvas.Left="50" Canvas.Top="270" >
+            <Path.RenderTransform>
+                <RotateTransform Angle="45"/>
+            </Path.RenderTransform>
+        </Path>
+        <Path x:Name="arrowR" Style="{StaticResource arrowPath}" Canvas.Left="72" Canvas.Top="319" >
+            <Path.RenderTransform>
+                <RotateTransform Angle="90"/>
+            </Path.RenderTransform>
+        </Path>
+        <Path x:Name="arrowBR" Style="{StaticResource arrowPath}" Canvas.Left="53" Canvas.Top="365" >
+            <Path.RenderTransform>
+                <RotateTransform Angle="135"/>
+            </Path.RenderTransform>
+        </Path>
+        <Path x:Name="arrowB" Style="{StaticResource arrowPath}" Canvas.Left="4" Canvas.Top="370" >
+            <Path.RenderTransform>
+                <RotateTransform Angle="180"/>
+            </Path.RenderTransform>
+        </Path>
+        <Path x:Name="arrowBL" Style="{StaticResource arrowPath}" Canvas.Left="-40" Canvas.Top="353" >
+            <Path.RenderTransform>
+                <RotateTransform Angle="225"/>
+            </Path.RenderTransform>
+        </Path>
+        <Path x:Name="arrowL" Style="{StaticResource arrowPath}" Canvas.Left="-61" Canvas.Top="303" >
+            <Path.RenderTransform>
+                <RotateTransform Angle="270"/>
+            </Path.RenderTransform>
+        </Path>
+        <Path x:Name="arrowTL" Style="{StaticResource arrowPath}" Canvas.Left="-43" Canvas.Top="265" >
+            <Path.RenderTransform>
+                <RotateTransform Angle="315"/>
+            </Path.RenderTransform>
+        </Path>
+
+
+        <Ellipse x:Name="balltop" Height="57" Stroke="Black" StrokeThickness="2" Width="57" RenderTransformOrigin="0.5,0.5">
+            <Ellipse.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Ellipse.RenderTransform>
+            <Ellipse.Fill>
+                <RadialGradientBrush GradientOrigin="0.729,0.238">
+                    <GradientStop Color="#FFFB6C6C" Offset="0.146"/>
+                    <GradientStop Color="#FFED1212" Offset="0.327"/>
+                    <GradientStop Color="#FF9B0000" Offset="0.888"/>
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+    </Canvas>
+</osk:OskBaseControl>

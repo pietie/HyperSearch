@@ -4,7 +4,7 @@
         Title="Minimize to hide in systray" Height="350" Width="800" Closing="Window_Closing" Loaded="Window_Loaded" Icon="search.ico" 
         
         >
-    <Grid>
+    <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace HyperSearch
 {
@@ -194,6 +195,94 @@ namespace HyperSearch
             }
 
             return null;
+        }
+
+        public static Point CalcPointOnCircle(Point center, double radius, double angle)
+        {
+            double radians = angle * (Math.PI / 180.0);
+
+            Point result = new Point(Math.Cos(radians) * radius + center.X, Math.Sin(radians) * radius + center.Y);
+
+            return result;
+        }
+
+        public static DoubleAnimation CreateDoubleAnimation(double beginTimeInSeconds, double durationInSeconds, double from, double to, RepeatBehavior? repeatBehavior = null)
+        {
+            DoubleAnimation da = new DoubleAnimation();
+
+            da.BeginTime = TimeSpan.FromSeconds(beginTimeInSeconds);
+            da.Duration = TimeSpan.FromSeconds(durationInSeconds);
+            da.From = from;
+            da.To = to;
+
+            if (repeatBehavior.HasValue) da.RepeatBehavior = repeatBehavior.Value;
+
+            return da;
+        }
+
+        public static DoubleAnimationUsingKeyFrames CreateDoubleAnimationUsingKeyFrames(object parameter, double beginTimeInSeconds, params AnimationKeyFrame[] keyFrames)
+        {
+            return CreateDoubleAnimationUsingKeyFrames(new PropertyPath(parameter), beginTimeInSeconds, keyFrames);
+        }
+
+        public static DoubleAnimationUsingKeyFrames CreateDoubleAnimationUsingKeyFrames(string propertyPath, double beginTimeInSeconds, params AnimationKeyFrame[] keyFrames)
+        {
+            return CreateDoubleAnimationUsingKeyFrames(new PropertyPath(propertyPath), beginTimeInSeconds, keyFrames);
+        }
+
+        public static DoubleAnimationUsingKeyFrames CreateDoubleAnimationUsingKeyFrames(PropertyPath propertyPath, double beginTimeInSeconds, params AnimationKeyFrame[] keyFrames)
+        {
+            DoubleAnimationUsingKeyFrames anim = new DoubleAnimationUsingKeyFrames();
+
+            Storyboard.SetTargetProperty(anim, propertyPath);
+
+            anim.BeginTime = TimeSpan.FromSeconds(beginTimeInSeconds);
+
+            if (keyFrames != null)
+            {
+                foreach (var kf in keyFrames)
+                {
+                    anim.KeyFrames.Add(kf);
+                }
+            }
+
+            return anim;
+        }
+
+        public static T FindTransform<T>(this UIElement element, out int? transformGroupIndex) where T : Transform
+        {
+            transformGroupIndex = null;
+
+            if (element == null) return default(T);
+
+            if (element is UIElement)
+            {
+                if (element.RenderTransform is T)
+                {
+                    return (T)element.RenderTransform;
+                }
+                else if (element.RenderTransform is TransformGroup)
+                {
+                    TransformGroup tg = (TransformGroup)element.RenderTransform;
+
+                    T transform = (T)tg.Children.FirstOrDefault(t => t is T);
+
+                    transformGroupIndex = tg.Children.IndexOf(transform);
+
+                    return transform;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public class AnimationKeyFrame : EasingDoubleKeyFrame
+    {
+        public AnimationKeyFrame(double value, double keyTimeInSeconds, EasingFunctionBase easingFunction = null)
+            : base(value, KeyTime.FromTimeSpan(TimeSpan.FromSeconds(keyTimeInSeconds)))
+        {
+            this.EasingFunction = easingFunction;
         }
     }
 }

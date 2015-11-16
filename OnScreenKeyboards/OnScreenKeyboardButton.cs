@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Input;
+using HyperSearch.Classes;
 
 namespace HyperSearch
 {
@@ -93,6 +94,16 @@ namespace HyperSearch
             _textBlock.FontFamily = new FontFamily("Arial");
             _textBlock.FontWeight = FontWeights.Bold;
             _textBlock.FontSize = 16;
+        }
+
+        public void AnimateClick()
+        {
+            this.RenderTransformOrigin = new Point(0.5, 0.5);
+            this.RenderTransform = new ScaleTransform();
+
+            var sb = this.ScaleUniformAnimation(0, 0.1, 1.0, 1.2, autoReverse: true);
+
+            sb.Begin(this);
         }
 
     }
