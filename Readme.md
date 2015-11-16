@@ -39,14 +39,16 @@ Hitting W,D,S or A will navigate the onscreen keyboard so those keys will not be
 
 The default configuration is setup with:
 
-First Header  | Second Header
+Config key  | Second Header
 ------------- | -------------
 Content Cell  | Content Cell
 Content Cell  | Content Cell
 
-Config Key|Binding|Description
--|-|-
-Keys.Action|Enter|Confirm/Launch
+--
+
+Config Key | Binding | Description
+- |- | -
+Keys.Action | Enter | Confirm/Launch
 Keys.Back|Backspace|Confirm/Launch
 Keys.Exit|Escape|Confirm/Launch
 Keys.Minimize|Tilde|Confirm/Launch
