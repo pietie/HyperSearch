@@ -762,13 +762,11 @@ namespace HyperSearch.Windows
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            //if (Global.MinimizeKeyOld.HasValue && e.Key == Global.MinimizeKeyOld.Value)
             if (Global.MinimizeKey.Is(e.Key))
             {
                 this.Hide();
             }
         }
-
 
         private void systemSummaryListView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -1004,7 +1002,6 @@ namespace HyperSearch.Windows
             public bool ShowWheelImagesOnResults { get; set; }
 
             private SearchList SearchList { get; set; }
-
             
 
             public PerformSearchTask(GameSearchWindow gameSearchWin, SearchList searchList)
@@ -1053,14 +1050,8 @@ namespace HyperSearch.Windows
             {
                 lock (_allGamesList)
                 {
-                    //System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
+                    // TODO: Consider caching DB List and loading that from a single file on startup. But then we have need some way of clearing the cache again and on my machine and config that will only save 2 seconds on intial startup.
                     List<MenuXmlDatabase> dbList = new List<MenuXmlDatabase>();
-                    //// TODO: !!!!
-                    //using (var rrr = File.OpenRead("c:\\000Cache.test"))
-                    //{
-                    //    dbList = (List<Classes.MenuXmlDatabase>)bf.Deserialize(rrr);
-                    //}
 
                     var preloadAllXmlDbsPerf = PerformanceTracker.Begin("GAME SEARCH: PRELOAD");
 
@@ -1211,7 +1202,7 @@ namespace HyperSearch.Windows
                         {
                             var favRom = (from g in systemSpecificRomsOnly where g.name.EqualsCI(romName) select g).FirstOrDefault();
 
-                            if (favRom == null)// TODO: Why would it fail to find something?
+                            if (favRom == null)
                             {
                                 MainWindow.LogStatic("\tWARNING: FAV failed to match up: {0}. System: {1}", romName ?? "(null)", systemName ?? "(null)");
                                 continue; 
@@ -1230,8 +1221,6 @@ namespace HyperSearch.Windows
 
             public static int LoadGenres()
             {
-                    //SortedSet<string> uniqueListOfGenres = new SortedSet<string>();
-
                 // run through each game in the full list and look at its genres
                 Parallel.ForEach<GameXmlDatabase>(_allGamesList, new Action<GameXmlDatabase>(g =>
                     {
@@ -1329,8 +1318,8 @@ namespace HyperSearch.Windows
                                        SystemName = m.ParentMenu.SystemName,
                                        SystemImageSourceUri = this.ShowSystemImagesOnResults? m.SystemImageSourceUri : null,
                                        GameImageSourceUri = this.ShowWheelImagesOnResults? m.GameImageSourceUri : null
-                                   }).Distinct().ToList(); // TODO: Make top(N) configurable??? Always just display everything???!!!?!?!?!
-                    //Take(200)
+                                   }).Distinct().ToList(); 
+                    
                     searchPerf.End();
 
                     var systemWheelImageBasePath = Global.BuildFilePathInHyperspinDir(@"Media\Main Menu\Images\Wheel");
@@ -1403,8 +1392,7 @@ namespace HyperSearch.Windows
                     }
 
 
-                    // TODO: Order by some setting?? Like SysName or GameCount asc/desc?
-                    // TODO: Provide some sort of (All).png image?
+                    // TODO: Order by some setting? Like SysName or GameCount asc/desc?
 
                     // we don't need an "(All)"
                     if (perSystemResults.Count > 1)

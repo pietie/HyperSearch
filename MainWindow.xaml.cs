@@ -25,15 +25,15 @@ namespace HyperSearch
         private static bool ShowSystemImagesOnResults { get; set; }
         private static bool ShowWheelImagesOnResults { get; set; }
 
-        private System.Windows.Forms.Keys? _searchTriggerKey;
-        private System.Windows.Forms.Keys? _favouritesTriggerKey;
-        private System.Windows.Forms.Keys? _genreTriggerKey;
-
         public static bool IsCabModeEnabled { get; private set; }
 
         public static Windows.GameSearchWindow _lastSearchWindow = null;
         public static int? _lastHyperspinHwnd = null;
         public static RECT? _lastHyperspinRect = null;
+
+        private KeyList _searchTriggerKey = null;
+        private KeyList _favouritesTriggerKey = null;
+        private KeyList _genreTriggerKey = null;
 
         public MainWindow()
         {
@@ -70,11 +70,11 @@ namespace HyperSearch
                 
                 InitSysTray();
 
-                _searchTriggerKey = System.Windows.Forms.Keys.F3;
-                _favouritesTriggerKey = System.Windows.Forms.Keys.F4;
-                _genreTriggerKey = System.Windows.Forms.Keys.F5;
+                _searchTriggerKey = new KeyList(System.Windows.Input.Key.F3);
+                _favouritesTriggerKey = new KeyList(System.Windows.Input.Key.F4);
+                _genreTriggerKey = new KeyList(System.Windows.Input.Key.F5);
 
-                var triggerKeyConfig = new Dictionary<System.Windows.Forms.Keys, int?>();
+                var triggerKeyConfig = new Dictionary<KeyList, int?>();
 
                 // Trigger Keys
                 {
@@ -82,13 +82,12 @@ namespace HyperSearch
                     var favouritesTriggerKeyConfigValue = ConfigurationManager.AppSettings["FavouritesTriggerKey"];
                     var genreTriggerKeyConfigValue = ConfigurationManager.AppSettings["GenreTriggerKey"];
 
-                    System.Windows.Forms.Keys t;
+                    Key t;
 
-                    //if (!string.IsNullOrEmpty(searchTriggerKeyConfigValue))
                     {
-                        if (System.Enum.TryParse<System.Windows.Forms.Keys>(searchTriggerKeyConfigValue, true, out t))
+                        if (System.Enum.TryParse<Key>(searchTriggerKeyConfigValue, true, out t))
                         {
-                            _searchTriggerKey = t;
+                            _searchTriggerKey.Add(t);
                             Log("Search trigger: {0}", _searchTriggerKey.ToString());
                         }
                         else
@@ -96,14 +95,14 @@ namespace HyperSearch
                             Log("Failed to convert search trigger key from key, default to: {0}", _searchTriggerKey.ToString());
                         }
 
-                        triggerKeyConfig.Add(_searchTriggerKey.Value, ConfigurationManager.AppSettings["SearchTriggerDelayInMilliseconds"].ToIntNullable(0));
+                        triggerKeyConfig.Add(_searchTriggerKey, ConfigurationManager.AppSettings["SearchTriggerDelayInMilliseconds"].ToIntNullable(0));
                     }
 
                     if (!string.IsNullOrEmpty(favouritesTriggerKeyConfigValue))
                     {
-                        if (System.Enum.TryParse<System.Windows.Forms.Keys>(favouritesTriggerKeyConfigValue, true, out t))
+                        if (System.Enum.TryParse<Key>(favouritesTriggerKeyConfigValue, true, out t))
                         {
-                            _favouritesTriggerKey = t;
+                            _favouritesTriggerKey.Add(t);
                             Log("Favourites trigger: {0}", _favouritesTriggerKey.ToString());
                         }
                         else
@@ -111,14 +110,14 @@ namespace HyperSearch
                             Log("Failed to convert favourites trigger key from key, default to: {0}", _favouritesTriggerKey.ToString());
                         }
 
-                        triggerKeyConfig.Add(_favouritesTriggerKey.Value, ConfigurationManager.AppSettings["FavouritesTriggerDelayInMilliseconds"].ToIntNullable(0));
+                        triggerKeyConfig.Add(_favouritesTriggerKey, ConfigurationManager.AppSettings["FavouritesTriggerDelayInMilliseconds"].ToIntNullable(0));
                     }
 
                     if (!string.IsNullOrEmpty(genreTriggerKeyConfigValue))
                     {
-                        if (System.Enum.TryParse<System.Windows.Forms.Keys>(genreTriggerKeyConfigValue, true, out t))
+                        if (System.Enum.TryParse<Key>(genreTriggerKeyConfigValue, true, out t))
                         {
-                            _genreTriggerKey = t;
+                            _genreTriggerKey.Add(t);
                             Log("Genre trigger: {0}", _genreTriggerKey.ToString());
                         }
                         else
@@ -126,7 +125,7 @@ namespace HyperSearch
                             Log("Failed to convert genre trigger key from key, default to: {0}", _genreTriggerKey.ToString());
                         }
 
-                        triggerKeyConfig.Add(_genreTriggerKey.Value, ConfigurationManager.AppSettings["GenreTriggerDelayInMilliseconds"].ToIntNullable(0));
+                        triggerKeyConfig.Add(_genreTriggerKey, ConfigurationManager.AppSettings["GenreTriggerDelayInMilliseconds"].ToIntNullable(0));
                     }
                 }
 
@@ -388,7 +387,8 @@ namespace HyperSearch
         {
             try
             {
-                var triggerKey = (System.Windows.Forms.Keys)sender;
+                //var triggerKey = (System.Windows.Forms.Keys)sender;
+                var triggerKey = (Key)sender;
 
                 RECT? hsWinRect = null;
                 IntPtr? hsWinHwnd = null;
@@ -483,9 +483,9 @@ namespace HyperSearch
 
                 HyperSearch.Windows.GameSearchWindow.SearchList searchList = Windows.GameSearchWindow.SearchList.Normal;
 
-                if (_searchTriggerKey.HasValue && triggerKey == _searchTriggerKey.Value) searchList = Windows.GameSearchWindow.SearchList.Normal;
-                else if (_favouritesTriggerKey.HasValue && triggerKey == _favouritesTriggerKey.Value) searchList = Windows.GameSearchWindow.SearchList.Favourites;
-                else if (_genreTriggerKey.HasValue && triggerKey == _genreTriggerKey.Value) searchList = Windows.GameSearchWindow.SearchList.Genre;
+                if (_searchTriggerKey != null && _searchTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Normal;
+                else if (_favouritesTriggerKey != null && _favouritesTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Favourites;
+                else if (_genreTriggerKey != null && _genreTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Genre;
 
                 Log("Using list: {0}", searchList);
 
@@ -671,9 +671,11 @@ namespace HyperSearch
     {
         private List<System.Windows.Input.Key> Keys;
 
-        public KeyList()
+        public KeyList(params Key[] keys)
         {
             Keys = new List<System.Windows.Input.Key>();
+
+            if (keys != null) Keys.AddRange(keys);
         }
 
         public bool Is(System.Windows.Input.Key key)

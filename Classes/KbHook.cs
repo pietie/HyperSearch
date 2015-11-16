@@ -8,7 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows.Input;
 
 namespace HyperSearch
 {
@@ -388,7 +388,7 @@ namespace HyperSearch
             return UnhookWindowsHookEx(_hookID);
         }
 
-        public static Dictionary<System.Windows.Forms.Keys, int?> TriggerKeyConfig = new Dictionary<System.Windows.Forms.Keys, int?>();
+        public static Dictionary<KeyList, int?> TriggerKeyConfig = new Dictionary<KeyList, int?>();
 
         public static event EventHandler OnTriggerKeyHit;     
         private static DateTime? LastTriggerWMDownStart;
@@ -402,9 +402,12 @@ namespace HyperSearch
 
                 if (wParam == (IntPtr)WM_KEYDOWN)
                 {
-                    var vk = (System.Windows.Forms.Keys)vkCode;
+                    //var vk = (System.Windows.Forms.Keys)vkCode;
+                    var vk = KeyInterop.KeyFromVirtualKey(vkCode);
 
-                    if (TriggerKeyConfig.ContainsKey(vk))
+                    var triggerKV = TriggerKeyConfig.FirstOrDefault(kv => kv.Key.Is(vk));
+
+                    if (triggerKV.Key != null)
                     {
                         {
                             if (!LastTriggerWMDownStart.HasValue)
@@ -414,10 +417,10 @@ namespace HyperSearch
 
                             bool dontTriggerJustYet = false;
 
-                            if (TriggerKeyConfig[vk].HasValue && LastTriggerWMDownStart.HasValue)
+                            if (triggerKV.Value.HasValue && LastTriggerWMDownStart.HasValue)
                             {
                                 var now = DateTime.Now;
-                                dontTriggerJustYet = !(now.Subtract(LastTriggerWMDownStart.Value).TotalMilliseconds >= TriggerKeyConfig[vk].Value);
+                                dontTriggerJustYet = !(now.Subtract(LastTriggerWMDownStart.Value).TotalMilliseconds >= triggerKV.Value);
                             }
 
                             if (!dontTriggerJustYet && OnTriggerKeyHit != null)

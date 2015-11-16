@@ -768,12 +768,10 @@ namespace HyperSearch
 
             KeyCombo kc = new KeyCombo();
 
-            //!?if (ActionScriptKeyCodeToVkLookup.ContainsKey(code.Value)) return ActionScriptKeyCodeToVkLookup[code.Value];
-
             foreach(var el in codeElems)
             {
                 var c = el.ToIntNullable();
-                if (!c.HasValue) continue; // TODO: Error/warning?
+                if (!c.HasValue) continue; 
                 if (ActionScriptKeyCodeToVkLookup.ContainsKey(c.Value))
                 {
                     var k = ActionScriptKeyCodeToVkLookup[c.Value];
