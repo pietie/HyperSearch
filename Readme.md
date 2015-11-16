@@ -24,8 +24,7 @@ For example, the following entry configures the search window to trigger when ei
 ##### Cab Mode
 Just a note about Cab Mode. If disabled the user is allowed to type keys on the keyboard as per normal. However, any key configured as an input key will take precedence. 
 
-For example if your input keys are configured as follows.
-
+For example if your input keys are configured as follows:
 
 ```xml
 <add key="Keys.Up" value="W"/>
@@ -33,3 +32,4 @@ For example if your input keys are configured as follows.
 <add key="Keys.Down" value="S"/>
 <add key="Keys.Left" value="A"/>
 ```
+Hitting W,D,S or A will navigate the onscreen keyboard and those keys will not be *typed*.
