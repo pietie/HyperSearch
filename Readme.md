@@ -42,10 +42,14 @@ The default configuration is setup with:
 
 Config Key | Binding | Description
 ------------- | ------------- | -------------
+Keys.Trigger.Search | F3 | Opens up the default search window
+Keys.Trigger.Favourites | F4 | Searches the favourites database
+Keys.Trigger.Genre | F5 | Searches the genres database
+&nbsp; | | |
 Keys.Action | Enter | Confirm/Launch
-Keys.Back|Backspace|Confirm/Launch
-Keys.Exit|Escape|Confirm/Launch
-Keys.Minimize|Tilde|Confirm/Launch
+Keys.Back|Backspace| Navigate back to previous screen
+Keys.Exit|Escape| Closes the search window
+Keys.Minimize|Tilde| Minimizes the search window. Reactivating should bring up the search window in its previous state.
 &nbsp; | | |
 Keys.Up|Up Arrow|Moves current selection upwards
 Keys.Right|Right Arrow|Moves current selection rightwards
