@@ -32,4 +32,17 @@ For example if your input keys are configured as follows:
 <add key="Keys.Down" value="S"/>
 <add key="Keys.Left" value="A"/>
 ```
-Hitting W,D,S or A will navigate the onscreen keyboard and those keys will not be *typed*.
+Hitting W,D,S or A will navigate the onscreen keyboard so those keys will not be *typed*.
+
+
+#### Default config
+
+The default configuration is setup with:
+
+Config Key|Binding|Description
+-|-|-
+Keys.Action|Enter|Confirm/Launch
+Keys.Up|Up Arrow|Moves current selection upwards
+Keys.Right|Right Arrow|Moves current selection rightwards
+Keys.Down|Down Arrow|Moves current selection downwards
+Keys.Left|Left Arrow|Moves current selection leftwards

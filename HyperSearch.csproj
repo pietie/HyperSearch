@@ -192,12 +192,6 @@
     <Resource Include="ShaderEffects\Saturation.ps" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Readme.txt">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ShaderEffects\Saturation.fx" />
   </ItemGroup>
   <ItemGroup />
