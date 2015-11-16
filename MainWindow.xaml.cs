@@ -70,63 +70,18 @@ namespace HyperSearch
                 
                 InitSysTray();
 
-                _searchTriggerKey = new KeyList(System.Windows.Input.Key.F3);
-                _favouritesTriggerKey = new KeyList(System.Windows.Input.Key.F4);
-                _genreTriggerKey = new KeyList(System.Windows.Input.Key.F5);
-
                 var triggerKeyConfig = new Dictionary<KeyList, int?>();
 
                 // Trigger Keys
                 {
-                    var searchTriggerKeyConfigValue = ConfigurationManager.AppSettings["TriggerKey"];
-                    var favouritesTriggerKeyConfigValue = ConfigurationManager.AppSettings["FavouritesTriggerKey"];
-                    var genreTriggerKeyConfigValue = ConfigurationManager.AppSettings["GenreTriggerKey"];
+                    _searchTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Search", Key.F3);
+                    _favouritesTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Favourites", Key.F4);
+                    _genreTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Genre", Key.F5);
 
-                    Key t;
+                    triggerKeyConfig.Add(_searchTriggerKey, ConfigurationManager.AppSettings["SearchTriggerDelayInMilliseconds"].ToIntNullable(0));
+                    triggerKeyConfig.Add(_favouritesTriggerKey, ConfigurationManager.AppSettings["FavouritesTriggerDelayInMilliseconds"].ToIntNullable(0));
+                    triggerKeyConfig.Add(_genreTriggerKey, ConfigurationManager.AppSettings["GenreTriggerDelayInMilliseconds"].ToIntNullable(0));
 
-                    {
-                        if (System.Enum.TryParse<Key>(searchTriggerKeyConfigValue, true, out t))
-                        {
-                            _searchTriggerKey.Add(t);
-                            Log("Search trigger: {0}", _searchTriggerKey.ToString());
-                        }
-                        else
-                        {
-                            Log("Failed to convert search trigger key from key, default to: {0}", _searchTriggerKey.ToString());
-                        }
-
-                        triggerKeyConfig.Add(_searchTriggerKey, ConfigurationManager.AppSettings["SearchTriggerDelayInMilliseconds"].ToIntNullable(0));
-                    }
-
-                    if (!string.IsNullOrEmpty(favouritesTriggerKeyConfigValue))
-                    {
-                        if (System.Enum.TryParse<Key>(favouritesTriggerKeyConfigValue, true, out t))
-                        {
-                            _favouritesTriggerKey.Add(t);
-                            Log("Favourites trigger: {0}", _favouritesTriggerKey.ToString());
-                        }
-                        else
-                        {
-                            Log("Failed to convert favourites trigger key from key, default to: {0}", _favouritesTriggerKey.ToString());
-                        }
-
-                        triggerKeyConfig.Add(_favouritesTriggerKey, ConfigurationManager.AppSettings["FavouritesTriggerDelayInMilliseconds"].ToIntNullable(0));
-                    }
-
-                    if (!string.IsNullOrEmpty(genreTriggerKeyConfigValue))
-                    {
-                        if (System.Enum.TryParse<Key>(genreTriggerKeyConfigValue, true, out t))
-                        {
-                            _genreTriggerKey.Add(t);
-                            Log("Genre trigger: {0}", _genreTriggerKey.ToString());
-                        }
-                        else
-                        {
-                            Log("Failed to convert genre trigger key from key, default to: {0}", _genreTriggerKey.ToString());
-                        }
-
-                        triggerKeyConfig.Add(_genreTriggerKey, ConfigurationManager.AppSettings["GenreTriggerDelayInMilliseconds"].ToIntNullable(0));
-                    }
                 }
 
                 KbHook.TriggerKeyConfig = triggerKeyConfig;
@@ -262,8 +217,6 @@ namespace HyperSearch
                 Global.DownKey = GetKeyFromAppSetting("Keys.Down");
                 Global.LeftKey = GetKeyFromAppSetting("Keys.Left");
 
-                int nsdf = 0;
-
                 /*
                 if (!actionKey.HasValue)
                 {
@@ -325,7 +278,7 @@ namespace HyperSearch
             }
         }
 
-        private KeyList GetKeyFromAppSetting(string appKey)
+        private KeyList GetKeyFromAppSetting(string appKey, Key defaultVal = Key.None)
         {
             var str = ConfigurationManager.AppSettings[appKey];
 
@@ -349,7 +302,9 @@ namespace HyperSearch
             }
             else
             {
-                return null;
+                var def= new KeyList();
+                def.Add(defaultVal);
+                return def;
             }
         }
 
