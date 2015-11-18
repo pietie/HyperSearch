@@ -10,7 +10,6 @@ namespace HyperSearch
     {
         public static string HsPath;
         public static string LauncherFullPath;
-        public static System.Windows.Input.Key? MinimizeKeyOld;
         public static string AlternativeGameWheelSourceFolder;
 
 

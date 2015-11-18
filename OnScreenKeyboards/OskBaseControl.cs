@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyperSearch.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -195,7 +196,7 @@ namespace HyperSearch
         
 
         private void HandleOskButtonPressed(OnScreenKeyboardButton button)
-        {
+        {  
             if (button == space)
             {
                 this.RaiseOskKeyPressedEvent(" ", OskSpecialKey.Space);
@@ -220,6 +221,8 @@ namespace HyperSearch
 
         protected void RaiseOskKeyPressedEvent(string charRepresentation, OskSpecialKey specialKey)
         {
+            SystemSoundPlayer.Instance().PlaySound(Classes.SystemSound.LetterClick);
+
             if (this.AttachedTextBox != null)
             {
                 var txt = this.AttachedTextBox;

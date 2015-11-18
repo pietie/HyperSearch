@@ -35,6 +35,7 @@ namespace HyperSearch
         private KeyList _searchTriggerKey = null;
         private KeyList _favouritesTriggerKey = null;
         private KeyList _genreTriggerKey = null;
+        private KeyList _settingsTriggerKey = null;
 
         public MainWindow()
         {
@@ -78,10 +79,12 @@ namespace HyperSearch
                     _searchTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Search", Key.F3);
                     _favouritesTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Favourites", Key.F4);
                     _genreTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Genre", Key.F5);
+                    _settingsTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Settings", Key.F10);
 
                     triggerKeyConfig.Add(_searchTriggerKey, ConfigurationManager.AppSettings["SearchTriggerDelayInMilliseconds"].ToIntNullable(0));
                     triggerKeyConfig.Add(_favouritesTriggerKey, ConfigurationManager.AppSettings["FavouritesTriggerDelayInMilliseconds"].ToIntNullable(0));
                     triggerKeyConfig.Add(_genreTriggerKey, ConfigurationManager.AppSettings["GenreTriggerDelayInMilliseconds"].ToIntNullable(0));
+                    triggerKeyConfig.Add(_settingsTriggerKey, 0);
 
                 }
 
@@ -170,30 +173,6 @@ namespace HyperSearch
                 IsCabModeEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["CabMode"]);
 
                 Log("CabMode: {0}", IsCabModeEnabled);
-
-                var minimizeKeyStr = ConfigurationManager.AppSettings["MinimizeKey"];
-
-                if (!string.IsNullOrEmpty(minimizeKeyStr))
-                {
-                    System.Windows.Input.Key minKey;
-
-                    if (Enum.TryParse<System.Windows.Input.Key>(minimizeKeyStr, out minKey))
-                    {
-                        Log("MinimizeKey: Enabled for {0}", minKey);
-
-                        Global.MinimizeKeyOld = minKey;
-                    }
-                    else
-                    {
-                        Log("MinimizeKey: Invalid value specified: {0}", minimizeKeyStr);
-                        Log("For valid values see https://msdn.microsoft.com/en-us/library/system.windows.input.key%28v=vs.110%29.aspx");
-                    }
-                }
-                else
-                {
-                    Log("MinimizeKey: Not configured.");
-                }
-
 
                 var altGameWheelSourceFolder = ConfigurationManager.AppSettings["AlternativeGameWheelSourceFolder"];
 
@@ -343,8 +322,14 @@ namespace HyperSearch
         {
             try
             {
-                //var triggerKey = (System.Windows.Forms.Keys)sender;
                 var triggerKey = (Key)sender;
+
+                if (_settingsTriggerKey != null && _settingsTriggerKey.Is(triggerKey))
+                {
+                    this.Show();
+                    settingsButton_Click(sender, null);
+                    return;
+                }
 
                 RECT? hsWinRect = null;
                 IntPtr? hsWinHwnd = null;
@@ -470,11 +455,18 @@ namespace HyperSearch
             {
                 Windows.GameSearchWindow win;
 
-                if (!Global.MinimizeKeyOld.HasValue || _lastSearchWindow == null)
-                { // if no minimizeKey was configured we do not reuse the prev window (current, original behaviour)
+                if (_lastSearchWindow != null && !_lastSearchWindow.IsLoaded)
+                {
+                    _lastSearchWindow = null;
+                }
+
+                if (Global.MinimizeKey == null|| _lastSearchWindow == null)
+                { // if no minimizeKey was configured we do not reuse the prev window
                     if (_lastSearchWindow != null)
                     {
                         //??! _lastSearchWindow.Close();
+                        if (_lastSearchWindow.IsLoaded) _lastSearchWindow.Close();
+
                         _lastSearchWindow = null;
                     }
 
@@ -483,8 +475,6 @@ namespace HyperSearch
                 else
                 {
                     win = _lastSearchWindow;
-
-                    //win.WindowState = WindowState.Normal;
                 }
 
                 PositionWindowOnRect(win, hsWinRect.Value, 15);
@@ -525,8 +515,7 @@ namespace HyperSearch
         {
             try
             {
-                // TODO: Think this might need to move to the game search window?
-                SystemSoundPlayer.Init(mainGrid, @"C:\Hyperspin\Media\Frontend\Sounds");
+
             }
             catch (Exception ex)
             {
@@ -621,6 +610,21 @@ namespace HyperSearch
                 log.CaretIndex = log.Text.Length;
                 log.ScrollToEnd();
             }));
+        }
+
+        private void settingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Windows.Settings.ControllerLayoutWin win = new Windows.Settings.ControllerLayoutWin() { Owner = this };
+
+                win.ShowDialog();
+
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleException(ex);
+            }
         }
     }
 

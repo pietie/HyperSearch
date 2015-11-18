@@ -18,6 +18,7 @@ using System.Diagnostics;
 using Gajatko.IniFiles;
 using System.Threading.Tasks;
 using System.Configuration;
+using HyperSearch.Classes;
 
 namespace HyperSearch.Windows
 {
@@ -45,7 +46,8 @@ namespace HyperSearch.Windows
         {
             AtoZ,
             Qwerty,
-            Azerty
+            Azerty,
+            Orb
         }
 
         public enum SearchList
@@ -629,14 +631,41 @@ namespace HyperSearch.Windows
                 {
                     LoadAzertyControl();
                 }
+                else if (this.InputType == TextInputType.Orb)
+                {
+                    LoadOrbControl();
+                }
+
+                var soundsPath = Global.BuildFilePathInHyperspinDir(@"Media\Frontend\Sounds");
                 
+                SystemSoundPlayer.Init(mainGrid, soundsPath);
             }
             catch (Exception ex)
             {
                 ErrorHandler.HandleException(ex);
             }
         }
-       
+
+        private void LoadOrbControl()
+        {
+            var kb = new OrbKeyboard() { Width = 800, Height = 600 };
+
+            RegisterName("orb", kb);
+
+            var buttonTemplateXamlFilePath = Global.BuildFilePathInResourceDir("OnScreenKeyboardButtonTemplate.xaml");
+
+            if (!File.Exists(buttonTemplateXamlFilePath)) throw new FileNotFoundException("Failed to find the on-screen keyboard's button template XAML file.", "Resources\\OnScreenKeyboardButtonTemplate.xaml");
+
+            kb.InitFromButtonTemplate(File.ReadAllText(buttonTemplateXamlFilePath));
+
+            Util.SetTimeout(80, new Action(() => kb.AnimateOpen()));
+            Util.SetTimeout(90, new Action(() => kb.Focus()));
+
+            kb.AttachedTextBox = searchTerm;
+            kb.OnOskKeyPressed += OnOskKeyPressed;
+            keyboardContainer.Child = new Viewbox() { Child = kb };
+        }
+
         private void LoadAtoZControl()
         {
             var kb = new AtoZKeyboard();

@@ -11,5 +11,6 @@
         </Grid.RowDefinitions>
         <TextBox x:Name="log" FontFamily="Courier New" FontSize="14" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsManipulationEnabled="True" AcceptsReturn="True" />
         <Button x:Name="exitButton" Grid.Row="1" Width="100" Height="40" HorizontalAlignment="Left" Margin="10 0 0 0" Click="exitButton_Click">Exit</Button>
+        <Button x:Name="settingsButton" Grid.Row="1" Width="100" Height="40" HorizontalAlignment="Right" Margin="0 0 10 0" Click="settingsButton_Click">Settings</Button>
     </Grid>
 </Window>

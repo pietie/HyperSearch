@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using HscLib;
 using System.Windows.Media;
 using HyperSearch;
+using System.Windows.Input;
 
 namespace HscLib.Controls
 {
@@ -70,6 +71,7 @@ namespace HscLib.Controls
             this.Background = null;  // for some reason setting the background property in the Style (ListViewWithScrollIndicatorsStyle) doesn't work
             this.SelectionChanged += OnSelectionChanged;
             this.Loaded += OnLoaded;
+            this.PreviewKeyDown += ListViewHSC_PreviewKeyDown;
             
         }
 
@@ -150,5 +152,45 @@ namespace HscLib.Controls
                 }
             }
         }
+
+        private void ListViewHSC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            return;
+            try
+            {
+                e.Handled = true;
+                var elementWithFocus = Keyboard.FocusedElement as UIElement;
+
+                if (Global.DownKey.Is(e.Key))
+                {
+                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                    return;
+                }
+                else if (Global.UpKey.Is(e.Key))
+                {
+                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+                    return;
+                }
+                else if (Global.LeftKey.Is(e.Key))
+                {
+                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
+                    return;
+                }
+                else if (Global.RightKey.Is(e.Key))
+                {
+                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
+                    return;
+                }
+                else if (Global.BackKey.Is(e.Key))
+                {
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleException(ex);
+            }
+        }
+
     }
 }

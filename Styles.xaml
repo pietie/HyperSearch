@@ -3,13 +3,102 @@
                     xmlns:eff="clr-namespace:HscLib.ShaderEffects;assembly=HyperSearch"
                     xmlns:conv="clr-namespace:HyperSpinClone.Classes.Converters;assembly=HyperSearch"
                     xmlns:ctrl="clr-namespace:HscLib.Controls;assembly=HyperSearch"
+                    xmlns:hsc="clr-namespace:HyperSearch.Attached;assembly=HyperSearch" 
                     xmlns:osk="clr-namespace:HyperSearch;assembly=HyperSearch"
                     
                     >
     <conv:NullImageConverter x:Key="nullImgConverter" />
+    <conv:DoubleOffsetConverter x:Key="listViewWidthConverter" Offset="-10"/>
     <conv:DoubleOffsetConverter x:Key="listViewHeightConverter" Offset="-5"/>
+
+    <RadialGradientBrush x:Key="OuterBackgroundGreen">
+        <GradientStop Color="#0032FF4E" Offset="0.554"/>
+        <GradientStop Color="#FF058C17" Offset="1"/>
+        <GradientStop Color="#FF20AA32" Offset="0.877"/>
+        <GradientStop Color="#FF38D14C" Offset="0.97"/>
+        <GradientStop Color="#FF38FF52" Offset="0.696"/>
+        <GradientStop Color="#FF008C12" Offset="0.679"/>
+        <GradientStop Color="#FF016D0F" Offset="0.669"/>
+        <GradientStop Color="#FF47FF5F" Offset="0.613"/>
+    </RadialGradientBrush>
+
+    <!-- Used by layout selector -->
+    <ControlTemplate x:Key="arcadeRoundPushButton" TargetType="{x:Type Control}">
+        <ControlTemplate.Resources>
+            <LinearGradientBrush x:Key="InnerBackground" EndPoint="0.763,0.917" StartPoint="0.162,0.027">
+                <GradientStop Color="#FF8B2828" Offset="0.15"/>
+                <GradientStop Color="#FFD41515" Offset="0.5"/>
+                <GradientStop Color="#FFFFB2B2" Offset="0.9"/>
+            </LinearGradientBrush>
+            <RadialGradientBrush x:Key="OuterBackground">
+                <GradientStop Color="#00FF3131" Offset="0.554"/>
+                <GradientStop Color="#FF910505" Offset="1"/>
+                <GradientStop Color="#FFAD2020" Offset="0.877"/>
+                <GradientStop Color="#FFD23737" Offset="0.97"/>
+                <GradientStop Color="#FFFF3838" Offset="0.696"/>
+                <GradientStop Color="#FF8D0000" Offset="0.679"/>
+                <GradientStop Color="#FF6F0101" Offset="0.669"/>
+                <GradientStop Color="#FFFF4747" Offset="0.613"/>
+            </RadialGradientBrush>
+        </ControlTemplate.Resources>
+        <Grid>
+            <Ellipse x:Name="inner" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="{DynamicResource InnerBackground}">
+                <Ellipse.Effect>
+                    <DropShadowEffect Direction="292" ShadowDepth="2" BlurRadius="8"/>
+                </Ellipse.Effect>
+            </Ellipse>
+            <Ellipse x:Name="FullOuter" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="#FFF09F11" StrokeThickness="0" Fill="{DynamicResource OuterBackground}" >
+                <Ellipse.Effect>
+                    <DropShadowEffect ShadowDepth="0.5" Direction="-235" BlurRadius="2" Color="#FFFFB5B5"/>
+                </Ellipse.Effect>
+            </Ellipse>
+
+        </Grid>
+
+    </ControlTemplate>
+    <!-- Used by layout selector -->
+    <ControlTemplate x:Key="arcadeRoundPushButtonWithLabel" TargetType="{x:Type Control}">
+        <Grid>
+            <Control Margin="3" Template="{StaticResource arcadeRoundPushButton}" />
+            <TextBlock Text="{Binding Path=(hsc:ControllerLayout.Position), RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial" FontWeight="Bold" FontSize="30"/>
+        </Grid>
+    </ControlTemplate>
+
+    
+
+    <!--Generic layout used by each "type" of Setting, i.e. layout with Title + Subtitle + specific value type control -->
+    <ControlTemplate x:Key="SettingsListViewItemTemplate" TargetType="ContentControl">
+        <Grid Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource listViewWidthConverter}, Path=ActualWidth}">
+            <Border Padding="6">
+                <Grid HorizontalAlignment="Stretch" Margin="0,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"  Padding="5">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock x:Name="title" Foreground="White" FontFamily="Arial" FontSize="18" FontWeight="Bold" Margin="0 0 0 3" Text="{Binding Title}"/>
+                            <TextBlock x:Name="subTitle" TextWrapping="Wrap" VerticalAlignment="Stretch" Foreground="Silver" FontFamily="Arial" FontSize="13" FontWeight="Normal" Margin="5 0 0 0" Text="{Binding Description}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ContentPresenter Grid.Column="1" Width="{TemplateBinding Width}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" Margin="{TemplateBinding Margin}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                </Grid>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="True">
+                <Setter Property="Foreground" TargetName="title" Value="#002B44"/>
+                <Setter Property="Foreground" TargetName="subTitle" Value="#002B44"/>
+            </DataTrigger>
+
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
     
     
+
     <!-- OnScreenKeyboard ListView -->
     <Style x:Key="kbListView" TargetType="ListView">
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>

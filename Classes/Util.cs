@@ -275,6 +275,38 @@ namespace HyperSearch
 
             return null;
         }
+
+        public static string GetFilenameWithoutExtension(this System.IO.FileInfo fi)
+        {
+            return fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length);
+        }
+
+        public static void AddChildCentered(this Canvas panel, FrameworkElement child, double w, double h, int? zIndex = null)
+        {
+            child.Width = w;
+            child.Height = h;
+
+            double x = panel.ActualWidth / 2.0 - w / 2.0;
+            double y = panel.ActualHeight / 2.0 - h / 2.0;
+
+            panel.AddChild(child, x, y, zIndex);
+        }
+        public static void AddChild(this Canvas panel, UIElement child, double x, double y, int? zIndex = null)
+        {
+            panel.AddChild(child, new Point(x, y), zIndex);
+        }
+        public static void AddChild(this Canvas panel, UIElement child, Point? pos = null, int? zIndex = null)
+        {
+            panel.Children.Add(child);
+
+            if (pos.HasValue)
+            {
+                Canvas.SetLeft(child, pos.Value.X);
+                Canvas.SetTop(child, pos.Value.Y);
+            }
+
+            if (zIndex.HasValue) Panel.SetZIndex(child, zIndex.Value);
+        }
     }
 
     public class AnimationKeyFrame : EasingDoubleKeyFrame

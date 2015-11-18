@@ -2,8 +2,23 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:eff="clr-namespace:HscLib.ShaderEffects"
+             xmlns:local="clr-namespace:HyperSearch"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+
+        <Style x:Key="OSKButtonBaseStyle" TargetType="local:OnScreenKeyboardButton" >
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontFamily" Value="Trebuchet MS"/>
+
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#EAEAEA"/>
+        </Style>
 
     </Application.Resources>
 </Application>

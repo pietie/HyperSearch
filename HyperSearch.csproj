@@ -65,7 +65,9 @@
     <Compile Include="Attached\ControllerLayout.cs" />
     <Compile Include="Classes\AnimationExtensions.cs" />
     <Compile Include="Classes\CanvasEx.cs" />
+    <Compile Include="Classes\HyperSearchSettings.cs" />
     <Compile Include="Classes\SystemSoundPlayer.cs" />
+    <Compile Include="Classes\Win.cs" />
     <Compile Include="OnScreenKeyboards\AtoZKeyboard.xaml.cs">
       <DependentUpon>AtoZKeyboard.xaml</DependentUpon>
     </Compile>
@@ -97,6 +99,8 @@
     <Compile Include="OnScreenKeyboards\QwertyKeyboard.xaml.cs">
       <DependentUpon>QwertyKeyboard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ShaderEffects\HueShiftEffect.cs" />
+    <Compile Include="ShaderEffects\MonochromeEffect.cs" />
     <Compile Include="ShaderEffects\Saturation.cs" />
     <Compile Include="Classes\Util.cs" />
     <Compile Include="Classes\WheelSettings.cs" />
@@ -106,6 +110,24 @@
     </Compile>
     <Compile Include="Windows\LoadingHsWindow.xaml.cs">
       <DependentUpon>LoadingHsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\ButtonStyleConfig.xaml.cs">
+      <DependentUpon>ButtonStyleConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\ControllerLayoutWin.xaml.cs">
+      <DependentUpon>ControllerLayoutWin.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\Settings\ISettingsControl.cs" />
+    <Compile Include="Windows\Settings\MultiOption.xaml.cs">
+      <DependentUpon>MultiOption.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\MultiOptionSelector.xaml.cs">
+      <DependentUpon>MultiOptionSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\SettingsListViewItem.cs" />
+    <Compile Include="Windows\Settings\Slider.xaml.cs">
+      <DependentUpon>Slider.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\VideoPopupWin.xaml.cs">
       <DependentUpon>VideoPopupWin.xaml</DependentUpon>
@@ -138,6 +160,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Resource Include="ShaderEffects\HueShiftEffect.ps" />
+    <Resource Include="ShaderEffects\MonochromeEffect.ps" />
     <None Include="Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -148,6 +172,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\LoadingHsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\ButtonStyleConfig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\ControllerLayoutWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\MultiOption.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\MultiOptionSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\Slider.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -192,6 +236,8 @@
     <Resource Include="ShaderEffects\Saturation.ps" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ShaderEffects\HueShiftEffect.fx" />
+    <Content Include="ShaderEffects\MonochromeEffect.fx" />
     <Content Include="ShaderEffects\Saturation.fx" />
   </ItemGroup>
   <ItemGroup />

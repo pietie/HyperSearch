@@ -1,0 +1,85 @@
+﻿<Window x:Class="HyperSearch.Windows.Settings.MultiOptionSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ctrl="clr-namespace:HscLib.Controls"
+        xmlns:conv="clr-namespace:HyperSpinClone.Classes.Converters"
+        xmlns:local="clr-namespace:HyperSearch.Windows.Settings"
+        mc:Ignorable="d"
+        Title="MultiOptionSelector" Height="300" Width="300" 
+        Style="{DynamicResource DialogWindow}"
+        WindowStartupLocation="CenterOwner"
+        x:Name="win" Loaded="win_Loaded"
+        >
+    <Window.Resources>
+        <conv:DoubleOffsetConverter x:Key="listViewWidthConverter2" Offset="-10"/>
+        <Style x:Key="RadioListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="Template" Value="{DynamicResource RadioListViewItemTemplate}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource listViewWidthConverter2}, Path=ActualWidth}"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="true">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFFFCDA3" Offset="0.1"/>
+                                <GradientStop Color="#FFFF7C31" Offset="0.8"/>
+                                <GradientStop Color="#FFFBCDA6" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <ControlTemplate x:Key="RadioListViewItemTemplate" TargetType="{x:Type ListViewItem}">
+            <ControlTemplate.Resources>
+                <Style x:Key="SelectedRadioStyle" TargetType="{x:Type Ellipse}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ControlTemplate.Resources>
+            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="30"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" 
+					HorizontalAlignment="Left" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+
+                    <Ellipse Grid.Column="1" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="#FFCBCBCB" Fill="Black" StrokeThickness="1.5"/>
+                    <Ellipse Grid.Column="1" Width="10" Height="10" Style="{StaticResource SelectedRadioStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                        <Ellipse.Fill>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF3AFF00" Offset="0"/>
+                                <GradientStop Color="#FF229301" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+
+                </Grid>
+            </Border>
+
+        </ControlTemplate>
+    </Window.Resources>
+    <Border CornerRadius="0" Style="{DynamicResource WindowBorder}">
+        <ctrl:ListViewHSC x:Name="listview" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" 
+                          ItemContainerStyle="{StaticResource RadioListViewItemStyle}"
+                          ItemsSource="{Binding}" 
+                          KeyUp="listview_KeyUp" PreviewKeyUp="listview_PreviewKeyUp"/>
+    </Border>
+</Window>

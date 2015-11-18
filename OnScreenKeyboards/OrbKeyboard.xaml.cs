@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HyperSearch.OnScreenKeyboards
+namespace HyperSearch
 {
    
     public partial class OrbKeyboard : OskBaseControl
@@ -77,7 +77,7 @@ namespace HyperSearch.OnScreenKeyboards
             var parserContext = new ParserContext();
 
             parserContext.XmlnsDictionary.Add("", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
-            parserContext.XmlnsDictionary.Add("hsc", "clr-namespace:HyperSpinClone.UserControls;assembly=HyperspinClone");
+            parserContext.XmlnsDictionary.Add("hsc", "clr-namespace:HyperSearch;assembly=HyperSearch");
             parserContext.XmlnsDictionary.Add("x", "http://schemas.microsoft.com/winfx/2006/xaml");
 
             var topContainer = (DependencyObject)System.Windows.Markup.XamlReader.Parse(xaml, parserContext);
@@ -170,7 +170,7 @@ namespace HyperSearch.OnScreenKeyboards
 
                 this.SelectedOrb = AllOrbs[(int)orbIndex];
 
-                SystemSoundPlayer.Instance().PlaySound(Classes.SystemSound.ScreenClick); 
+                SystemSoundPlayer.Instance().PlaySound(Classes.SystemSound.ScreenIn); 
             }
             else
             {
@@ -334,8 +334,6 @@ namespace HyperSearch.OnScreenKeyboards
                 o.Padding = new Thickness(0);
                 if (o.Child != null) o.Child.Visibility = System.Windows.Visibility.Collapsed;
                 balltop.Opacity = 0.2;
-                //!centerImg.Opacity = 0.2;
-
             }
         }
 
@@ -348,7 +346,6 @@ namespace HyperSearch.OnScreenKeyboards
                 if (o.Child != null) o.Child.Visibility = System.Windows.Visibility.Visible;
 
                 balltop.Opacity = 1.0;
-                //!centerImg.Opacity = 1.0;
             }
         }
 

@@ -153,7 +153,7 @@
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Control Name="loading" Grid.Column="0" Template="{StaticResource loadingAnimation}" Width="40" VerticalAlignment="Center" />
+                    <Control Name="loading" Grid.Column="0" Template="{DynamicResource loadingAnimation}" Width="40" VerticalAlignment="Center" />
                     <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="30" FontFamily="Arial" FontWeight="Bold" Margin="15 0 0 0">Searching, please wait....</TextBlock>
                 </Grid>
             </Grid>
