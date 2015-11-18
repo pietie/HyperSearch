@@ -102,7 +102,7 @@ namespace HyperSearch
                     }
                     catch (Exception ex)
                     {
-                        throw;
+                        ErrorHandler.HandleException(ex);
                     }
 
                     //iniField.Name

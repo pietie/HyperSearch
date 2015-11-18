@@ -9,11 +9,11 @@ Development requirements:
 
 ### Config
 
-Refer to **App.config** for more detail on certain keys.
+Refer to **Hyperspin.exe.config** for more detail on certain keys.
 
 #### Input configuration 
 
-Each input config key takes a comma-separated list of one or more **System.Windows.Input.Key** values ([see reference](https://msdn.microsoft.com/en-us/library/system.windows.input.key%28v=vs.110%29.aspx) for allowed values).
+Each input config key takes a comma-separated list of one or more **Key code** values ([see reference](https://msdn.microsoft.com/en-us/library/system.windows.input.key%28v=vs.110%29.aspx) for allowed values).
 
 For example, the following entry configures the search window to trigger when either F1 or F3 is pressed.
 
@@ -45,6 +45,7 @@ Config Key | Binding | Description
 Keys.Trigger.Search | F3 | Opens up the default search window
 Keys.Trigger.Favourites | F4 | Searches the favourites database
 Keys.Trigger.Genre | F5 | Searches the genres database
+Keys.Trigger.Settings | F10 | Settings
 &nbsp; | | |
 Keys.Action | Enter | Confirm/Launch
 Keys.Back|Backspace| Navigate back to previous screen

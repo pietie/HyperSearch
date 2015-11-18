@@ -320,14 +320,22 @@ namespace HyperSearch
 
         private void OnTriggerKeyHit(object sender, EventArgs e)
         {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+              
+      
             try
             {
                 var triggerKey = (Key)sender;
 
                 if (_settingsTriggerKey != null && _settingsTriggerKey.Is(triggerKey))
                 {
-                    this.Show();
-                    settingsButton_Click(sender, null);
+                 //   Dispatcher.BeginInvoke(new Action(()=>
+                  //  {
+                        this.Show();
+                        settingsButton_Click(sender, null);
+                   //// }));
+
                     return;
                 }
 
@@ -436,6 +444,8 @@ namespace HyperSearch
             {
                 Log(ex.ToString());
             }
+            }));
+
         }
 
         public static void PositionWindowOnRect(Window win, RECT rc, int margin = 0)
@@ -616,10 +626,11 @@ namespace HyperSearch
         {
             try
             {
-                Windows.Settings.ControllerLayoutWin win = new Windows.Settings.ControllerLayoutWin() { Owner = this };
+                Windows.Settings.ControllerLayoutWin win = new Windows.Settings.ControllerLayoutWin();
 
-                win.ShowDialog();
-
+                //Win.Modal(win, this);
+                Win.Modal(new Windows.Settings.MainSettings(), this);
+                
             }
             catch (Exception ex)
             {

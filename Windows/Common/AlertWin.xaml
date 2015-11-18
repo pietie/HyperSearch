@@ -1,0 +1,26 @@
+﻿<Window x:Class="HyperSearch.Windows.Common.AlertWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HyperSearch.Windows.Common"
+        mc:Ignorable="d"
+        Title="AlertWin" Height="350" Width="450" 
+        Style="{DynamicResource DialogWindow}" PreviewKeyDown="Window_PreviewKeyDown" Loaded="Window_Loaded"
+        >
+    <Border Style="{DynamicResource WindowBorder}" >
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Source="pack://siteoforigin:,,,/Resources/Icons/Exclamation.png"/>
+
+            <TextBlock x:Name="txt" FontFamily="Arial" VerticalAlignment="Center" FontSize="20" Foreground="White" Grid.Column="2" TextWrapping="Wrap"></TextBlock>
+
+            <TextBlock x:Name="toClose" Foreground="Silver" FontFamily="Arial" FontSize="16" VerticalAlignment="Bottom" Grid.ColumnSpan="10" HorizontalAlignment="Center"><Run>Press any key in</Run><Run Text=" "/><Run x:Name="secondsLeftRun"/><Run Text=" "/><Run>second(s) to close</Run></TextBlock>
+        </Grid>
+
+    </Border>
+</Window>

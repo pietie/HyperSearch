@@ -30,7 +30,7 @@
             </Grid.ColumnDefinitions>
 
             <Viewbox HorizontalAlignment="Left">
-                <TextBlock FontFamily="Arial" VerticalAlignment="Center" FontWeight="Bold" FontSize="20" Grid.Row="0" Foreground="White" Text="{Binding Path=Value}" TextTrimming="CharacterEllipsis"/>
+                <TextBlock FontFamily="Arial" VerticalAlignment="Center" FontWeight="Bold" FontSize="20" Grid.Row="0" Foreground="White" Text="{Binding ElementName=uc, Path=Value}" TextTrimming="CharacterEllipsis"/>
             </Viewbox>
 
             <Ellipse Grid.Column="1" Width="30" Height="30" StrokeThickness="0.5" Fill="#FF2D2D64" VerticalAlignment="Center" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0 0 0 0">

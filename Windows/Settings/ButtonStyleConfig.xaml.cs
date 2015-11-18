@@ -48,7 +48,7 @@ namespace HyperSearch.Windows.Settings
 
         private void listview_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            e.Handled = true;
+//?            e.Handled = true;
 
             if (Global.BackKey.Is(e.Key))
             {
@@ -114,6 +114,11 @@ namespace HyperSearch.Windows.Settings
             {
                 ErrorHandler.HandleException(ex);
             }
+        }
+
+        private void win_Loaded(object sender, RoutedEventArgs e)
+        {
+            listview.Focus();
         }
     }
 

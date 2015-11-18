@@ -63,6 +63,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Attached\ControllerLayout.cs" />
+    <Compile Include="Classes\Alert.cs" />
     <Compile Include="Classes\AnimationExtensions.cs" />
     <Compile Include="Classes\CanvasEx.cs" />
     <Compile Include="Classes\HyperSearchSettings.cs" />
@@ -104,6 +105,18 @@
     <Compile Include="ShaderEffects\Saturation.cs" />
     <Compile Include="Classes\Util.cs" />
     <Compile Include="Classes\WheelSettings.cs" />
+    <Compile Include="Windows\Common\AlertWin.xaml.cs">
+      <DependentUpon>AlertWin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Common\CaptureKeyPressWin.xaml.cs">
+      <DependentUpon>CaptureKeyPressWin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Common\PromptWin.xaml.cs">
+      <DependentUpon>PromptWin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Common\TextInputWin.xaml.cs">
+      <DependentUpon>TextInputWin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\GameSearchWindow.xaml.cs">
       <DependentUpon>GameSearchWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -118,17 +131,24 @@
       <DependentUpon>ControllerLayoutWin.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windows\Settings\ISettingsControl.cs" />
-    <Compile Include="Windows\Settings\MultiOption.xaml.cs">
+    <Compile Include="Windows\Settings\Controls\ISettingsControl.cs" />
+    <Compile Include="Windows\Settings\Controls\MultiOption.xaml.cs">
       <DependentUpon>MultiOption.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\MainSettings.xaml.cs">
+      <DependentUpon>MainSettings.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windows\Settings\MultiOptionSelector.xaml.cs">
       <DependentUpon>MultiOptionSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Settings\SettingsDataTemplateSelector.cs" />
+    <Compile Include="Windows\Settings\SettingSectionAttribute.cs" />
     <Compile Include="Windows\Settings\SettingsListViewItem.cs" />
-    <Compile Include="Windows\Settings\Slider.xaml.cs">
+    <Compile Include="Windows\Settings\Controls\Slider.xaml.cs">
       <DependentUpon>Slider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Settings\Controls\TrueFalse.cs" />
     <Compile Include="Windows\VideoPopupWin.xaml.cs">
       <DependentUpon>VideoPopupWin.xaml</DependentUpon>
     </Compile>
@@ -167,6 +187,22 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Include="Windows\Common\AlertWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Common\CaptureKeyPressWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Common\PromptWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Common\TextInputWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\GameSearchWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -183,7 +219,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Settings\MultiOption.xaml">
+    <Page Include="Windows\Settings\Controls\MultiOption.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\MainSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -191,7 +231,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Settings\Slider.xaml">
+    <Page Include="Windows\Settings\Controls\Slider.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -236,6 +276,10 @@
     <Resource Include="ShaderEffects\Saturation.ps" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Icons\Exclamation.png" />
+    <Resource Include="Resources\Icons\Info.png" />
+    <Resource Include="Resources\Icons\Symbol Check.png" />
+    <Resource Include="Resources\Icons\Symbol Error.png" />
     <Content Include="ShaderEffects\HueShiftEffect.fx" />
     <Content Include="ShaderEffects\MonochromeEffect.fx" />
     <Content Include="ShaderEffects\Saturation.fx" />

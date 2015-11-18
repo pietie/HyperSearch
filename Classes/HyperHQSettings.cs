@@ -1,4 +1,5 @@
 ﻿using Gajatko.IniFiles;
+using HyperSearch.Windows.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,66 +8,6 @@ using System.Windows.Input;
 
 namespace HyperSearch
 {
-    public enum SettingsType
-    {
-        Ignore,
-        TrueFalse,
-        MultiOption,
-        Slider,
-        FolderPath,
-        FilePath,
-        Action
-    }
-
-    public enum SettingActionType
-    {
-        None,
-        AddNewProfile,
-        EditProfile,
-        ClearSearchCache,
-        ConfigureButtonLayout,
-        SetKey
-
-    }
-
-
-    [System.AttributeUsage(System.AttributeTargets.Property | System.AttributeTargets.Class)]
-    public class SettingSectionAttribute : Attribute
-    {
-        public SettingSectionAttribute() { }
-
-        public SettingSectionAttribute(string name)
-        {
-            this.Name = name;
-        }
-        public string Name { get; set; }
-    }
-
-    [System.AttributeUsage(System.AttributeTargets.Property)]
-    public class SettingTypeAttribute : Attribute
-    {
-        public SettingsType Type { get; set; }
-
-        public string Title { get; set; }
-        public string Description { get; set; }
-
-        public string MutliValueCsv { get; set; }
-
-        public string ActionTitle { get; set; }
-
-        public SettingActionType ActionType { get; set; }
-    }
-
-
-    [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class SettingsSectionOrderByAttribute : Attribute
-    {
-        public string SectionNameCsv { get; set; }
-        public SettingsSectionOrderByAttribute(string sectionCsv)
-        {
-            SectionNameCsv = sectionCsv;
-        }
-    }
 
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public class IniHeaderAttribute : Attribute
@@ -186,7 +127,7 @@ namespace HyperSearch
                     }
                     catch (Exception ex)
                     {
-                        throw;
+                        ErrorHandler.HandleException(ex);
                     }
 
                     //iniField.Name
@@ -804,6 +745,11 @@ namespace HyperSearch
             public void AddKey(Key k)
             {
                 _keyList.Add(k);
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();  
             }
 
             public override bool Equals(object obj)

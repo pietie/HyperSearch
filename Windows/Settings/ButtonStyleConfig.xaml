@@ -11,9 +11,11 @@
         Focusable="True"
         Style="{DynamicResource DialogWindow}"
         WindowStartupLocation="CenterOwner"
-        Title="Button styles" Height="480" Width="800" x:Name="win">
+        Title="Button styles" Height="480" Width="800" x:Name="win"
+        Loaded="win_Loaded"
+        >
     <Window.Resources>
-        <conv:DoubleOffsetConverter x:Key="reduceSliderWidth" Offset="-130"/>
+        <conv:DoubleOffsetConverter x:Key="reduceSliderWidth" Offset="-140"/>
     </Window.Resources>
     <Border CornerRadius="0" Style="{DynamicResource WindowBorder}">
         <Grid>

@@ -7,9 +7,10 @@
         xmlns:set="clr-namespace:HyperSearch.Windows.Settings"
         mc:Ignorable="d"
         Title="Settings" Height="580" Width="700"
-        Style="{DynamicResource DialogWindow}"
+        Style="{DynamicResource DialogWindow}"     
         Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" 
         >
+    
     <Window.Resources>
         <!-- This data template is used by MultiOption popup to display available button layout templates -->
         <DataTemplate x:Key="ButtonLayoutSelectorListViewItemDataTemplate">
@@ -69,27 +70,27 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
+           
             <ctrl:ListViewHSC x:Name="listView" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" Grid.Row="0" KeyUp="listView_KeyUp" >
-
-                <ContentControl Template="{DynamicResource SettingsListViewItemTemplate}" DataContext="{DynamicResource dataItem}">
+                <ContentControl  Template="{DynamicResource SettingsListViewItemTemplate}" DataContext="{DynamicResource dataItem}">
                     <ContentControl.Resources>
                         <set:SettingsListViewItem x:Key="dataItem" Title="Layout template" Description="Choose your button layout from a set of predefined templates." />
                     </ContentControl.Resources>
-                    <set:MultiOption x:Name="layoutTemplate" Value="template 123"/>
+                    <set:MultiOption x:Name="layoutTemplate"/>
                 </ContentControl>
 
                 <ContentControl Template="{DynamicResource SettingsListViewItemTemplate}" DataContext="{DynamicResource dataItem}">
                     <ContentControl.Resources>
                         <set:SettingsListViewItem x:Key="dataItem" Title="Configure bindings" Description="Bind keys to layout buttons" />
                     </ContentControl.Resources>
-                    <set:MultiOption x:Name="configureBindings"/>
+                    <set:MultiOption x:Name="configureBindings" Value="(set bindings)"/>
                 </ContentControl>
 
                 <ContentControl Template="{DynamicResource SettingsListViewItemTemplate}" DataContext="{DynamicResource dataItem}">
                     <ContentControl.Resources>
                         <set:SettingsListViewItem x:Key="dataItem" Title="Change button styles" Description="Customise each button's appearance." />
                     </ContentControl.Resources>
-                    <set:MultiOption x:Name="configureStyles" Value="template 123"/>
+                    <set:MultiOption x:Name="configureStyles" Value="(set styles)"/>
                 </ContentControl>
 
              

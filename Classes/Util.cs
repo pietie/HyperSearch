@@ -307,6 +307,13 @@ namespace HyperSearch
 
             if (zIndex.HasValue) Panel.SetZIndex(child, zIndex.Value);
         }
+
+        public static string ToStringSafe(this object o)
+        {
+            if (o == null) return null;
+
+            return o.ToString();
+        }
     }
 
     public class AnimationKeyFrame : EasingDoubleKeyFrame

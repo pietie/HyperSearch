@@ -402,9 +402,7 @@ namespace HyperSearch
 
                 if (wParam == (IntPtr)WM_KEYDOWN)
                 {
-                    //var vk = (System.Windows.Forms.Keys)vkCode;
                     var vk = KeyInterop.KeyFromVirtualKey(vkCode);
-
                     var triggerKV = TriggerKeyConfig.FirstOrDefault(kv => kv.Key.Is(vk));
 
                     if (triggerKV.Key != null)

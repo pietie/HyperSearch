@@ -64,7 +64,92 @@
         </Grid>
     </ControlTemplate>
 
-    
+
+    <!--True/False setting control -->
+    <Style x:Key="FlipSwitchCheckBoxStyle" TargetType="{x:Type CheckBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Border BorderThickness="2" Height="50" Canvas.Left="98" Canvas.Top="38" CornerRadius="6" BorderBrush="#FFA4A4A4">
+                        <Border.Resources>
+                            <Style x:Key="ThumbStyle" TargetType="Border">
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="Width" Value="60"/>
+                                <Setter Property="Height" Value="46"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="CornerRadius" Value="4"/>
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="White" Offset="0"/>
+                                            <GradientStop Color="#FFA5E202" Offset="0.97"/>
+                                            <GradientStop Color="#FFA5E202" Offset="0.047"/>
+                                            <GradientStop Color="#FF648900" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}" Value="False">
+                                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                    <GradientStop Color="#FFA3AECD" Offset="0"/>
+                                                    <GradientStop Color="#FF50586E" Offset="0.97"/>
+                                                    <GradientStop Color="#FF50586E" Offset="0.047"/>
+                                                    <GradientStop Color="#FF3C4251" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+
+                            <Style x:Key="ThumbGrip" TargetType="Border">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="Width" Value="6"/>
+                                <Setter Property="Height" Value="30"/>
+                                <Setter Property="CornerRadius" Value="2"/>
+                                <Setter Property="Background" Value="#FFB3FF9D"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}" Value="False">
+                                        <Setter Property="Width" Value="20"/>
+                                        <Setter Property="Height" Value="20"/>
+                                        <Setter Property="CornerRadius" Value="1000"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderBrush" Value="Gray"/>
+                                        <Setter Property="BorderThickness" Value="3"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+
+
+
+                        </Border.Resources>
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF2C2C2C" Offset="0"/>
+                                <GradientStop Color="#FF474747" Offset="1"/>
+                                <GradientStop Color="#FF474747" Offset="0.121"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border Style="{StaticResource ThumbStyle}">
+
+
+                            <Border Style="{StaticResource ThumbGrip}"  >
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0.5" BlurRadius="3"/>
+                                </Border.Effect>
+                            </Border>
+
+                        </Border>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <!--Generic layout used by each "type" of Setting, i.e. layout with Title + Subtitle + specific value type control -->
     <ControlTemplate x:Key="SettingsListViewItemTemplate" TargetType="ContentControl">

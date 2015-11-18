@@ -187,10 +187,12 @@ namespace HyperSearch.Windows.Settings
         {
             try
             {
-                listView.SelectedIndex = 0;
-                listView.Focus();
-                Keyboard.Focus(listView);
                 LoadTemplates();
+
+                listView.SelectedIndex = 0;
+                Keyboard.Focus((listView.SelectedItem as ContentControl));
+
+                layoutTemplate.Value = "wtf!!";
             }
             catch (Exception ex)
             {
@@ -241,8 +243,7 @@ namespace HyperSearch.Windows.Settings
 
                 this.SelectedLayoutDefinition = def;
                                 
-                SettingsListViewItem item = (listView.Items[0] as ContentControl).DataContext as SettingsListViewItem;
-                item.Value = def.Name;
+                layoutTemplate.Value = def.Name;
 
                 ////ControllerLayoutDefinition def = (ControllerLayoutDefinition)sel.SelectedItem;
                 //////!HSCSettings.Instance().P1KeyboardControlsSection.ButtonLayoutTemplateFilename = def.Name; // TODO: Filename!!!!

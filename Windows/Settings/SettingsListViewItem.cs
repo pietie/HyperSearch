@@ -16,8 +16,7 @@ namespace HyperSearch.Windows.Settings
             set { SetValue(ValueProperty, value); }
         }
 
-        public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof(string), typeof(SettingsListViewItem), new PropertyMetadata(null, OnValueChanged));
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(string), typeof(SettingsListViewItem), new PropertyMetadata(null, OnValueChanged));
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -30,8 +29,6 @@ namespace HyperSearch.Windows.Settings
                     var setMethod = item.Property.GetSetMethod();
 
                     setMethod.Invoke(item.ParentObject, new object[] { e.NewValue as string });
-
-
                 }
             }
         }
@@ -40,7 +37,6 @@ namespace HyperSearch.Windows.Settings
         public System.Reflection.PropertyInfo Property { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        //public string Value { get; set; }
 
         public SettingTypeAttribute SettingType { get; set; }
 

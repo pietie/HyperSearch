@@ -1,0 +1,21 @@
+﻿<Window x:Class="HyperSearch.Windows.Common.CaptureKeyPressWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HyperSearch.Windows.Common"
+        mc:Ignorable="d"
+        Title="CaptureKeyPressWin" Height="300" Width="300"
+                WindowStartupLocation="CenterOwner"
+        Style="{DynamicResource DialogWindow}" KeyUp="Window_KeyUp" Loaded="Window_Loaded"
+        >
+    <Border Style="{DynamicResource WindowBorder}">
+        <Grid>
+            <TextBlock FontFamily="Arial" FontSize="22" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                Press key to assign...
+            </TextBlock>
+            <TextBlock Foreground="Silver" FontFamily="Arial" FontSize="16" VerticalAlignment="Bottom" Grid.ColumnSpan="10" HorizontalAlignment="Center"><Run>Auto-cancelling in</Run><Run Text=" "/><Run x:Name="secondsLeftRun"/><Run Text=" "/><Run>second(s)...</Run></TextBlock>
+        </Grid>
+
+    </Border>
+</Window>

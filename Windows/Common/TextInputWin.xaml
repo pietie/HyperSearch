@@ -1,0 +1,45 @@
+﻿<Window x:Class="HyperSearch.Windows.Common.TextInputWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HyperSearch.Windows.Common"
+        mc:Ignorable="d"
+        Title="TextInputWin" Height="300" Width="300"
+                WindowStartupLocation="CenterOwner"
+        Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"
+        Style="{DynamicResource DialogWindow}"
+        >
+    <Border x:Name="mainContainer" Style="{DynamicResource WindowBorder}" >
+
+        <Grid x:Name="mainGrid">
+            <Grid.Resources>
+                <VisualBrush x:Key="LoginHint" Stretch="None" AlignmentX="Left" AlignmentY="Top" >
+                    <VisualBrush.Transform>
+                        <TranslateTransform X="5" Y="7" />
+                    </VisualBrush.Transform>
+                    <VisualBrush.Visual>
+                        <Grid HorizontalAlignment="Left">
+                            <TextBlock FontFamily="Arial"  FontSize="16"   FontWeight="Normal" HorizontalAlignment="Left" 
+                      VerticalAlignment="Center" Foreground="Silver" 
+                      FontStyle="Italic" Opacity="1"  Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}, Mode=OneWay, Path=Tag}"/>
+                        </Grid>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBox x:Name="txt" Focusable="False" FontFamily="Arial" FontSize="20" Margin="10" FontWeight="Bold" Style="{DynamicResource WatermarkTextBox}" VerticalContentAlignment="Center"/>
+
+            <Border x:Name="container" Grid.Row="1" Padding="10">
+
+
+            </Border>
+
+        </Grid>
+    </Border>
+</Window>
