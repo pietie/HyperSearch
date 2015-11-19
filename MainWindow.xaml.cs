@@ -43,6 +43,14 @@ namespace HyperSearch
 
             try
             {
+                //var json = "{\"General\":{\"HyperSpinPath\":null,\"RocketLauncherExePath\":null,\"KeyboardType\":null,\"CabMode\":null,\"HideMouseCursor\":null,\"StandAloneMode\":null},\"Input\":{\"Search\":null,\"Favourites\":null,\"Genre\":null,\"Settings\":null,\"Up\":[66,24],\"Right\":null,\"Down\":null,\"Left\":null,\"Action\":null,\"Back\":null,\"Minimize\":null,\"Exit\":null}}";
+                //var oooo = Newtonsoft.Json.JsonConvert.DeserializeObject<HyperSearchSettings>(json, new KeyListConverter());
+
+                //oooo.General.KeyboardType = TextInputType.Orb;
+
+                //json = Newtonsoft.Json.JsonConvert.SerializeObject(oooo, new KeyListConverter());
+
+
                 bool createdNew;
 
                 // allow only one instance to run at a time
@@ -322,128 +330,129 @@ namespace HyperSearch
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
-              
-      
-            try
-            {
-                var triggerKey = (Key)sender;
-
-                if (_settingsTriggerKey != null && _settingsTriggerKey.Is(triggerKey))
-                {
-                 //   Dispatcher.BeginInvoke(new Action(()=>
-                  //  {
-                        this.Show();
-                        settingsButton_Click(sender, null);
-                   //// }));
-
-                    return;
-                }
-
-                RECT? hsWinRect = null;
-                IntPtr? hsWinHwnd = null;
-
-                var standaloneMode = Convert.ToBoolean(ConfigurationManager.AppSettings["StandaloneMode"]);
-
-                if (!standaloneMode)
-                {
-                    var procs = Process.GetProcessesByName("HyperSpin");
-
-                    if (procs.Length == 0)
-                    {
-                        Log("ERROR! Hyperspin process not found!");
-                        return;
-                    }
-
-                    if (procs.Length > 1)
-                    {
-                        Log("WARNING! More than one Hyperspin process found. Make sure there is only one instance at a time.");
-                    }
-
-                    var hsProcess = procs[0];
-                    var allWindows = GetWindows();
-
-
-                    int pid;
-
-                    // attempt to find the HS window
-                    foreach (var c in allWindows)
-                    {
-                        IntPtr hwnd = (IntPtr)c;
-
-                        GetWindowThreadProcessId(hwnd, out pid);
-
-                        if (pid == hsProcess.Id)
-                        {
-                            RECT winRC;
-                            GetWindowRect(hwnd, out winRC);
-
-                            StringBuilder title = new StringBuilder(50);
-                            GetWindowText(hwnd, title, 50);
-
-                            if (title.ToString().ToLower() == "hyperspin" && winRC.Right - winRC.Left > 0)
-                            {
-                                hsWinRect = winRC;
-                                hsWinHwnd = hwnd;
-                                _lastHyperspinRect = winRC;
-                                _lastHyperspinHwnd = hwnd.ToInt32();
-                                break;// looks like we found the HS window
-                            }
-                        }
-                    }
-
-                    if (!hsWinRect.HasValue)
-                    {
-                        Log("ERROR! Failed to find Hyperspin window.");
-                        return;
-                    }
-
-                    var fgw = GetForegroundWindow();
-
-                    if (fgw != hsWinHwnd.Value)
-                    {
-                        Log("TriggerKey fired but HS is not the active window.");
-                        return;
-                    }
-                }
-                else
-                {
-                    int w = Convert.ToInt32(ConfigurationManager.AppSettings["StandaloneWidth"]);
-                    int h = Convert.ToInt32(ConfigurationManager.AppSettings["StandaloneHeight"]);
-
-                    int x = (int)((System.Windows.SystemParameters.PrimaryScreenWidth / 2.0) - ((double)w / 2.0));
-                    int y = (int)((System.Windows.SystemParameters.PrimaryScreenHeight / 2.0) - ((double)h / 2.0));
-
-                    hsWinRect = new RECT() { Left = x, Top = y, Right = x + w, Bottom = y + h };
-                }
+                // triggers are disabled while the settings window is open
+                if (Windows.Settings.MainSettings.IsSettingsOpen) return; 
 
                 try
                 {
-                    if (System.IO.File.Exists("notify.wav"))
+                    var triggerKey = (Key)sender;
+
+                    if (_settingsTriggerKey != null && _settingsTriggerKey.Is(triggerKey))
                     {
-                        System.Media.SoundPlayer sp = new System.Media.SoundPlayer("notify.wav");
+                        //   Dispatcher.BeginInvoke(new Action(()=>
+                        //  {
+                        this.Show();
+                        settingsButton_Click(sender, null);
+                        //// }));
 
-                        sp.Play();
+                        return;
                     }
+
+                    RECT? hsWinRect = null;
+                    IntPtr? hsWinHwnd = null;
+
+                    var standaloneMode = Convert.ToBoolean(ConfigurationManager.AppSettings["StandaloneMode"]);
+
+                    if (!standaloneMode)
+                    {
+                        var procs = Process.GetProcessesByName("HyperSpin");
+
+                        if (procs.Length == 0)
+                        {
+                            Log("ERROR! Hyperspin process not found!");
+                            return;
+                        }
+
+                        if (procs.Length > 1)
+                        {
+                            Log("WARNING! More than one Hyperspin process found. Make sure there is only one instance at a time.");
+                        }
+
+                        var hsProcess = procs[0];
+                        var allWindows = GetWindows();
+
+
+                        int pid;
+
+                        // attempt to find the HS window
+                        foreach (var c in allWindows)
+                        {
+                            IntPtr hwnd = (IntPtr)c;
+
+                            GetWindowThreadProcessId(hwnd, out pid);
+
+                            if (pid == hsProcess.Id)
+                            {
+                                RECT winRC;
+                                GetWindowRect(hwnd, out winRC);
+
+                                StringBuilder title = new StringBuilder(50);
+                                GetWindowText(hwnd, title, 50);
+
+                                if (title.ToString().ToLower() == "hyperspin" && winRC.Right - winRC.Left > 0)
+                                {
+                                    hsWinRect = winRC;
+                                    hsWinHwnd = hwnd;
+                                    _lastHyperspinRect = winRC;
+                                    _lastHyperspinHwnd = hwnd.ToInt32();
+                                    break;// looks like we found the HS window
+                                }
+                            }
+                        }
+
+                        if (!hsWinRect.HasValue)
+                        {
+                            Log("ERROR! Failed to find Hyperspin window.");
+                            return;
+                        }
+
+                        var fgw = GetForegroundWindow();
+
+                        if (fgw != hsWinHwnd.Value)
+                        {
+                            Log("TriggerKey fired but HS is not the active window.");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        int w = Convert.ToInt32(ConfigurationManager.AppSettings["StandaloneWidth"]);
+                        int h = Convert.ToInt32(ConfigurationManager.AppSettings["StandaloneHeight"]);
+
+                        int x = (int)((System.Windows.SystemParameters.PrimaryScreenWidth / 2.0) - ((double)w / 2.0));
+                        int y = (int)((System.Windows.SystemParameters.PrimaryScreenHeight / 2.0) - ((double)h / 2.0));
+
+                        hsWinRect = new RECT() { Left = x, Top = y, Right = x + w, Bottom = y + h };
+                    }
+
+                    try
+                    {
+                        if (System.IO.File.Exists("notify.wav"))
+                        {
+                            System.Media.SoundPlayer sp = new System.Media.SoundPlayer("notify.wav");
+
+                            sp.Play();
+                        }
+                    }
+                    catch (Exception ee)
+                    {
+                        Log(ee.ToString());
+                    }
+
+                    HyperSearch.Windows.GameSearchWindow.SearchList searchList = Windows.GameSearchWindow.SearchList.Normal;
+
+                    if (_searchTriggerKey != null && _searchTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Normal;
+                    else if (_favouritesTriggerKey != null && _favouritesTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Favourites;
+                    else if (_genreTriggerKey != null && _genreTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Genre;
+
+                    Log("Using list: {0}", searchList);
+
+                    ShowGameSearchWindow(hsWinRect, searchList);
                 }
-                catch(Exception ee)
+                catch (Exception ex)
                 {
-                    Log(ee.ToString());
+                    Log(ex.ToString());
                 }
-
-                HyperSearch.Windows.GameSearchWindow.SearchList searchList = Windows.GameSearchWindow.SearchList.Normal;
-
-                if (_searchTriggerKey != null && _searchTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Normal;
-                else if (_favouritesTriggerKey != null && _favouritesTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Favourites;
-                else if (_genreTriggerKey != null && _genreTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Genre;
-
-                Log("Using list: {0}", searchList);
-
-                ShowGameSearchWindow(hsWinRect, searchList);
-            }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-            }
             }));
 
         }
@@ -639,29 +648,6 @@ namespace HyperSearch
         }
     }
 
-    public class KeyList
-    {
-        private List<System.Windows.Input.Key> Keys;
-
-        public KeyList(params Key[] keys)
-        {
-            Keys = new List<System.Windows.Input.Key>();
-
-            if (keys != null) Keys.AddRange(keys);
-        }
-
-        public bool Is(System.Windows.Input.Key key)
-        {
-            if (this.Keys == null) return false;
-
-            return Keys.Contains(key);
-        }
-
-        public void Add(Key key)
-        {
-            if (!this.Keys.Contains(key))
-                this.Keys.Add(key);
-        }
-    }
+   
 
 }

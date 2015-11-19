@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="CaptureKeyPressWin" Height="300" Width="300"
                 WindowStartupLocation="CenterOwner"
-        Style="{DynamicResource DialogWindow}" KeyUp="Window_KeyUp" Loaded="Window_Loaded"
+        Style="{DynamicResource DialogWindow}" KeyUp="Window_KeyUp" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"
         >
     <Border Style="{DynamicResource WindowBorder}">
         <Grid>

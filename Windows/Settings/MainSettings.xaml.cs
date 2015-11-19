@@ -16,6 +16,8 @@ namespace HyperSearch.Windows.Settings
     /// </summary>
     public partial class MainSettings : Window
     {
+        public static bool IsSettingsOpen = false;
+
         public MainSettings()
         {
             InitializeComponent();
@@ -31,10 +33,13 @@ namespace HyperSearch.Windows.Settings
             public SettingSectionAttribute Section { get; set; }
             public SettingTypeAttribute SettingsType { get; set; }
         }
-         private void Window_Loaded(object sender, RoutedEventArgs e)
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
+                IsSettingsOpen = true;
+
                 var settings = HyperSearchSettings.Instance();
                 
 
@@ -78,6 +83,12 @@ namespace HyperSearch.Windows.Settings
                 ErrorHandler.HandleException(ex);
             }
 
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            IsSettingsOpen = false;
+            HyperSearchSettings.Instance().Save();
         }
 
         private void listView_KeyUp(object sender, KeyEventArgs e)
@@ -197,7 +208,7 @@ namespace HyperSearch.Windows.Settings
 
                 if (Win.Modal(controllerLayoutWin, this))
                 {
-
+                    //controllerLayoutWin.SelectedLayoutDefinition
                 }
             }
             else if (attrib.ActionType == SettingActionType.SetKeyMultiple)
@@ -206,12 +217,21 @@ namespace HyperSearch.Windows.Settings
 
                 if (Win.Modal(win, this))
                 {
-                    var cur = item.Value;
+                    var keyList = item.Property.GetValue(item.ParentObject, null) as KeyList;
 
-                    if (cur == null) cur = win.LastKeyPressed.Value.ToString();
-                    else cur += "," + win.LastKeyPressed.Value.ToString();
+                    if (win.LastKeyPressed.HasValue)
+                    {
+                        if (keyList == null)
+                        {
+                            keyList = new KeyList();
+                            item.Property.SetValue(item.ParentObject, keyList, null);
+                        }
 
-                    item.Value = cur;
+                        keyList.Add(win.LastKeyPressed.Value);
+
+                        item.Value = keyList.ToString();
+                        //RefreshSettingsListView();
+                    }
                 }
             }
         }
@@ -342,31 +362,8 @@ namespace HyperSearch.Windows.Settings
                                     ParentObject = p.ParentObject
                                 }).ToList();
 
-            ////int? profileStartIx = null;
-            ////if (sectionKey.EqualsCI("Profiles"))
-            ////{// cheat in profile list because we are restricted by stupid descisions around the settings system :-/
-            ////    profileStartIx = settingItems.Count;
-
-            ////    foreach (var p in HSCSettings.Instance().ProfilesSection.ProfileList)
-            ////    {// add a blank place holder for each configured Profile
-            ////        settingItems.Add(new SettingsListViewItem());
-            ////    }
-            ////}
-
             listView.ItemsSource = settingItems;
-
-            ////if (sectionKey.EqualsCI("Profiles") && profileStartIx.HasValue)
-            ////{// cheat in profile list because we are restricted by stupid descisions around the settings system :-/
-            ////    var profileList = HSCSettings.Instance().ProfilesSection.ProfileList;
-
-            ////    for (int i = 0; i < profileList.Count; i++)
-            ////    {
-            ////        settingItems[profileStartIx.Value + i].Title = profileList[i].Name;
-            ////        settingItems[profileStartIx.Value + i].Description = "Press action key to delete profile.";
-            ////        settingItems[profileStartIx.Value + i].SettingType = new SettingTypeAttribute() { Type = SettingsType.Action, ActionType = SettingActionType.EditProfile };
-            ////    }
-            ////}
-        }
+       }
 
         private void listView_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -398,8 +395,6 @@ namespace HyperSearch.Windows.Settings
             sectionListView.Opacity = 1.0;
         }
 
-
-
-
+      
     }
 }

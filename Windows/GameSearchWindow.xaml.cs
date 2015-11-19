@@ -42,13 +42,7 @@ namespace HyperSearch.Windows
             Results
         }
 
-        public enum TextInputType
-        {
-            AtoZ,
-            Qwerty,
-            Azerty,
-            Orb
-        }
+  
 
         public enum SearchList
         {
@@ -1005,11 +999,7 @@ namespace HyperSearch.Windows
             }
         }
 
-        public enum SearchMode
-        {
-            Contains,
-            StartsWith
-        }
+      
 
 
         public class PerformSearchTask
@@ -1313,7 +1303,7 @@ namespace HyperSearch.Windows
                             throw new Exception("Unsupported SearchList type: " + this.SearchList.ToString());
                     }
 
-                    if (this.SearchMode == GameSearchWindow.SearchMode.Contains)
+                    if (this.SearchMode == SearchMode.Contains)
                     {
                         matches = (from g in sourceDB
                                    where g != null

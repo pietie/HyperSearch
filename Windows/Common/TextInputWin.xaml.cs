@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyperSearch.Classes;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,13 +15,6 @@ using System.Windows.Shapes;
 
 namespace HyperSearch.Windows.Common
 {
-    public enum TextInputType
-    {
-        Orbs,
-        AtoZ,
-        PhysicalKeyboard
-    }
-
     public partial class TextInputWin : Window
     {
         public string Watermark
@@ -37,14 +31,14 @@ namespace HyperSearch.Windows.Common
         {
             InitializeComponent();
 
-            this.InputType = TextInputType.PhysicalKeyboard;
+            this.InputType = TextInputType.AtoZ;//TextInputType.PhysicalKeyboard;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (this.InputType == TextInputType.Orbs)
+                if (this.InputType == TextInputType.Orb)
                 {
                     LoadOrbControl();
                 }

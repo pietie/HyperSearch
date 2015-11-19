@@ -11,7 +11,7 @@
         Title="Settings" Height="768" Width="1024"
         Style="{DynamicResource DialogWindow}"  
         Loaded="Window_Loaded"
-        
+        Closed="Window_Closed"
         >
     <Window.Resources>
         <conv:DoubleOffsetConverter x:Key="listViewWidthConverter" Offset="-10"/>
@@ -50,7 +50,7 @@
 
         <DataTemplate x:Key="BooleanDataTemplate">
             <ContentControl Template="{DynamicResource SettingsListViewItemTemplate}">
-                <set:TrueFalse Width="150" Style="{DynamicResource FlipSwitchCheckBoxStyle}"/>
+                <set:TrueFalse Width="150" IsChecked="{Binding Value, Mode=TwoWay}" Style="{DynamicResource FlipSwitchCheckBoxStyle}"/>
             </ContentControl>
 
         </DataTemplate>

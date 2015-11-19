@@ -191,8 +191,6 @@ namespace HyperSearch.Windows.Settings
 
                 listView.SelectedIndex = 0;
                 Keyboard.Focus((listView.SelectedItem as ContentControl));
-
-                layoutTemplate.Value = "wtf!!";
             }
             catch (Exception ex)
             {

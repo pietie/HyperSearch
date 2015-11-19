@@ -35,7 +35,6 @@ namespace HyperSearch.Windows.Settings
                            Position = p
                        }).ToList();
 
-            //listview.Items.Clear();
 
             foreach (var item in lst) listview.Items.Add(item);
 
