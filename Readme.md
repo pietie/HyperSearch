@@ -15,7 +15,7 @@ All config is stored in **Settings.json**.
 
 Most of the settings can be configured using the built-in UI but some require manually changing the settings in the file.
 
-```json
+```javascript
 {
     // The following controls how long (in milliseconds) a certain trigger key needs to be held down before it triggers. Set to 0 to trigger immediately.
     "Input": {
