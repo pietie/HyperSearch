@@ -7,9 +7,26 @@ Development requirements:
 * .NET Framework 4.0
 
 
-### Config
+## Config
 
-Refer to **Hyperspin.exe.config** for more detail on certain keys.
+All config is stored in **Settings.json**.
+
+#### Non-UI supported settings 
+
+Most of the settings can be configured using the built-in UI but some require manually changing the settings in the file.
+
+```json
+{
+"Input": {
+    "Triggers": {
+        "SearchTriggerDelayInMilliseconds": 0,
+        "FavouritesTriggerDelayInMilliseconds": 0,
+        "GenreTriggerDelayInMilliseconds": 0,
+        "SettingsTriggerDelayInMilliseconds": 0,
+}
+}
+
+```
 
 #### Input configuration 
 
