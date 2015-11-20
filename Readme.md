@@ -29,9 +29,21 @@ Most of the settings can be configured using the built-in UI but some require ma
 
 ```
 
-##### Misc
+```javascript
 
-???
+{
+    "General": {
+        // Controls the width and height of the main HyperSearch windows if Standalone mode is enabled.
+        "StandaloneWidth": 1600,
+        "StandaloneHeight": 900,
+
+        // Controls how long the balloon tooltip is shown for. Set to 0 to disable completely.
+        "BalloonToolTipTimeOutInMilliseconds": 0
+    }
+}
+
+``````
+
 
 #### Input configuration 
 
