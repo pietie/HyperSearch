@@ -23,8 +23,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
-            <GroupBox Height="200" Header="Preview" BorderBrush="Silver" FontSize="16" FontWeight="Bold" FontFamily="Arial" Foreground="#fff" ClipToBounds="False">
+
+            <GroupBox Focusable="False" IsEnabled="False" IsHitTestVisible="False"  Height="200" Header="Preview" BorderBrush="Silver" FontSize="16" FontWeight="Bold" FontFamily="Arial" Foreground="#fff" ClipToBounds="False">
                 <GroupBox.Background>
                     <DrawingBrush Viewport="0,0,3,3" TileMode="Tile" ViewportUnits="Absolute" ViewboxUnits="RelativeToBoundingBox">
                         <DrawingBrush.Drawing>
@@ -42,26 +42,15 @@
                     </DrawingBrush>
                 </GroupBox.Background>
 
-                <Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform">
-                    <ContentPresenter x:Name="cp" />
+                <Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform" Focusable="False" IsHitTestVisible="False" >
+                    <ContentPresenter x:Name="cp" Focusable="False" IsHitTestVisible="False" />
                 </Viewbox>
 
             </GroupBox>
 
       
 
-        <ctrl:ListViewHSC x:Name="listview" Grid.Row="1" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" PreviewKeyDown="listview_PreviewKeyDown" KeyUp="listview_KeyUp" >
-            <!--<ctrl:ListViewHSC.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), 
-            RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
-            ItemWidth="{Binding (ListView.View).ItemWidth, 
-            RelativeSource={RelativeSource AncestorType=ListView}}"
-            MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
-            ItemHeight="{Binding (ListView.View).ItemHeight, 
-            RelativeSource={RelativeSource AncestorType=ListView}}" />
-                </ItemsPanelTemplate>
-            </ctrl:ListViewHSC.ItemsPanel>-->
+        <ctrl:ListViewHSC x:Name="listview" Grid.Row="1" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" PreviewKeyDown="listview_PreviewKeyDown" >
             <ctrl:ListViewHSC.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:ButtonStyleListViewItem}">
                     <Grid Height="90" Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}">
@@ -72,11 +61,16 @@
                       
                         <Control Template="{DynamicResource arcadeRoundPushButton}" Width="70" Height="70">
                             <Control.Effect>
-                                <eff:HueShiftEffect HueShift="{Binding ElementName=slider,Path=Value}"/>
+                                <eff:HueShiftEffect x:Name="hueEff" HueShift="{Binding ElementName=slider,Path=Value}"/>
                             </Control.Effect>
                         </Control>
-                        <TextBlock Grid.Column="0" FontWeight="Bold" Foreground="White" FontSize="16" Text="{Binding Position}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <local:Slider x:Name="slider" ValueChanged="hueshift_ValueChanged" Tag="{Binding Button}"  Grid.Column="1" MaxValue="1.0" LargeChange="0.1" SmallChange="0.01" Focusable="True" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 0 0" Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource reduceSliderWidth}, Path=ActualWidth}" />
+                        <TextBlock Grid.Column="0" FontWeight="Bold" Foreground="White" FontSize="16" DataContext="{Binding Button}" Text="{Binding Position}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <local:Slider x:Name="slider" ValueChanged="hueshift_ValueChanged" 
+                                      DataContext="{Binding Button}"
+                                      Value="{Binding Path=HueOffset, Mode=TwoWay}"
+                                      Grid.Column="1" MaxValue="1.0" LargeChange="0.1" SmallChange="0.01" Focusable="True" 
+                                      VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 0 0" 
+                                      Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource reduceSliderWidth}, Path=ActualWidth}" />
 
                         
                     </Grid>

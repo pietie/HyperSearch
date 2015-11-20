@@ -10,6 +10,7 @@ using HscLib;
 using System.Windows.Media;
 using HyperSearch;
 using System.Windows.Input;
+using HyperSearch.Classes;
 
 namespace HscLib.Controls
 {
@@ -161,27 +162,27 @@ namespace HscLib.Controls
                 e.Handled = true;
                 var elementWithFocus = Keyboard.FocusedElement as UIElement;
 
-                if (Global.DownKey.Is(e.Key))
+                if (HyperSearchSettings.Instance().Input.Down.Is(e.Key))
                 {
                         elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
                     return;
                 }
-                else if (Global.UpKey.Is(e.Key))
+                else if (HyperSearchSettings.Instance().Input.Up.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
                     return;
                 }
-                else if (Global.LeftKey.Is(e.Key))
+                else if (HyperSearchSettings.Instance().Input.Left.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
                     return;
                 }
-                else if (Global.RightKey.Is(e.Key))
+                else if (HyperSearchSettings.Instance().Input.Right.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
                     return;
                 }
-                else if (Global.BackKey.Is(e.Key))
+                else if (HyperSearchSettings.Instance().Input.Back.Is(e.Key))
                 {
                     
                 }

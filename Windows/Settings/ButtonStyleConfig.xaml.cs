@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyperSearch.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,41 +26,67 @@ namespace HyperSearch.Windows.Settings
 
         public void SetLayoutDefinition(ControllerLayoutDefinition layoutDef)
         {
-            var positions = layoutDef.ButtonPositionMapping.Keys.OrderBy(k => k);
-
-
-            var lst = (from p in positions
+            var lst = (from b in layoutDef.Buttons
+                       orderby b.Position
                        select new ButtonStyleListViewItem()
                        {
-                           Button = layoutDef.ButtonPositionMapping[p],
-                           Position = p
+                           Button = b
                        }).ToList();
 
 
-            foreach (var item in lst) listview.Items.Add(item);
+            foreach (var item in lst)
+            {
+                item.Button.ButtonControl.Tag = item; // this is so backwards :(
+                listview.Items.Add(item);
+            }
 
-            if (listview.Items.Count > 0) listview.SelectedIndex = 0;
-
-            listview.Focus();
-           
+            layoutDef.TopLevelPanel.Focusable = false;
+            layoutDef.TopLevelPanel.IsHitTestVisible = false;
             cp.Content = layoutDef.TopLevelPanel;
         }
 
         private void listview_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-//?            e.Handled = true;
-
-            if (Global.BackKey.Is(e.Key))
+            var elementWithFocus = Keyboard.FocusedElement as UIElement;
+            DependencyObject listViewItem = null;
+            ISettingsControl ctrl = null;
+            
+            if (listview.SelectedIndex >= 0)
             {
-                this.Close();
+                listViewItem = listview.ItemContainerGenerator.ContainerFromIndex(listview.SelectedIndex);
+                ctrl = FindISettingsControls(listViewItem).FirstOrDefault();
             }
 
+            if (HyperSearchSettings.Instance().Input.Action.Is(e.Key) || HyperSearchSettings.Instance().Input.Exit.Is(e.Key) || HyperSearchSettings.Instance().Input.Back.Is(e.Key))
+            {
+                if (ctrl != null)
+                {
+                    // if the current item is not active and one of the exit keys were pressed
+                    if (!ctrl.IsActive && (HyperSearchSettings.Instance().Input.Exit.Is(e.Key) || HyperSearchSettings.Instance().Input.Back.Is(e.Key)))
+                    {
+                        this.Close();
+                        return;
+                    }
+
+                    ctrl.IsActive = !ctrl.IsActive;
+                }
+            }
+            else if (HyperSearchSettings.Instance().Input.Up.Is(e.Key) && !ctrl.IsActive)
+            {
+                elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+                e.Handled = true;
+            }
+            else if (HyperSearchSettings.Instance().Input.Down.Is(e.Key) && !ctrl.IsActive)
+            {
+                elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                e.Handled = true;
+            }
 
         }
 
         private void listview_KeyUp(object sender, KeyEventArgs e)
         {
-            if (Global.ActionKey.Is(e.Key))
+            if (HyperSearchSettings.Instance().Input.Action.Is(e.Key) || HyperSearchSettings.Instance().Input.Exit.Is(e.Key) || HyperSearchSettings.Instance().Input.Back.Is(e.Key))
             {
                 if (listview.SelectedItem == null) return;
 
@@ -69,14 +96,15 @@ namespace HyperSearch.Windows.Settings
                 
                 if (ctrl != null)
                 {
+                    // if the current item is not active and one of the exit keys were pressed
+                    if (!ctrl.IsActive && (HyperSearchSettings.Instance().Input.Exit.Is(e.Key) || HyperSearchSettings.Instance().Input.Back.Is(e.Key)))
+                    {
+                        this.Close();
+                        return;
+                    }
+
                     ctrl.IsActive = !ctrl.IsActive;
                 }
-                
-                //SettingsListViewItem item = (SettingsListViewItem)listView.SelectedItem;
-                //SettingTypeAttribute attrib = null;
-
-
-                //attrib = item.SettingType;
             }
         }
 
@@ -105,9 +133,12 @@ namespace HyperSearch.Windows.Settings
             try
             {
                 var slider = (Slider)sender;
-                var ctrl = slider.Tag as Control;
+                var buttonConfig = slider.DataContext as ButtonConfig;
 
-                if (ctrl != null) ctrl.Effect = new HscLib.ShaderEffects.HueShiftEffect() { HueShift = slider.Value };
+                if (buttonConfig != null)
+                {
+                    buttonConfig.ButtonControl.Effect = new HscLib.ShaderEffects.HueShiftEffect() { HueShift = slider.Value };
+                }
             }
             catch (Exception ex)
             {
@@ -117,14 +148,17 @@ namespace HyperSearch.Windows.Settings
 
         private void win_Loaded(object sender, RoutedEventArgs e)
         {
-            listview.Focus();
+            if (listview.Items.Count > 0)
+            {
+                listview.SelectedIndex = 0;
+                Util.DelayedFocus(listview);
+            }
         }
     }
 
     public class ButtonStyleListViewItem
     {
-        public Control Button { get; set; }
-        public int Position { get; set; }
+        public ButtonConfig Button { get; set; }
     }
     
 }

@@ -55,11 +55,21 @@
 
             </Grid>
 
-            <TextBlock Style="{StaticResource ActionToActivateStyle}" FontFamily="Arial" FontSize="22" Foreground="#FFEF0000" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" TextWrapping="Wrap">
+            <TextBlock x:Name="mainLabel" Style="{StaticResource ActionToActivateStyle}" FontFamily="Arial" FontSize="22" Foreground="#FFEF0000" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" TextWrapping="Wrap">
                 <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
+                    <DropShadowEffect BlurRadius="3" ShadowDepth="0" Color="White" Direction="0"/>
                 </TextBlock.Effect>
                 Press ACTION to activate</TextBlock>
+            <TextBlock Text="{Binding ElementName=mainLabel, Path=Text}" Style="{StaticResource ActionToActivateStyle}" FontFamily="Arial" FontSize="22" Foreground="#FFEF0000" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" TextWrapping="Wrap">
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="3" ShadowDepth="2" Color="White" Direction="-180"/>
+                </TextBlock.Effect>
+                </TextBlock>
+            <TextBlock Text="{Binding ElementName=mainLabel, Path=Text}" Style="{StaticResource ActionToActivateStyle}" FontFamily="Arial" FontSize="22" Foreground="#FFEF0000" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" TextWrapping="Wrap">
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="3" ShadowDepth="2" Color="White" Direction="-45"/>
+                </TextBlock.Effect>
+              </TextBlock>
         </Grid>
     </Border>
 </UserControl>

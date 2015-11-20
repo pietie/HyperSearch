@@ -84,7 +84,7 @@ namespace HyperSearch.Windows.Settings
             }
 
         }
-
+        
         private void Window_Closed(object sender, EventArgs e)
         {
             IsSettingsOpen = false;
@@ -105,22 +105,16 @@ namespace HyperSearch.Windows.Settings
                     var listViewItem = listView.ItemContainerGenerator.ContainerFromIndex(listView.SelectedIndex);
 
                     var ctrl = FindISettingsControls(listViewItem).FirstOrDefault();
-
+                    
                     SettingsListViewItem item = (SettingsListViewItem)listView.SelectedItem;
-                    SettingTypeAttribute attrib = null;
-
-
-                    attrib = item.SettingType;
-                    //if (item.Property != null)
-                    //{
-                    //    attrib = item.Property.GetCustomAttribute(typeof(SettingTypeAttribute)) as SettingTypeAttribute;
-                    //}
+                    SettingTypeAttribute attrib = item.SettingType;
 
                     if (ctrl != null)
                     {
                         if (ctrl is TrueFalse)
                         {
                             ((TrueFalse)ctrl).IsChecked = !((TrueFalse)ctrl).IsChecked;
+                            item.Property.SetValue(item.ParentObject, ((TrueFalse)ctrl).IsChecked, null);
                         }
                         else if (ctrl is MultiOption)
                         {

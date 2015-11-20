@@ -84,8 +84,9 @@ namespace HyperSearch
 
                 e.Handled = true;
                 var elementWithFocus = Keyboard.FocusedElement as UIElement;
+                var settings = HyperSearchSettings.Instance().Input;
                 
-                if (Global.ActionKey.Is(e.Key))
+                if (settings.Action.Is(e.Key))
                 {
                     if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
                     {
@@ -98,27 +99,27 @@ namespace HyperSearch
                     }
                     return;
                 }
-                else if (Global.UpKey.Is(e.Key))
+                else if (settings.Up.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
                     return;
                 }
-                else if (Global.RightKey.Is(e.Key))
+                else if (settings.Right.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
                     return;
                 }
-                else if (Global.DownKey.Is(e.Key))
+                else if (settings.Down.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
                     return;
                 }
-                else if (Global.LeftKey.Is(e.Key))
+                else if (settings.Left.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
                     return;
                 }
-                else if (Global.BackKey.Is(e.Key))
+                else if (settings.Back.Is(e.Key))
                 {
                     if (string.IsNullOrEmpty(AttachedTextBox.Text))
                     {
@@ -131,7 +132,7 @@ namespace HyperSearch
                 }
 
                 // if not in Cab Mode we'll allow the user to type on his keyboard
-                if (!MainWindow.IsCabModeEnabled)
+                if (!(HyperSearchSettings.Instance().General.CabMode?? false))
                 {
                     if (((int)e.Key >= (int)Key.A && (int)e.Key <= (int)Key.Z)
                       || e.Key == Key.OemMinus
@@ -221,7 +222,7 @@ namespace HyperSearch
 
         protected void RaiseOskKeyPressedEvent(string charRepresentation, OskSpecialKey specialKey)
         {
-            SystemSoundPlayer.Instance().PlaySound(Classes.SystemSound.LetterClick);
+            if (SystemSoundPlayer.IsInitialised) SystemSoundPlayer.Instance().PlaySound(Classes.SystemSound.LetterClick);
 
             if (this.AttachedTextBox != null)
             {

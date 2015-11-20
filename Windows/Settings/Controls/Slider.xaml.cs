@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HyperSearch.Classes;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -100,19 +101,19 @@ namespace HyperSearch.Windows.Settings
                 decimal largeChange = (decimal)this.LargeChange;
                 decimal smallChange = (decimal)this.SmallChange;
 
-                if (Global.UpKey.Is(e.Key))
+                if (HyperSearchSettings.Instance().Input.Up.Is(e.Key))
                 {
                     newValue += largeChange;
                 }
-                else if (Global.DownKey.Is(e.Key))
+                else if (HyperSearchSettings.Instance().Input.Down.Is(e.Key))
                 {
                     newValue -= largeChange;
                 }
-                else if (Global.LeftKey.Is(e.Key))
+                else if (HyperSearchSettings.Instance().Input.Left.Is(e.Key))
                 {
                     newValue -= smallChange;
                 }
-                else if (Global.RightKey.Is(e.Key))
+                else if (HyperSearchSettings.Instance().Input.Right.Is(e.Key))
                 {
                     newValue += smallChange;
                 }

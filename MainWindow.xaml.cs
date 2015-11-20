@@ -1,4 +1,5 @@
 ﻿using HyperSearch.Classes;
+using HyperSearch.Windows.Settings;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,20 +23,12 @@ namespace HyperSearch
         private static Mutex SingleInstance;
 
         public static HyperHQSettings HqSettings;
-        private static bool ShowSystemImagesOnFilter { get; set; }
-        private static bool ShowSystemImagesOnResults { get; set; }
-        private static bool ShowWheelImagesOnResults { get; set; }
-
-        public static bool IsCabModeEnabled { get; private set; }
 
         public static Windows.GameSearchWindow _lastSearchWindow = null;
+        private static HyperSearch.Windows.GameSearchWindow.SearchList? _lastSearchList = null;
+
         public static int? _lastHyperspinHwnd = null;
         public static RECT? _lastHyperspinRect = null;
-
-        private KeyList _searchTriggerKey = null;
-        private KeyList _favouritesTriggerKey = null;
-        private KeyList _genreTriggerKey = null;
-        private KeyList _settingsTriggerKey = null;
 
         public MainWindow()
         {
@@ -43,6 +36,16 @@ namespace HyperSearch
 
             try
             {
+                var Settings = HyperSearchSettings.Instance();
+
+                //Windows.Settings.ButtonConfig bc = new Windows.Settings.ButtonConfig() { Position = 123 };
+
+                //var json = Newtonsoft.Json.JsonConvert.SerializeObject(bc, new Newtonsoft.Json.JsonSerializerSettings()
+                //{
+                //    ContractResolver = new SerializeOnlyTopLevelTypeContractResolver(typeof(ButtonConfig))
+                //});
+
+
                 //var json = "{\"General\":{\"HyperSpinPath\":null,\"RocketLauncherExePath\":null,\"KeyboardType\":null,\"CabMode\":null,\"HideMouseCursor\":null,\"StandAloneMode\":null},\"Input\":{\"Search\":null,\"Favourites\":null,\"Genre\":null,\"Settings\":null,\"Up\":[66,24],\"Right\":null,\"Down\":null,\"Left\":null,\"Action\":null,\"Back\":null,\"Minimize\":null,\"Exit\":null}}";
                 //var oooo = Newtonsoft.Json.JsonConvert.DeserializeObject<HyperSearchSettings>(json, new KeyListConverter());
 
@@ -76,24 +79,17 @@ namespace HyperSearch
                 this.Title = "HyperSearch - " + version + " - " + this.Title ?? "";
 
                 App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-
-                
+               
                 InitSysTray();
 
                 var triggerKeyConfig = new Dictionary<KeyList, int?>();
 
                 // Trigger Keys
                 {
-                    _searchTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Search", Key.F3);
-                    _favouritesTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Favourites", Key.F4);
-                    _genreTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Genre", Key.F5);
-                    _settingsTriggerKey = GetKeyFromAppSetting("Keys.Trigger.Settings", Key.F10);
-
-                    triggerKeyConfig.Add(_searchTriggerKey, ConfigurationManager.AppSettings["SearchTriggerDelayInMilliseconds"].ToIntNullable(0));
-                    triggerKeyConfig.Add(_favouritesTriggerKey, ConfigurationManager.AppSettings["FavouritesTriggerDelayInMilliseconds"].ToIntNullable(0));
-                    triggerKeyConfig.Add(_genreTriggerKey, ConfigurationManager.AppSettings["GenreTriggerDelayInMilliseconds"].ToIntNullable(0));
-                    triggerKeyConfig.Add(_settingsTriggerKey, 0);
-
+                    triggerKeyConfig.Add(HyperSearchSettings.Instance().Input.Triggers.Search, HyperSearchSettings.Instance().Input.Triggers.SearchTriggerDelayInMilliseconds);
+                    triggerKeyConfig.Add(HyperSearchSettings.Instance().Input.Triggers.Favourites, HyperSearchSettings.Instance().Input.Triggers.FavouritesTriggerDelayInMilliseconds);
+                    triggerKeyConfig.Add(HyperSearchSettings.Instance().Input.Triggers.Genre, HyperSearchSettings.Instance().Input.Triggers.GenreTriggerDelayInMilliseconds);
+                    triggerKeyConfig.Add(HyperSearchSettings.Instance().Input.Triggers.Settings, HyperSearchSettings.Instance().Input.Triggers.SettingsTriggerDelayInMilliseconds);
                 }
 
                 KbHook.TriggerKeyConfig = triggerKeyConfig;
@@ -104,10 +100,10 @@ namespace HyperSearch
                 Log("Hook installed succesfully");
 
 
-                var hsPath = ConfigurationManager.AppSettings["HyperspinPath"];
+                var hsPath = Settings.General.HyperSpinPath;
                 Log("Hyperspin path: {0}", hsPath);
 
-                var launcherPath = ConfigurationManager.AppSettings["LauncherPath"];
+                var launcherPath = Settings.General.RocketLauncherExePath;
 
                 if (string.IsNullOrEmpty(launcherPath))
                 {
@@ -129,7 +125,6 @@ namespace HyperSearch
 
 
                     Log("LauncherPath: {0}", launcherPath);
-                    Global.LauncherFullPath = launcherPath;
                 }
 
                 Uri hsPathUriTester;
@@ -143,44 +138,41 @@ namespace HyperSearch
                     hsPath = new Uri(new Uri(System.AppDomain.CurrentDomain.BaseDirectory, UriKind.Absolute), hsPathUriTester.ToString()).LocalPath;
                     Log("Specified HyperSpin path is a relative path, translating to absolute path: {0}", hsPath);
                 }
-
-                Global.HsPath = hsPath;
-
-
-                MainWindow.ShowSystemImagesOnFilter = Convert.ToBoolean(ConfigurationManager.AppSettings["ShowSystemImagesOnFilter"]);
-                MainWindow.ShowSystemImagesOnResults = Convert.ToBoolean(ConfigurationManager.AppSettings["ShowSystemImagesOnResults"]);
-                MainWindow.ShowWheelImagesOnResults = Convert.ToBoolean(ConfigurationManager.AppSettings["ShowWheelImagesOnResults"]);
-
-               
+             
                 var settingsPath = Global.BuildFilePathInHyperspinDir("Settings\\Settings.ini");
                 HqSettings = new HyperHQSettings();
-                HqSettings.InitFromIniFile(settingsPath);
 
-                Log("Hyperspin settings loaded from: {0}", settingsPath);
-                Log("HyperLaunch path: {0}", HqSettings.MainSection.HyperlaunchPath);
-                Log("LEDBlinky path: {0}", HqSettings.LEDBlinkySection.Path);
-
-                if (HqSettings != null && HqSettings.LEDBlinkySection != null && HqSettings.LEDBlinkySection.IsActive && !File.Exists(HqSettings.LEDBlinkySection.Path))
+                if (File.Exists(settingsPath))
                 {
-                    Log("ERROR! LED blinky not found at configured location.");
+                    HqSettings.InitFromIniFile(settingsPath);
+                    Log("Hyperspin settings loaded from: {0}", settingsPath);
+                    Log("HyperLaunch path: {0}", HqSettings.MainSection.HyperlaunchPath);
+                    Log("LEDBlinky path: {0}", HqSettings.LEDBlinkySection.Path);
+
+                    if (HqSettings != null && HqSettings.LEDBlinkySection != null && HqSettings.LEDBlinkySection.IsActive && !File.Exists(HqSettings.LEDBlinkySection.Path))
+                    {
+                        Log("ERROR! LED blinky not found at configured location.");
+                    }
                 }
-
-
-                Uri hlPathUriTester;
-
-                if (!Uri.TryCreate(HqSettings.MainSection.HyperlaunchPath, UriKind.RelativeOrAbsolute, out hlPathUriTester))
+                else
                 {
-                    Log("ERROR: The specified HyperLaunch path is not a valid URI!");
+                    Log("WARNING! HQ Settings file does not exist at: {0}", settingsPath);
                 }
-                else if (!hlPathUriTester.IsAbsoluteUri)
-                {// convert relative Uri to absolute
-                    HqSettings.MainSection.HyperlaunchPath = new Uri(new Uri(System.AppDomain.CurrentDomain.BaseDirectory, UriKind.Absolute), hlPathUriTester.ToString()).LocalPath;
-                    Log("Specified HyperLaunch path is a relative path, translating to absolute path: {0}", HqSettings.MainSection.HyperlaunchPath);
-                }
+                 
+                //Uri hlPathUriTester;
 
-                IsCabModeEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["CabMode"]);
+                //if (!Uri.TryCreate(HqSettings.MainSection.HyperlaunchPath, UriKind.RelativeOrAbsolute, out hlPathUriTester))
+                //{
+                //    Log("ERROR: The specified HyperLaunch path is not a valid URI!");
+                //}
+                //else if (!hlPathUriTester.IsAbsoluteUri)
+                //{// convert relative Uri to absolute
+                //    HqSettings.MainSection.HyperlaunchPath = new Uri(new Uri(System.AppDomain.CurrentDomain.BaseDirectory, UriKind.Absolute), hlPathUriTester.ToString()).LocalPath;
+                //    Log("Specified HyperLaunch path is a relative path, translating to absolute path: {0}", HqSettings.MainSection.HyperlaunchPath);
+                //}
 
-                Log("CabMode: {0}", IsCabModeEnabled);
+
+                Log("CabMode: {0}", Settings.General.CabMode ?? false);
 
                 var altGameWheelSourceFolder = ConfigurationManager.AppSettings["AlternativeGameWheelSourceFolder"];
 
@@ -193,33 +185,6 @@ namespace HyperSearch
                 {
                     Log("AlternativeGameWheelSourceFolder not specified. Defaulting to 'Wheel'.");
                 }
-
-
-                Global.ActionKey = GetKeyFromAppSetting("Keys.Action");
-                Global.BackKey = GetKeyFromAppSetting("Keys.Back");
-                Global.ExitKey = GetKeyFromAppSetting("Keys.Exit");
-                Global.MinimizeKey = GetKeyFromAppSetting("Keys.Minimize");
-
-                Global.UpKey = GetKeyFromAppSetting("Keys.Up");
-                Global.RightKey = GetKeyFromAppSetting("Keys.Right");
-                Global.DownKey = GetKeyFromAppSetting("Keys.Down");
-                Global.LeftKey = GetKeyFromAppSetting("Keys.Left");
-
-                /*
-                if (!actionKey.HasValue)
-                {
-                    Log("Keys.Action: Not configured.");
-                }
-                else if (actionKey == System.Windows.Input.Key.None)
-                {
-                    Log("Keys.Action: Invalid value specified.");
-                    Log("For valid values see https://msdn.microsoft.com/en-us/library/system.windows.input.key%28v=vs.110%29.aspx");
-                }
-                else
-                {
-                    Log("Keys.Action: {0}", actionKey);
-                    Global.ActionKey = actionKey;
-                }*/
 
 
                 // kick-off background initialising work (e.g. preparing the full search index)
@@ -258,7 +223,7 @@ namespace HyperSearch
 
             ni.ContextMenu = ctx;
 
-            int balloonToolTipTimeoutInsMS = Convert.ToInt32(ConfigurationManager.AppSettings["BalloonToolTipTimeOutInMilliseconds"]);
+            int balloonToolTipTimeoutInsMS = HyperSearchSettings.Instance().General.BalloonToolTipTimeOutInMilliseconds;
 
             if (balloonToolTipTimeoutInsMS > 0)
             {
@@ -266,35 +231,35 @@ namespace HyperSearch
             }
         }
 
-        private KeyList GetKeyFromAppSetting(string appKey, Key defaultVal = Key.None)
-        {
-            var str = ConfigurationManager.AppSettings[appKey];
+        //private KeyList GetKeyFromAppSetting(string appKey, Key defaultVal = Key.None)
+        //{
+        //    var str = ConfigurationManager.AppSettings[appKey];
 
-            if (!string.IsNullOrEmpty(str))
-            {
-                KeyList kl = new KeyList();
+        //    if (!string.IsNullOrEmpty(str))
+        //    {
+        //        KeyList kl = new KeyList();
 
-                var entries = str.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        //        var entries = str.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var e in entries)
-                {
-                    System.Windows.Input.Key key;
+        //        foreach (var e in entries)
+        //        {
+        //            System.Windows.Input.Key key;
 
-                    if (Enum.TryParse<System.Windows.Input.Key>(e, out key))
-                    {
-                        kl.Add(key);
-                    }
-                }
+        //            if (Enum.TryParse<System.Windows.Input.Key>(e, out key))
+        //            {
+        //                kl.Add(key);
+        //            }
+        //        }
 
-                return kl;
-            }
-            else
-            {
-                var def= new KeyList();
-                def.Add(defaultVal);
-                return def;
-            }
-        }
+        //        return kl;
+        //    }
+        //    else
+        //    {
+        //        var def= new KeyList();
+        //        def.Add(defaultVal);
+        //        return def;
+        //    }
+        //}
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
@@ -337,7 +302,7 @@ namespace HyperSearch
                 {
                     var triggerKey = (Key)sender;
 
-                    if (_settingsTriggerKey != null && _settingsTriggerKey.Is(triggerKey))
+                    if (HyperSearchSettings.Instance().Input.Triggers.Settings != null && HyperSearchSettings.Instance().Input.Triggers.Settings.Is(triggerKey))
                     {
                         //   Dispatcher.BeginInvoke(new Action(()=>
                         //  {
@@ -351,7 +316,7 @@ namespace HyperSearch
                     RECT? hsWinRect = null;
                     IntPtr? hsWinHwnd = null;
 
-                    var standaloneMode = Convert.ToBoolean(ConfigurationManager.AppSettings["StandaloneMode"]);
+                    var standaloneMode = HyperSearchSettings.Instance().General.StandAloneMode ?? false;
 
                     if (!standaloneMode)
                     {
@@ -416,8 +381,8 @@ namespace HyperSearch
                     }
                     else
                     {
-                        int w = Convert.ToInt32(ConfigurationManager.AppSettings["StandaloneWidth"]);
-                        int h = Convert.ToInt32(ConfigurationManager.AppSettings["StandaloneHeight"]);
+                        int w = HyperSearchSettings.Instance().General.StandaloneWidth;
+                        int h = HyperSearchSettings.Instance().General.StandaloneHeight;
 
                         int x = (int)((System.Windows.SystemParameters.PrimaryScreenWidth / 2.0) - ((double)w / 2.0));
                         int y = (int)((System.Windows.SystemParameters.PrimaryScreenHeight / 2.0) - ((double)h / 2.0));
@@ -441,9 +406,9 @@ namespace HyperSearch
 
                     HyperSearch.Windows.GameSearchWindow.SearchList searchList = Windows.GameSearchWindow.SearchList.Normal;
 
-                    if (_searchTriggerKey != null && _searchTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Normal;
-                    else if (_favouritesTriggerKey != null && _favouritesTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Favourites;
-                    else if (_genreTriggerKey != null && _genreTriggerKey.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Genre;
+                    if (HyperSearchSettings.Instance().Input.Triggers.Search != null && HyperSearchSettings.Instance().Input.Triggers.Search.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Normal;
+                    else if (HyperSearchSettings.Instance().Input.Triggers.Favourites != null && HyperSearchSettings.Instance().Input.Triggers.Favourites.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Favourites;
+                    else if (HyperSearchSettings.Instance().Input.Triggers.Genre != null && HyperSearchSettings.Instance().Input.Triggers.Genre.Is(triggerKey)) searchList = Windows.GameSearchWindow.SearchList.Genre;
 
                     Log("Using list: {0}", searchList);
 
@@ -474,16 +439,19 @@ namespace HyperSearch
             {
                 Windows.GameSearchWindow win;
 
-                if (_lastSearchWindow != null && !_lastSearchWindow.IsLoaded)
+                if (_lastSearchWindow != null && !_lastSearchWindow.IsLoaded || (_lastSearchList.HasValue && _lastSearchList != searchList))
                 {
+                    if (_lastSearchWindow != null && _lastSearchWindow.IsLoaded) _lastSearchWindow.Close();
+
                     _lastSearchWindow = null;
                 }
 
-                if (Global.MinimizeKey == null|| _lastSearchWindow == null)
+                var settings = HyperSearchSettings.Instance().Input;
+
+                if (settings.Minimize == null|| _lastSearchWindow == null)
                 { // if no minimizeKey was configured we do not reuse the prev window
                     if (_lastSearchWindow != null)
                     {
-                        //??! _lastSearchWindow.Close();
                         if (_lastSearchWindow.IsLoaded) _lastSearchWindow.Close();
 
                         _lastSearchWindow = null;
@@ -499,29 +467,14 @@ namespace HyperSearch
                 PositionWindowOnRect(win, hsWinRect.Value, 15);
 
                 _lastSearchWindow = win;
+                _lastSearchList = searchList;
 
-                win.ShowSystemImagesOnFilter = MainWindow.ShowSystemImagesOnFilter;
-                win.ShowSystemImagesOnResults = MainWindow.ShowSystemImagesOnResults;
-                win.ShowWheelImagesOnResults = MainWindow.ShowWheelImagesOnResults;
+                win.ShowSystemImagesOnFilter = HyperSearchSettings.Instance().Misc.ShowSystemImagesOnFilter;
+                win.ShowSystemImagesOnResults = HyperSearchSettings.Instance().Misc.ShowSystemImagesOnResults;
+                win.ShowWheelImagesOnResults = HyperSearchSettings.Instance().Misc.ShowWheelImagesOnResults;
 
                 win.Show();
                 win.Activate();
-                /*
-                var bmp = KbHook.GetWindowCaptureAsBitmap(hsWinHwnd.Value.ToInt32());
-
-                var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                         bmp.GetHbitmap(),
-                         IntPtr.Zero,
-                         Int32Rect.Empty,
-                         BitmapSizeOptions.FromEmptyOptions());
-
-
-                Image img = new Image();
-
-                img.Source = bmpSrc;
-
-                ((win.Content as Border).Child as Grid).Children.Add(img);
-                 **/
             }
             catch (Exception ex)
             {

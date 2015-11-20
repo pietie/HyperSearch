@@ -194,7 +194,6 @@ namespace HyperSearch
             [IniField(Name = "FullScreen")]
             public bool FullScreen { get; set; }
 
-            // TODO: Provide an INT type or something?
             [SettingType(Type = SettingsType.MultiOption, Title = "Width", Description = "If in windowed mode, specifies the horizontal resolution of the window.")]
             [IniField(Name = "Width")]
             public int? Width { get; set; }

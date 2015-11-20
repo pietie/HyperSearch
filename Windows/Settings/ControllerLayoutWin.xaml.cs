@@ -1,7 +1,9 @@
 ﻿using HyperSearch.Attached;
 using HyperSearch.Classes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -87,13 +89,13 @@ namespace HyperSearch.Windows.Settings
                             var pos = ControllerLayout.GetPosition(c);
 
                             if (!pos.HasValue) continue;
-
-                            if (def.ButtonPositionMapping.ContainsKey(pos.Value))
+                            
+                            if (def.Buttons.Count(b => b.Position == pos.Value) > 0)
                             {
                                 throw new InvalidDataException(string.Format("Duplicate position detected for position {0}. Make sure that Positions are only allocated once.", pos.Value));
                             }
 
-                            def.ButtonPositionMapping[pos.Value] = c;
+                            def.Buttons.Add(new ButtonConfig() { ButtonControl = c, Position = pos.Value });
                         }
 
                         _controllerLayoutTemplates.Add(def);
@@ -103,79 +105,6 @@ namespace HyperSearch.Windows.Settings
                         ErrorHandler.HandleException(ex);
                     }
                 }
-
-
-
-                // TODO: Remove commented out code - think this was sample code to animated every button across each selection
-                return;
-
-                // TODO: Generate Preview
-                //{
-                //    var panelTopPreview = _controllerLayoutTemplates[1].TopLevelPanel;
-
-                //    panelTopPreview.ClipToBounds = false;
-                //    //_controllerLayoutTemplates[0].TopLevelPanel.Background = Brushes.AntiqueWhite;
-                //    panelTopPreview.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-
-
-                //    previewBox.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-
-                //    previewBox.InvalidateVisual();
-                //    //previewBox.AddChildCentered(panelTopPreview, 400, 300);
-                //    panelTopPreview.RenderTransformOrigin = new Point(0.5, 0.5);
-
-                //    var widthToHeightRatio = panelTopPreview.Width / panelTopPreview.Height;
-
-                //    panelTopPreview.Height = 180;
-                //    panelTopPreview.Width = panelTopPreview.Height * widthToHeightRatio;
-
-                //    cp.Content = panelTopPreview;
-                //}
-
-                //var el = _controllerLayoutTemplates[1].ButtonPositionMapping[2];
-
-                //el.RenderTransform = new ScaleTransform() { };
-                //el.RenderTransformOrigin = new Point(0.5, 0.5);
-
-                //var sb = el.ScaleUniformAnimation(1, 1.2, 1, 1.2, repeatBehavior: RepeatBehavior.Forever, autoReverse: true);
-
-                //sb.Begin();
-
-                //var testXaml = File.ReadAllText(@"D:\00-Work\Projects\HyperSpinClone\HyperSearch\bin\Debug\Resources\ControllerLayouts\6 button simple.xaml");
-
-                //for (int i = 0; i < _controllerLayoutTemplates[0].ButtonPositionMapping.Count; i++)
-                //{
-                //    var topLevelPanel = (FrameworkElement)System.Windows.Markup.XamlReader.Parse(testXaml, parserContext);
-
-                //    ControllerLayoutDefinition def = new ControllerLayoutDefinition();
-                //    def.TopLevelPanel = topLevelPanel;
-
-                //    //var name = ControllerLayoutButton.GetName(topLevelPanel);
-
-                //    //if (!string.IsNullOrEmpty(name)) def.Name = name;
-                //    //else def.Name = new FileInfo(file).GetFilenameWithoutExtension();
-
-                //    var allChildControls = topLevelPanel.FindVisualChildren<Control>().ToList();
-
-                //    foreach (var c in allChildControls)
-                //    {// TODO: Check for duplicate positions
-                //        var pos = ControllerLayout.GetPosition(c);
-
-                //        if (!pos.HasValue) continue;
-
-                //        def.ButtonPositionMapping[pos.Value] = c;
-                //    }
-
-                //    listView.Items.Add(topLevelPanel);
-                //    var el2 = def.ButtonPositionMapping[i];
-
-                //    el2.RenderTransform = new ScaleTransform() { };
-                //    el2.RenderTransformOrigin = new Point(0.5, 0.5);
-
-                //    var sb2 = el2.ScaleUniformAnimation(1, 1.2, 1, 1.2, repeatBehavior: RepeatBehavior.Forever, autoReverse: true);
-
-                //    sb2.Begin();
-                //}
             }
             catch (Exception ex)
             {
@@ -202,7 +131,8 @@ namespace HyperSearch.Windows.Settings
         {
             try
             {
-                if (Global.ActionKey.Is(e.Key))
+                var settings = HyperSearchSettings.Instance().Input;
+                if (settings.Action.Is(e.Key))
                 {
                     if (listView.SelectedIndex == 0/*Layout*/)
                     {
@@ -235,7 +165,9 @@ namespace HyperSearch.Windows.Settings
             sel.Width = 600;
             sel.Height = 600;
 
-            if (Win.Modal(sel, this))
+            Win.Modal(sel, this);
+
+            //if (Win.Modal(sel, this))
             {
                 ControllerLayoutDefinition def = (ControllerLayoutDefinition)sel.SelectedItem;
 
@@ -243,9 +175,19 @@ namespace HyperSearch.Windows.Settings
                                 
                 layoutTemplate.Value = def.Name;
 
-                ////ControllerLayoutDefinition def = (ControllerLayoutDefinition)sel.SelectedItem;
-                //////!HSCSettings.Instance().P1KeyboardControlsSection.ButtonLayoutTemplateFilename = def.Name; // TODO: Filename!!!!
+                //var layoutConfig = new LayoutConfig();
 
+                //layoutConfig.Name = def.Name;
+                //layoutConfig.Description = def.Description;
+                //layoutConfig.Buttons = new List<ButtonConfig>();
+
+                //foreach(var p in def.ButtonPositionMapping)
+                //{
+                //    layoutConfig.Buttons.Add(new ButtonConfig() { Position = p.Key, HueOffset = def.ButtonPositionMapping[p.Key].HueOffset });
+                //}
+
+
+                HyperSearchSettings.Instance().Input.LayoutConfig = def;
 
             }
         }
@@ -267,21 +209,59 @@ namespace HyperSearch.Windows.Settings
 
             if (Win.Modal(win, this))
             {
-
+                
             }
+
+       
         }
     }
 
     // TODO: Move somewhere appropriate
-    public class ControllerLayoutDefinition
+    /// <summary>
+    /// Defines the *possible* layout definitions to choose from.
+    /// </summary>
+    public class ControllerLayoutDefinition : LayoutConfig
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-
         public string RawXaml { get; set; }
 
         public FrameworkElement TopLevelPanel { get; set; }
-
-        public Dictionary<int/*Position*/, Control> ButtonPositionMapping = new Dictionary<int, Control>();
     }
+
+    public class LayoutConfig
+    {
+        public LayoutConfig()
+        {
+            this.Buttons = new List<ButtonConfig>();
+        }
+
+        [JsonProperty]
+        [DefaultValue("Default")]
+        public string Name { get; set; }
+
+        [JsonProperty]
+        public string Description { get; set; }
+
+        [JsonProperty]
+        public List<ButtonConfig> Buttons { get; set; }
+    }
+
+    public class ButtonConfig : DependencyObject
+    {
+        [JsonIgnore]
+        public Control ButtonControl { get; set; }
+
+        [JsonProperty]
+        public int Position { get; set; }
+
+        [JsonProperty]
+        public double HueOffset
+        {
+            get { return (double)GetValue(HueOffsetProperty); }
+            set { SetValue(HueOffsetProperty, value); }
+        }
+
+        [JsonIgnore]
+        public static readonly DependencyProperty HueOffsetProperty = DependencyProperty.Register("HueOffset", typeof(double), typeof(ButtonConfig), new PropertyMetadata(0d));
+    }
+
 }

@@ -162,17 +162,8 @@ namespace HyperSearch.Windows
             resultsGrid.Visibility = System.Windows.Visibility.Collapsed;
 
             this.SearchListToUse = searchList;
-
-            TextInputType ti;
-
-            if (!System.Enum.TryParse<TextInputType>(System.Configuration.ConfigurationManager.AppSettings["KeyboardType"], true, out ti))
-            {
-                MainWindow.LogStatic("KeyboardType setting not set, or set to invalid value. Defaulting to: {0}", ti);
-            }
-            
-            this.InputType = ti;
-
-            bool hideCursor = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["HideMouseCursor"]);
+            this.InputType = (HyperSearchSettings.Instance().General.KeyboardType ?? TextInputType.AtoZ);
+            bool hideCursor = HyperSearchSettings.Instance().General.HideMouseCursor ?? false;
 
             if (hideCursor)
             {
@@ -325,18 +316,7 @@ namespace HyperSearch.Windows
                      * ***/
 
 
-                    var hlExe = "";
-
-                    if (string.IsNullOrEmpty(Global.LauncherFullPath))
-                    {
-                        hlExe = string.Format("{0}\\HyperLaunch.exe", MainWindow.HqSettings.MainSection.HyperlaunchPath.TrimEnd(new char[] { '\\' }));    
-                    }
-                    else
-                    {
-                        hlExe = Global.LauncherFullPath;
-                    }
-
-
+                    var hlExe = HyperSearchSettings.Instance().General.RocketLauncherExePath;
                     var hlArgs = string.Format("\"{0}\" \"{1}\"", item.SystemName, item.name);
 
                     MainWindow.LogStatic("Launching: {0} {1}", hlExe, hlArgs);
@@ -610,8 +590,8 @@ namespace HyperSearch.Windows
             //            keyboard.AnimateOpen();
             try
             {
-                this.ShowGameVideos = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableGameVideos"]);
-                this.VideoPopupTimeoutInMilliseconds = Convert.ToInt32(ConfigurationManager.AppSettings["GameVideoPopupTimeoutInMilliseconds"]);
+                this.ShowGameVideos = HyperSearchSettings.Instance().Misc.EnableGameVideos;
+                this.VideoPopupTimeoutInMilliseconds = HyperSearchSettings.Instance().Misc.GameVideoPopupTimeoutInMilliseconds;
 
                 if (this.InputType == TextInputType.AtoZ)
                 {
@@ -675,7 +655,7 @@ namespace HyperSearch.Windows
         {
             var kb = new QwertyKeyboard();
 
-            RegisterName("a2z", kb);
+            RegisterName("qwerty", kb);
 
             kb.AttachedTextBox = searchTerm;
             kb.OnOskKeyPressed += OnOskKeyPressed;
@@ -785,7 +765,7 @@ namespace HyperSearch.Windows
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (Global.MinimizeKey.Is(e.Key))
+            if (HyperSearchSettings.Instance().Input.Minimize.Is(e.Key))
             {
                 this.Hide();
             }
@@ -796,9 +776,10 @@ namespace HyperSearch.Windows
             try
             {
                 e.Handled = true;
+                var settings = HyperSearchSettings.Instance().Input;
                 var elementWithFocus = Keyboard.FocusedElement as UIElement;
 
-                if (Global.DownKey.Is(e.Key))
+                if (settings.Down.Is(e.Key))
                 {
                     if (resultListView.Items.Count > 0)
                     {
@@ -807,21 +788,21 @@ namespace HyperSearch.Windows
                         resultListView_SelectionChanged(null, null);
                     }
                 }
-                else if (Global.UpKey.Is(e.Key))// block UP as it makes the listview behave stupid
+                else if (settings.Up.Is(e.Key))// block UP as it makes the listview behave stupid
                 {
                     return;
                 }
-                else if (Global.LeftKey.Is(e.Key))
+                else if (settings.Left.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
                     return;
                 }
-                else if (Global.RightKey.Is(e.Key))
+                else if (settings.Right.Is(e.Key))
                 {
                     elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
                     return;
                 }
-                else if (Global.BackKey.Is(e.Key))
+                else if (settings.Back.Is(e.Key))
                 {
                     HandlePreviousScreenButtonPressed();
                 }
@@ -839,12 +820,13 @@ namespace HyperSearch.Windows
                 e.Handled = true;
 
                 var elementWithFocus = Keyboard.FocusedElement as UIElement;
+                var settings = HyperSearchSettings.Instance().Input;
 
-                if (Global.ActionKey.Is(e.Key))
+                if (settings.Action.Is(e.Key))
                 {
                     RunSelectedResult();
                 }
-                else if (Global.UpKey.Is(e.Key))
+                else if (settings.Up.Is(e.Key))
                 {
                     if (resultListView.SelectedIndex == 0)
                     {
@@ -860,7 +842,7 @@ namespace HyperSearch.Windows
 
                     resultListView.SelectAndFocusItem(resultListView.SelectedIndex - 1, (ss, ee) => { resultListView_SelectionChanged(this, null); });
                 }
-                else if (Global.RightKey.Is(e.Key))
+                else if (settings.Right.Is(e.Key))
                 {
                     if (systemSummaryListView.SelectedIndex < systemSummaryListView.Items.Count - 1)
                     {
@@ -868,14 +850,14 @@ namespace HyperSearch.Windows
                         systemSummaryListView.ScrollIntoView(systemSummaryListView.SelectedItem);
                     }
                 }
-                else if (Global.DownKey.Is(e.Key))
+                else if (settings.Down.Is(e.Key))
                 {
                     if (resultListView.SelectedIndex < resultListView.Items.Count)
                     {
                         resultListView.SelectAndFocusItem(resultListView.SelectedIndex + 1, (ss, ee) => { resultListView_SelectionChanged(this, null); });
                     }
                 }
-                else if (Global.LeftKey.Is(e.Key))
+                else if (settings.Left.Is(e.Key))
                 {
                     if (systemSummaryListView.SelectedIndex >= 1)
                     {
@@ -884,7 +866,7 @@ namespace HyperSearch.Windows
                     }
 
                 }
-                else if (Global.BackKey.Is(e.Key))
+                else if (settings.Back.Is(e.Key))
                 {
                     HandlePreviousScreenButtonPressed();
                 }
@@ -1028,18 +1010,8 @@ namespace HyperSearch.Windows
                 _gameSearchWindow = gameSearchWin;
                 this.SearchList = searchList;
 
-                SearchMode sm;
-
-                if (!System.Enum.TryParse<SearchMode>(System.Configuration.ConfigurationManager.AppSettings["SearchMode"], true, out sm))
-                {
-                    MainWindow.LogStatic("SearchMode setting not set, or set to invalid value. Defaulting to: {0}", sm);
-                }
-                else
-                {
-                    MainWindow.LogStatic("SearchMode: {0}", sm);
-                }
-
-                this.SearchMode = sm;
+                this.SearchMode = HyperSearchSettings.Instance().General.SearchMode;
+                MainWindow.LogStatic("SearchMode: {0}", HyperSearchSettings.Instance().General.SearchMode);
             }
 
             public static void LoadGenreImageLocations()
@@ -1076,7 +1048,7 @@ namespace HyperSearch.Windows
 
                     List<GameXmlDatabase> gameList = null;
                     
-                    if (MainWindow.HqSettings.MainSection.MenuMode.EqualsCI("single"))
+                    if (MainWindow.HqSettings != null && MainWindow.HqSettings.MainSection != null && MainWindow.HqSettings.MainSection.MenuMode.EqualsCI("single"))
                     {
                         MainWindow.LogStatic("Single mode: {0}", MainWindow.HqSettings.MainSection.SingleModeName);
                         gameList = new List<GameXmlDatabase>() { new GameXmlDatabase() { name = MainWindow.HqSettings.MainSection.SingleModeName } };
@@ -1086,6 +1058,12 @@ namespace HyperSearch.Windows
                         var mainMenuDbPath = Global.BuildFilePathInHyperspinDir("Databases\\Main Menu\\Main Menu.xml");
 
                         MainWindow.LogStatic("\tSearchDB: Parsing {0}...", mainMenuDbPath);
+
+                        if (!File.Exists(mainMenuDbPath))
+                        {
+                            MainWindow.LogStatic("\tWARNING! [Main Menu.xml] not found at: {0}\r\nMake sure your HyperSpin path is setup correctly.", mainMenuDbPath);
+                            return 0;
+                        }
 
                         var mainMenuDb = MenuXmlDatabase.LoadFromFile(mainMenuDbPath);
 
@@ -1199,6 +1177,13 @@ namespace HyperSearch.Windows
                 lock (_allFavouritesList)
                 {
                     var dbPath = Global.BuildFilePathInHyperspinDir("Databases");
+
+                    if (!Directory.Exists(dbPath))
+                    {
+                        MainWindow.LogStatic("WARNING! Databases folder does not exists at: {0}\r\nMake sure your HyperSpin path is setup correctly.", dbPath);
+                        return 0; 
+                    }
+
 
                     var favoriteFiles = Directory.EnumerateFiles(dbPath, "favorites.txt", SearchOption.AllDirectories).ToList();
 

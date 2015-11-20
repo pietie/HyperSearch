@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Reflection;
 
 namespace HyperSearch
 {
@@ -322,6 +325,31 @@ namespace HyperSearch
             : base(value, KeyTime.FromTimeSpan(TimeSpan.FromSeconds(keyTimeInSeconds)))
         {
             this.EasingFunction = easingFunction;
+        }
+    }
+
+    public class SerializeWithJsonAttributesContractResolver : DefaultContractResolver 
+    {
+        //private List<Type> _allowedTypes = new List<Type>();
+
+        public SerializeWithJsonAttributesContractResolver()
+        {
+        }
+      
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+        {
+            JsonProperty property = base.CreateProperty(member, memberSerialization);
+
+            var attributes = member.GetCustomAttributes(typeof(JsonPropertyAttribute),false).Select(a => (Attribute)a).ToList();
+
+            var allAttribs = member.GetCustomAttributes(false).Select(a => a.GetType()).ToList();
+
+            var b = allAttribs.Count(a => a == typeof(JsonObjectAttribute) || a == typeof(JsonPropertyAttribute)) > 0;
+
+            property.ShouldSerialize = instance => { return b; };
+            
+
+            return property;
         }
     }
 }
