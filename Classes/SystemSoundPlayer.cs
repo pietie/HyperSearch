@@ -28,6 +28,8 @@ namespace HyperSearch.Classes
             return _instance;
         }
 
+        public static bool IsInitialised { get { return _instance != null; } }
+
         public static SystemSoundPlayer Init(Panel host, string sourceDir)
         {
             if (_instance == null)

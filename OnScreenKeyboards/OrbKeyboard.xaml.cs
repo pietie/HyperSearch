@@ -170,7 +170,7 @@ namespace HyperSearch
 
                 this.SelectedOrb = AllOrbs[(int)orbIndex];
 
-                SystemSoundPlayer.Instance().PlaySound(Classes.SystemSound.ScreenIn); 
+                if (SystemSoundPlayer.IsInitialised) SystemSoundPlayer.Instance().PlaySound(Classes.SystemSound.ScreenIn); 
             }
             else
             {

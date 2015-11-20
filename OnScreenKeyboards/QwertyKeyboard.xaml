@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:osk="clr-namespace:HyperSearch"
-             mc:Ignorable="d" d:DesignWidth="700" >
+             mc:Ignorable="d" d:DesignWidth="550" >
     <ListView x:Name="listView" Style="{DynamicResource kbListView}" ItemContainerStyle="{DynamicResource kbListViewItemStyle}" 
-              HorizontalContentAlignment="Stretch" HorizontalAlignment="Center" Width="610" Background="Transparent"
+              HorizontalContentAlignment="Stretch" HorizontalAlignment="Center" Width="550" Background="Transparent"
                ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False"
               >
         <ListView.ItemsPanel>

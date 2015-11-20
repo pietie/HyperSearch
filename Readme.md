@@ -30,7 +30,6 @@ Most of the settings can be configured using the built-in UI but some require ma
 ```
 
 ```javascript
-
 {
     "General": {
         // Controls the width and height of the main HyperSearch windows if Standalone mode is enabled.
@@ -41,34 +40,41 @@ Most of the settings can be configured using the built-in UI but some require ma
         "BalloonToolTipTimeOutInMilliseconds": 0
     }
 }
+```
 
-``````
 
+```javascript
+{
+    "Misc": {
+        // Controls how long to wait after game selection before showing the game video
+        "GameVideoPopupTimeoutInMilliseconds": 1600
+    }
+}
+```
 
+<!-- 
 #### Input configuration 
 
-Each input config key takes a comma-separated list of one or more **Key code** values ([see reference](https://msdn.microsoft.com/en-us/library/system.windows.input.key%28v=vs.110%29.aspx) for allowed values).
+Each input configuration can be setup with one or more keys.
 
-For example, the following entry configures the search window to trigger when either F1 or F3 is pressed.
-
-```xml
-<add key="Keys.Trigger.Search" value="F1,F3"/>
-```
 
 ##### Cab Mode
 Just a note about Cab Mode. If disabled the user is allowed to type keys on the keyboard as per normal. However, any key configured as an input key will take precedence. 
 
 For example if your input keys are configured as follows:
 
-```xml
-<add key="Keys.Up" value="W"/>
-<add key="Keys.Right" value="D"/>
-<add key="Keys.Down" value="S"/>
-<add key="Keys.Left" value="A"/>
-```
+Config | Binding
+---- | ----
+Up|W
+Right|D
+Down|S
+Left|A
+
 Hitting W,D,S or A will navigate the onscreen keyboard so those keys will not be *typed*.
 
+    -->
 
+<!-- 
 #### Default config
 
 The default configuration is setup with:
@@ -90,3 +96,5 @@ Keys.Up|Up Arrow|Moves current selection upwards
 Keys.Right|Right Arrow|Moves current selection rightwards
 Keys.Down|Down Arrow|Moves current selection downwards
 Keys.Left|Left Arrow|Moves current selection leftwards
+
+    -->
