@@ -17,16 +17,21 @@ Most of the settings can be configured using the built-in UI but some require ma
 
 ```json
 {
-"Input": {
-    "Triggers": {
-        "SearchTriggerDelayInMilliseconds": 0,
-        "FavouritesTriggerDelayInMilliseconds": 0,
-        "GenreTriggerDelayInMilliseconds": 0,
-        "SettingsTriggerDelayInMilliseconds": 0,
-}
+    <!-- The following controls how long (in milliseconds) a certain trigger key needs to be held down before it triggers. Set to 0 to trigger immediately. -->
+    "Input": {
+        "Triggers": {
+            "SearchTriggerDelayInMilliseconds": 0,
+            "FavouritesTriggerDelayInMilliseconds": 0,
+            "GenreTriggerDelayInMilliseconds": 0,
+            "SettingsTriggerDelayInMilliseconds": 0,
+    }
 }
 
 ```
+
+##### Misc
+
+???
 
 #### Input configuration 
 
