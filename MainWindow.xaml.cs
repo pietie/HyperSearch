@@ -6,10 +6,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -30,30 +32,134 @@ namespace HyperSearch
         public static int? _lastHyperspinHwnd = null;
         public static RECT? _lastHyperspinRect = null;
 
+        private CommandLineOptions CliOptions { get; set;  }
+
+        private class CommandLineOptions
+        {
+            public bool StartupFullSearch { get; set; }
+            public bool StartupGenre { get; set; }
+            public bool StartupFavourites { get; set; }
+            public bool StartupSettings { get; set; }
+
+        }
+        
+        private void ParseCommandLineArgs()
+        {
+            // very very simple parsing for now
+
+            this.CliOptions = new MainWindow.CommandLineOptions();
+
+            var args = Environment.GetCommandLineArgs();
+            
+            if (args.Length != 2) return;
+
+            switch (args[1].ToLower())
+            {
+                case "-search":
+                    this.CliOptions.StartupFullSearch = true;
+                    break;
+                case "-genre":
+                    this.CliOptions.StartupGenre = true;
+                    break;
+                case "-fav":
+                    this.CliOptions.StartupFavourites = true;
+                    break;
+                case "-settings":
+                    this.CliOptions.StartupSettings = true;
+                    break;
+            }
+        }
+
+        private static void StartCliPipeServer(MainWindow main)
+        {
+            // http://stackoverflow.com/a/16302188
+            Task.Factory.StartNew(() =>
+            {
+                var server = new NamedPipeServerStream("CliPipe", PipeDirection.In, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+
+                var reader = new StreamReader(server);
+                var connectedOrWaiting = false;
+
+                while (true)
+                {
+                    if (!connectedOrWaiting)
+                    {
+                        server.BeginWaitForConnection((a) => { server.EndWaitForConnection(a); }, null);
+                        connectedOrWaiting = true;
+                    }
+
+                    if (server.IsConnected)
+                    {
+                        var line = reader.ReadLine();
+
+                        if (line != null)
+                        {
+                            switch (line.ToLower())
+                            {
+                                case "-search":
+                                    main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Search.FirstKey, null);
+                                    break;
+                                case "-genre":
+                                    main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Genre.FirstKey, null);
+                                    break;
+                                case "-fav":
+                                    main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Favourites.FirstKey, null);
+                                    break;
+                                case "-settings":
+                                    main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Settings.FirstKey, null);
+                                    break;
+                            }
+                        }
+                          
+                        server.Disconnect();
+                        connectedOrWaiting = false;
+                    }
+                }
+            });
+        }
+
+        private void SendPipeCommand(string cmd)
+        {
+            if (string.IsNullOrWhiteSpace(cmd)) return;
+
+            try
+            {
+                using (var client = new NamedPipeClientStream(".", "CliPipe", PipeDirection.Out))
+                {
+                    client.Connect(1000 * 5);
+                    //using (StreamReader reader = new StreamReader(client))
+                    {
+                        using (StreamWriter writer = new StreamWriter(client))
+                        {
+                            // currently this is a once off connection and message as that is all we need
+                            //while(true)
+                            {
+                                writer.WriteLine(cmd);
+                                writer.Flush();
+                            }
+                        }
+                    }
+                    client.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                Log("ERROR! Failed to send pipe command: {0}", cmd);
+                ErrorHandler.HandleException(ex);
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
-
+            
             try
             {
                 var Settings = HyperSearchSettings.Instance();
 
-                //Windows.Settings.ButtonConfig bc = new Windows.Settings.ButtonConfig() { Position = 123 };
-
-                //var json = Newtonsoft.Json.JsonConvert.SerializeObject(bc, new Newtonsoft.Json.JsonSerializerSettings()
-                //{
-                //    ContractResolver = new SerializeOnlyTopLevelTypeContractResolver(typeof(ButtonConfig))
-                //});
-
-
-                //var json = "{\"General\":{\"HyperSpinPath\":null,\"RocketLauncherExePath\":null,\"KeyboardType\":null,\"CabMode\":null,\"HideMouseCursor\":null,\"StandAloneMode\":null},\"Input\":{\"Search\":null,\"Favourites\":null,\"Genre\":null,\"Settings\":null,\"Up\":[66,24],\"Right\":null,\"Down\":null,\"Left\":null,\"Action\":null,\"Back\":null,\"Minimize\":null,\"Exit\":null}}";
-                //var oooo = Newtonsoft.Json.JsonConvert.DeserializeObject<HyperSearchSettings>(json, new KeyListConverter());
-
-                //oooo.General.KeyboardType = TextInputType.Orb;
-
-                //json = Newtonsoft.Json.JsonConvert.SerializeObject(oooo, new KeyListConverter());
-
-
+                ParseCommandLineArgs();
+                
                 bool createdNew;
 
                 // allow only one instance to run at a time
@@ -62,13 +168,26 @@ namespace HyperSearch
 
                     if (!createdNew)
                     {
-                        MessageBox.Show("There is already another instance of HyperSearch running. Only one instance is allowed.", "", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        var cmdLineArgs = Environment.GetCommandLineArgs();
+
+                        // if cmd line options were specified, pass it on to running instance
+                        if (cmdLineArgs.Length > 1)
+                        {
+                            SendPipeCommand(cmdLineArgs[1]);
+                        }
+                        else
+                        {
+                            MessageBox.Show("There is already another instance of HyperSearch running. Only one instance is allowed.", "", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        }
+
                         Application.Current.Shutdown();
                         return;
                     }
                 }
 
                 ErrorHandler.ClearSessionFile();
+
+                StartCliPipeServer(this);
 
                 var stylesUri = new Uri("pack://siteoforigin:,,,/Styles.xaml", UriKind.RelativeOrAbsolute);
 
@@ -193,6 +312,23 @@ namespace HyperSearch
 
                 this.WindowState = WindowState.Minimized;
                 this.Hide();
+                
+                if (this.CliOptions.StartupFullSearch)
+                {
+                    OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Search.FirstKey, null);
+                }
+                else if (this.CliOptions.StartupGenre)
+                {
+                    OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Genre.FirstKey, null);
+                }
+                else if (this.CliOptions.StartupFavourites)
+                {
+                    OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Favourites.FirstKey, null);
+                }
+                else if (this.CliOptions.StartupSettings)
+                {
+                    OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Settings.FirstKey, null);
+                }
             }
             catch (Exception ex)
             {
@@ -290,7 +426,7 @@ namespace HyperSearch
 
             }
         }
-
+        
         private void OnTriggerKeyHit(object sender, EventArgs e)
         {
             Dispatcher.BeginInvoke(new Action(() =>
@@ -304,11 +440,8 @@ namespace HyperSearch
 
                     if (HyperSearchSettings.Instance().Input.Triggers.Settings != null && HyperSearchSettings.Instance().Input.Triggers.Settings.Is(triggerKey))
                     {
-                        //   Dispatcher.BeginInvoke(new Action(()=>
-                        //  {
                         this.Show();
                         settingsButton_Click(sender, null);
-                        //// }));
 
                         return;
                     }

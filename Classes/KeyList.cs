@@ -10,6 +10,7 @@ namespace HyperSearch.Classes
 
         public KeyList() { Keys = new List<System.Windows.Input.Key>(); }
 
+        public Key FirstKey {  get { return Keys[0];  } }
         public KeyList(params Key[] keys)
         {
             Keys = new List<System.Windows.Input.Key>();
