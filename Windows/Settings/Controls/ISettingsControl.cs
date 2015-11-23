@@ -8,5 +8,7 @@ namespace HyperSearch.Windows.Settings
     public interface ISettingsControl
     {
         bool IsActive { get; set; }
+
+        void ResetValue();
     }
 }

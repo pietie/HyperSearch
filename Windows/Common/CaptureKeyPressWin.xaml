@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HyperSearch.Windows.Common"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Focusable="True"
         Title="CaptureKeyPressWin" Height="300" Width="300"
                 WindowStartupLocation="CenterOwner"
         Style="{DynamicResource DialogWindow}" KeyUp="Window_KeyUp" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"

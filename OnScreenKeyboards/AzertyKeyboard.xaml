@@ -58,7 +58,8 @@
         <osk:OnScreenKeyboardButton Text="B"/>
         <osk:OnScreenKeyboardButton Text="N"/>
         <osk:OnScreenKeyboardButton Text=","/>
-        <ListViewItem IsEnabled="False" Width="100" />
+        <osk:OnScreenKeyboardButton Text="."/>
+        <ListViewItem IsEnabled="False" Width="50" />
 
         <osk:OnScreenKeyboardButton x:Name="space" Text="SPC" Margin="60 0 0 0" />
         <osk:OnScreenKeyboardButton x:Name="backspace" Text="BS"/>

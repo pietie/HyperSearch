@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Reflection;
+using HyperSearch;
 
 namespace HyperSearch
 {
@@ -22,6 +23,30 @@ namespace HyperSearch
 
     public static class Util
     {
+        public static T GetAncestorOfType<T>(this FrameworkElement child) where T : FrameworkElement
+        {
+            var parent = VisualTreeHelper.GetParent(child);
+            if (parent != null && !(parent is T))
+                return (T)GetAncestorOfType<T>((FrameworkElement)parent);
+            return (T)parent;
+        }
+
+        public static T FindParent<T>(this FrameworkElement element) where T : FrameworkElement
+        {
+            FrameworkElement parent = LogicalTreeHelper.GetParent(element) as FrameworkElement;
+
+            while (parent != null)
+            {
+                T correctlyTyped = parent as T;
+                if (correctlyTyped != null)
+                    return correctlyTyped;
+                else
+                    return FindParent<T>(parent);
+            }
+
+            return null;
+        }
+
         public static string AbsolutePath(string path)
         {
             Uri uriTester;
@@ -142,6 +167,8 @@ namespace HyperSearch
             t.Action();
             t.Tick -= OnTimeoutTimerTick;
         }
+
+     
 
         // Modified from http://stackoverflow.com/questions/974598/find-all-controls-in-wpf-window-by-type
         public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
@@ -317,6 +344,14 @@ namespace HyperSearch
 
             return o.ToString();
         }
+
+        public static bool Is(this Classes.KeyList kl,  System.Windows.Input.Key key)
+        {
+            if (kl == null) return false;
+            if (kl.Keys == null) return false;
+
+            return kl.Keys.Contains(key);
+        }
     }
 
     public class AnimationKeyFrame : EasingDoubleKeyFrame
@@ -351,5 +386,8 @@ namespace HyperSearch
 
             return property;
         }
+
+     
+
     }
 }

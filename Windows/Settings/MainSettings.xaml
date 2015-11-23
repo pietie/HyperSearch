@@ -12,6 +12,7 @@
         Style="{DynamicResource DialogWindow}"  
         Loaded="Window_Loaded"
         Closed="Window_Closed"
+        PreviewKeyDown="Window_PreviewKeyDown"
         >
     <Window.Resources>
         <conv:DoubleOffsetConverter x:Key="listViewWidthConverter" Offset="-10"/>
@@ -148,12 +149,12 @@
                 TODO: Put "help" here - show which buttons to press etc
             </TextBlock>
 
-            <ctrl:ListViewHSC x:Name="sectionListView" Orientation="Horizontal" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" ItemsSource="{Binding}" ItemContainerStyle="{StaticResource SectionListItemStyle}"
-                              SelectionChanged="sectionListView_SelectionChanged" KeyDown="sectionListView_KeyDown" PreviewKeyDown="sectionListView_PreviewKeyDown" PreviewKeyUp="sectionListView_PreviewKeyUp" KeyUp="sectionListView_KeyUp" LostKeyboardFocus="sectionListView_LostKeyboardFocus" GotKeyboardFocus="sectionListView_GotKeyboardFocus"/>
+            <ctrl:ListViewHSC Focusable="False" x:Name="sectionListView" Orientation="Horizontal" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" ItemsSource="{Binding}" ItemContainerStyle="{StaticResource SectionListItemStyle}"
+                              SelectionChanged="sectionListView_SelectionChanged" LostKeyboardFocus="sectionListView_LostKeyboardFocus" GotKeyboardFocus="sectionListView_GotKeyboardFocus"/>
 
             <ctrl:ListViewHSC x:Name="listView" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" Grid.Row="1" 
-                          ItemsSource="{Binding}" ItemTemplateSelector="{StaticResource dataTemplateSelector}" KeyUp="listView_KeyUp"
-                              KeyDown="listView_KeyDown" PreviewKeyDown="listView_PreviewKeyDown" PreviewKeyUp="listView_PreviewKeyUp" GotFocus="listView_GotFocus" LostFocus="listView_LostFocus" LostKeyboardFocus="listView_LostKeyboardFocus" GotKeyboardFocus="listView_GotKeyboardFocus">
+                          ItemsSource="{Binding}" ItemTemplateSelector="{StaticResource dataTemplateSelector}"
+                              GotFocus="listView_GotFocus" LostFocus="listView_LostFocus" LostKeyboardFocus="listView_LostKeyboardFocus" GotKeyboardFocus="listView_GotKeyboardFocus">
             </ctrl:ListViewHSC>
 
 

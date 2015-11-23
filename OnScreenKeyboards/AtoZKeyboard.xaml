@@ -54,6 +54,7 @@
         <osk:OnScreenKeyboardButton Text="Y"/>
         <osk:OnScreenKeyboardButton Text="Z"/>
         <osk:OnScreenKeyboardButton Text=","/>
+        <osk:OnScreenKeyboardButton Text="."/>
         <osk:OnScreenKeyboardButton x:Name="space" Text="SPC" />
         <osk:OnScreenKeyboardButton x:Name="backspace" Text="BS"/>
         <osk:OnScreenKeyboardButton x:Name="clear" Text="CLR"/>

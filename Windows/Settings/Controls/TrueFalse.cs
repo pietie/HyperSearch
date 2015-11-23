@@ -19,5 +19,6 @@ namespace HyperSearch.Windows.Settings
         public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(TrueFalse), new PropertyMetadata(false));
 
 
+        public void ResetValue() { this.IsChecked = false; }
     }
 }

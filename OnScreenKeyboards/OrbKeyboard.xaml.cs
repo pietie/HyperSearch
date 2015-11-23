@@ -510,33 +510,6 @@ namespace HyperSearch
                     this.RaiseOskKeyPressedEvent(button.Text, OskSpecialKey.None);
                 }
             }
-
-            //// TODO: Get key config from somewhere...static???
-            //if (e.Key == Key.Back)
-            //{
-            //    if (CurrentViewState == ViewState.SetupSearch)
-            //    {
-            //        this.Close();
-            //    }
-            //    else // move back to prev view
-            //    {
-            //        CurrentViewState = ViewState.SetupSearch;
-
-            //        MoveToNewView(searchSetupGrid, null, null);
-            //    }
-            //}
-
-            //if (e.Key == Key.Enter || e.Key == Key.Return)
-            //{
-            //    if (CurrentViewState == ViewState.SetupSearch)
-            //    {
-            //        PerformSearch();
-            //    }
-            //    else if (CurrentViewState == ViewState.Results)
-            //    {
-            //        RunSelectedResult();
-            //    }
-            //}
         }
 
         private void UserControl_PreviewKeyUp(object sender, KeyEventArgs e)

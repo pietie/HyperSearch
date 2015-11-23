@@ -153,6 +153,7 @@ namespace HyperSearch.Classes
 
             [JsonProperty]
             [SettingCreateEmpty]
+            [SettingComposite]
             public Triggers Triggers { get; set; }
 
             [JsonProperty]

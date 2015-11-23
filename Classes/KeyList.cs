@@ -6,7 +6,7 @@ namespace HyperSearch.Classes
 {
     public class KeyList
     {
-        private List<System.Windows.Input.Key> Keys;
+        public List<System.Windows.Input.Key> Keys { get; private set; }
 
         public KeyList() { Keys = new List<System.Windows.Input.Key>(); }
 
@@ -17,12 +17,7 @@ namespace HyperSearch.Classes
             if (keys != null) Keys.AddRange(keys);
         }
 
-        public bool Is(System.Windows.Input.Key key)
-        {
-            if (this.Keys == null) return false;
-
-            return Keys.Contains(key);
-        }
+        
 
         public void Add(Key key)
         {

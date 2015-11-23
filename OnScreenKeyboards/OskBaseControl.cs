@@ -134,28 +134,7 @@ namespace HyperSearch
                 // if not in Cab Mode we'll allow the user to type on his keyboard
                 if (!(HyperSearchSettings.Instance().General.CabMode?? false))
                 {
-                    if (((int)e.Key >= (int)Key.A && (int)e.Key <= (int)Key.Z)
-                      || e.Key == Key.OemMinus
-                      || e.Key == Key.OemComma
-                      )
-                    {
-                        var txt = e.Key.ToString();
-
-                        if (e.Key == Key.OemMinus) txt = "-";
-                        if (e.Key == Key.OemComma) txt = ",";
-
-                        var oskButtons = listView.FindVisualChildren<OnScreenKeyboardButton>().ToList();
-
-                        var button = oskButtons.Where(b => b.Text == txt).FirstOrDefault();
-
-                        if (button != null)
-                        {
-                            listView.SelectedItem = button;
-                            HandleOskButtonPressed(button);
-                            return;
-                        }
-                    }
-                    else if ((int)e.Key >= (int)Key.D0 && (int)e.Key <= (int)Key.D9) // handle Digits 0-9
+                    if ((int)e.Key >= (int)Key.D0 && (int)e.Key <= (int)Key.D9) // handle Digits 0-9
                     {
                         var txt = e.Key.ToString().TrimStart('D');
 
@@ -175,6 +154,28 @@ namespace HyperSearch
                         listView.SelectedItem = space;
                         HandleOskButtonPressed(space);
                         return;
+                    }
+                    //if (((int)e.Key >= (int)Key.A && (int)e.Key <= (int)Key.Z)
+                    // || e.Key == Key.OemMinus
+                    // || e.Key == Key.OemComma
+                    // )
+                    else {
+                        var txt = e.Key.ToString();
+
+                        if (e.Key == Key.OemMinus) txt = "-";
+                        if (e.Key == Key.OemComma) txt = ",";
+                        if (e.Key == Key.OemPeriod) txt = ".";
+
+                        var oskButtons = listView.FindVisualChildren<OnScreenKeyboardButton>().ToList();
+
+                        var button = oskButtons.Where(b => b.Text == txt).FirstOrDefault();
+
+                        if (button != null)
+                        {
+                            listView.SelectedItem = button;
+                            HandleOskButtonPressed(button);
+                            return;
+                        }
                     }
                 } // if (!MainWindow.IsCabModeEnabled)
 

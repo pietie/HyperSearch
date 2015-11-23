@@ -78,6 +78,8 @@ namespace HyperSearch.Windows.Settings
             }
         }
 
+        public void ResetValue() { this.Value = 0d; }
+
         public Slider()
         {
             InitializeComponent();

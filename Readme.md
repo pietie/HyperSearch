@@ -7,6 +7,17 @@ Development requirements:
 * .NET Framework 4.0
 
 
+## CLI options
+
+You can run HyperSearch with the following command line options. If an instance of HyperSearch is already running the command will be send to that instance.
+
+Option | Description
+---- | ----
+-search|Open full search
+-genre|Open genre search
+-fav|Open favourites search
+-settings|Open settings 
+
 ## Config
 
 All config is stored in **Settings.json**.

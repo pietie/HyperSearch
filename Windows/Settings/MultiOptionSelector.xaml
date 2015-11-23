@@ -10,7 +10,7 @@
         Title="MultiOptionSelector" Height="300" Width="300" 
         Style="{DynamicResource DialogWindow}"
         WindowStartupLocation="CenterOwner"
-        x:Name="win" Loaded="win_Loaded"
+        x:Name="win" Loaded="win_Loaded" PreviewKeyDown="win_PreviewKeyDown"
         >
     <Window.Resources>
         <conv:DoubleOffsetConverter x:Key="listViewWidthConverter2" Offset="-10"/>

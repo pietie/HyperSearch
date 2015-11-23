@@ -33,6 +33,7 @@ namespace HyperSearch.Windows.Settings
         // Using a DependencyProperty as the backing store for IsActive.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(MultiOption), new PropertyMetadata(false));
 
+        public void ResetValue() { this.Value = null; }
 
         public MultiOption()
         {
