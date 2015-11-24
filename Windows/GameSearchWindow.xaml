@@ -94,9 +94,9 @@
 
                 
 
-                <ctrl:ListViewHSC x:Name="systemSummaryListView" Grid.Row="0" Orientation="Horizontal" SelectionMode="Single" 
+                <ctrl:ListViewHSC IsEnabled="False" IsHitTestVisible="False" Focusable="False" x:Name="systemSummaryListView" Grid.Row="0" Orientation="Horizontal" SelectionMode="Single" 
                                   Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" ItemContainerStyle="{DynamicResource SystemSummaryListItemStyle}" 
-                                  ItemsSource="{Binding}" SelectionChanged="systemSummaryListView_SelectionChanged" PreviewKeyDown="systemSummaryListView_PreviewKeyDown" />
+                                  ItemsSource="{Binding}" SelectionChanged="systemSummaryListView_SelectionChanged" />
 
                 <Viewbox Grid.Row="2" HorizontalAlignment="Stretch">
                     <ctrl:OutlinedTextBlock x:Name="selectedItemText" Grid.Row="2" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{DynamicResource searchResultSelectedItemTextStyle}">Selected item: MAME - BUBBLE BOBBLE, what-what</ctrl:OutlinedTextBlock>
@@ -107,7 +107,7 @@
                 <ctrl:ListViewHSC x:Name="resultListView"  Grid.Row="1" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" ItemContainerStyle="{DynamicResource gameSearchResultListViewItem}"
                                     SelectionMode="Single"
                               ItemsSource="{Binding}"  AlternationCount="2" Margin="0 6 0 0"
-                      SizeChanged="resultListView_SizeChanged"  SelectionChanged="resultListView_SelectionChanged" PreviewKeyDown="resultListView_PreviewKeyDown" MouseDoubleClick="resultListView_MouseDoubleClick">
+                      SizeChanged="resultListView_SizeChanged"  SelectionChanged="resultListView_SelectionChanged" MouseDoubleClick="resultListView_MouseDoubleClick">
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource resultsListViewColumnHeaderStyle}" >
                             <GridViewColumn Width="150" Header="System"   >

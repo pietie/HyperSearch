@@ -14,7 +14,8 @@ namespace HyperSearch.Classes
 
             win.Owner = parent;
             win.Text = msg;
-            win.ShowDialog();
+
+            Win.Modal(win, parent);
         }
 
         public static bool PromptYesNo(string msg, Window parent = null)
@@ -22,7 +23,8 @@ namespace HyperSearch.Classes
             var win = new Windows.Common.PromptWin();
             win.Text = msg;
             win.Owner = parent;
-            return win.ShowDialog() ?? false;
+
+            return Win.Modal(win, parent);
         }
     }
 }

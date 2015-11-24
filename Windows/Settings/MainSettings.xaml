@@ -145,9 +145,43 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
-            <TextBlock FontSize="22" Grid.Row="2" VerticalAlignment="Center">
-                TODO: Put "help" here - show which buttons to press etc
-            </TextBlock>
+
+            <Border Grid.Row="2" Padding="6" Visibility="Collapsed">
+            <WrapPanel TextBlock.FontSize="16" >
+                    
+                    <Border Margin="15 0 0 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                                <Border Width="60" TextBlock.FontWeight="Bold" TextBlock.Foreground="Lime">
+                                <TextBlock VerticalAlignment="Center">Action:</TextBlock>
+                            </Border>
+                            <Border Grid.Column="1" BorderBrush="Silver" Background="#FFF0F0F0" Padding="4">
+                                <TextBlock VerticalAlignment="Center">Enter</TextBlock>
+                            </Border>
+                        </Grid>
+                        
+                    </Border>
+
+                    <Border Margin="15 0 0 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Width="60" TextBlock.FontWeight="Bold" TextBlock.Foreground="Lime">
+                                <TextBlock VerticalAlignment="Center">Clear:</TextBlock>
+                            </Border>
+                            <Border Grid.Column="1" BorderBrush="Silver" Background="#FFF0F0F0" Padding="4">
+                                <TextBlock VerticalAlignment="Center">Delete</TextBlock>
+                            </Border>
+                        </Grid>
+
+                    </Border>
+                </WrapPanel>
+            </Border>
 
             <ctrl:ListViewHSC Focusable="False" x:Name="sectionListView" Orientation="Horizontal" Style="{DynamicResource ListViewWithScrollIndicatorsStyle}" ItemsSource="{Binding}" ItemContainerStyle="{StaticResource SectionListItemStyle}"
                               SelectionChanged="sectionListView_SelectionChanged" LostKeyboardFocus="sectionListView_LostKeyboardFocus" GotKeyboardFocus="sectionListView_GotKeyboardFocus"/>

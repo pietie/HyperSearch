@@ -295,7 +295,7 @@
                 <Setter Property="Opacity" Value="1.0"/>
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="False">
-                <Setter Property="Opacity" Value="0.7"/>
+                <Setter Property="Opacity" Value="1.0"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -664,14 +664,14 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard >
                                     <Storyboard >
-                                        <DoubleAnimation From="1" To="0.5" FillBehavior="HoldEnd" Duration="00:00:00.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Effect).(SaturationValue)"/>
+                                        <DoubleAnimation From="1" To="1" FillBehavior="HoldEnd" Duration="00:00:00.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Effect).(SaturationValue)"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard >
                                     <Storyboard >
-                                        <DoubleAnimation From="0.5" To="1" FillBehavior="HoldEnd" Duration="00:00:00.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Effect).(SaturationValue)"/>
+                                        <DoubleAnimation From="1" To="1" FillBehavior="HoldEnd" Duration="00:00:00.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Effect).(SaturationValue)"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>

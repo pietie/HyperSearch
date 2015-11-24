@@ -484,6 +484,8 @@ namespace HyperSearch.Windows
                     {
                         try
                         {
+                            if (CurrentViewState != ViewState.Results) return;
+
                             videoBorder.Width = this.ActualWidth * 0.4;
                             videoBorder.Height = this.ActualHeight * 0.4;
                             videoBorder.Visibility = System.Windows.Visibility.Visible;
@@ -565,7 +567,7 @@ namespace HyperSearch.Windows
                     else video.Source = new Uri(flvNoVideo, UriKind.Absolute);
                 }
 
-                if (video.Source != null) video.Play();
+                if (video.Source != null && this.CurrentViewState == ViewState.Results) video.Play();
             }
             catch (Exception ex)
             {
@@ -695,8 +697,6 @@ namespace HyperSearch.Windows
             }
         }
 
-      
-
         private void HandlePreviousScreenButtonPressed()
         {
             if (CurrentViewState == ViewState.SetupSearch)
@@ -708,13 +708,14 @@ namespace HyperSearch.Windows
                 var fe = Keyboard.FocusedElement;
                 if (fe != null && fe is ListViewItem)
                 {
-                    if ((fe as ListViewItem).Content is SearchResult)
+                    if ((fe as ListViewItem).Content is SearchResult && videoBorder.Visibility != Visibility.Hidden)
                     {
-                        resultListView.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
-                        if (systemSummaryListView.SelectedItem != null)
+                        //resultListView.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+
+                        //if (systemSummaryListView.SelectedItem != null)
                         {
                             CloseAndStopVideoWin();
-                            systemSummaryListView.SelectAndFocusItem(systemSummaryListView.SelectedIndex);
+                            //!systemSummaryListView.SelectAndFocusItem(systemSummaryListView.SelectedIndex);
                         }
                         return;
                     }
@@ -727,12 +728,10 @@ namespace HyperSearch.Windows
             }
         }
 
-
         private void resultListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             RunSelectedResult();
         }
-
 
         private void systemSummaryListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -754,8 +753,18 @@ namespace HyperSearch.Windows
                 ResizeResultListGridViewColumns(resultListView);
 
                 resultListView.ItemsSource = item.GameList;
-                resultListView.SelectedIndex = 0;
-                resultListView.ScrollIntoView(resultListView.SelectedItem);
+                
+                if (resultListView.Items.Count > 0)
+                {
+
+                    //resultListView.SelectAndFocusItem(callback: (ss, ee) => resultListView_SelectionChanged(null, null));
+                    Util.SetTimeout(0, new Action(() =>
+                    {
+                        resultListView.SelectedIndex = 0;
+                        resultListView.ScrollIntoView(resultListView.SelectedItem);
+                        resultListView.SelectAndFocusItem(callback: (ss, ee) => resultListView_SelectionChanged(null, null));
+                    }));
+                }
             }
             catch (Exception ex)
             {
@@ -765,13 +774,160 @@ namespace HyperSearch.Windows
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (HyperSearchSettings.Instance().Input.Minimize.Is(e.Key))
+
+
+            try
             {
-                this.Hide();
+                e.Handled = true;
+
+                var elementWithFocus = Keyboard.FocusedElement as UIElement;
+                var settings = HyperSearchSettings.Instance().Input;
+                ListView focussedLV = null;
+
+                if (Keyboard.FocusedElement == resultListView && resultListView.Items.Count > 0)
+                {
+                    resultListView.SelectAndFocusItem();
+                }
+
+                if (Keyboard.FocusedElement is ListViewItem) focussedLV = ((FrameworkElement)Keyboard.FocusedElement).GetAncestorOfType<ListView>();
+
+
+                if (focussedLV == systemSummaryListView)
+                {
+                    resultListView.SelectAndFocusItem();
+                    focussedLV = resultListView;
+                }
+
+                if (HyperSearchSettings.Instance().Input.Minimize.Is(e.Key))
+                {
+                    this.Hide();
+                    return;
+                }
+                else if (settings.Action.Is(e.Key))
+                {
+                    if (focussedLV == resultListView)
+                    {
+                        RunSelectedResult();
+                    }
+                    else
+                    {
+                        e.Handled = false;
+                        return;
+                    }
+
+                }
+                else if (settings.Up.Is(e.Key))
+                {
+                    //if (resultListView.SelectedIndex == 0)
+                    //{
+                    //    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+                    //    if (systemSummaryListView.SelectedItem != null)
+                    //    {
+                    //        CloseAndStopVideoWin();
+                    //        systemSummaryListView.SelectAndFocusItem(systemSummaryListView.SelectedIndex);
+                    //    }
+
+                    //    return;
+                    //}
+
+                    
+                    
+
+                    if (focussedLV == resultListView )
+                    {
+                        if (resultListView.SelectedIndex > 0)
+                        {
+                            elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+                        }
+                        else
+                        {
+                            resultListView.SelectedIndex = resultListView.Items.Count-1;
+                            resultListView.ScrollIntoView(resultListView.SelectedItem);
+                            resultListView.SelectAndFocusItem(resultListView.Items.Count - 1);
+                        }
+
+                    }
+                    else
+                    {
+                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+                    }
+                }
+                else if (settings.Right.Is(e.Key))
+                {
+                    if (focussedLV == resultListView)
+                    {
+                        if (systemSummaryListView.SelectedIndex < systemSummaryListView.Items.Count - 1)
+                        {
+                            systemSummaryListView.SelectedIndex = systemSummaryListView.SelectedIndex + 1;
+                            systemSummaryListView.ScrollIntoView(systemSummaryListView.SelectedItem);
+                        }
+                        else
+                        {
+                            systemSummaryListView.SelectAndFocusItem(0);
+                        }
+
+                    }
+                    else
+                    {
+                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
+                    }
+                }
+                else if (settings.Down.Is(e.Key))
+                {
+                    if (focussedLV == resultListView)
+                    {
+                        if (resultListView.SelectedIndex < resultListView.Items.Count - 1)
+                        {
+                            resultListView.SelectAndFocusItem(resultListView.SelectedIndex + 1, (ss, ee) => { resultListView_SelectionChanged(this, null); });
+                        }
+                        else
+                        {
+                            resultListView.SelectedIndex = 0;
+                            resultListView.ScrollIntoView(resultListView.SelectedItem);
+                        }
+
+                    }
+                    else
+                    {
+                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                    }
+                }
+                else if (settings.Left.Is(e.Key))
+                {
+                    if (focussedLV == resultListView)
+                    {
+                        if (systemSummaryListView.SelectedIndex >= 1)
+                        {
+                            systemSummaryListView.SelectedIndex = systemSummaryListView.SelectedIndex - 1;
+                            systemSummaryListView.ScrollIntoView(systemSummaryListView.SelectedItem);
+                        }
+                        else
+                        {
+                            systemSummaryListView.SelectAndFocusItem(systemSummaryListView.Items.Count - 1);
+                        }
+                    }
+                    else
+                    {
+                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
+                    }
+                }
+                else if (settings.Back.Is(e.Key))
+                {
+                    HandlePreviousScreenButtonPressed();
+                }
+                else if (settings.Exit.Is(e.Key))
+                {
+                    this.Close();
+                }
             }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleException(ex);
+            }
+
         }
 
-        private void systemSummaryListView_PreviewKeyDown(object sender, KeyEventArgs e)
+/*        private void systemSummaryListView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             try
             {
@@ -811,71 +967,7 @@ namespace HyperSearch.Windows
             {
                 ErrorHandler.HandleException(ex);
             }
-        }
-
-        private void resultListView_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                e.Handled = true;
-
-                var elementWithFocus = Keyboard.FocusedElement as UIElement;
-                var settings = HyperSearchSettings.Instance().Input;
-
-                if (settings.Action.Is(e.Key))
-                {
-                    RunSelectedResult();
-                }
-                else if (settings.Up.Is(e.Key))
-                {
-                    if (resultListView.SelectedIndex == 0)
-                    {
-                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
-                        if (systemSummaryListView.SelectedItem != null)
-                        {
-                            CloseAndStopVideoWin();
-                            systemSummaryListView.SelectAndFocusItem(systemSummaryListView.SelectedIndex);
-                        }
-
-                        return;
-                    }
-
-                    resultListView.SelectAndFocusItem(resultListView.SelectedIndex - 1, (ss, ee) => { resultListView_SelectionChanged(this, null); });
-                }
-                else if (settings.Right.Is(e.Key))
-                {
-                    if (systemSummaryListView.SelectedIndex < systemSummaryListView.Items.Count - 1)
-                    {
-                        systemSummaryListView.SelectedIndex = systemSummaryListView.SelectedIndex + 1;
-                        systemSummaryListView.ScrollIntoView(systemSummaryListView.SelectedItem);
-                    }
-                }
-                else if (settings.Down.Is(e.Key))
-                {
-                    if (resultListView.SelectedIndex < resultListView.Items.Count)
-                    {
-                        resultListView.SelectAndFocusItem(resultListView.SelectedIndex + 1, (ss, ee) => { resultListView_SelectionChanged(this, null); });
-                    }
-                }
-                else if (settings.Left.Is(e.Key))
-                {
-                    if (systemSummaryListView.SelectedIndex >= 1)
-                    {
-                        systemSummaryListView.SelectedIndex = systemSummaryListView.SelectedIndex - 1;
-                        systemSummaryListView.ScrollIntoView(systemSummaryListView.SelectedItem);
-                    }
-
-                }
-                else if (settings.Back.Is(e.Key))
-                {
-                    HandlePreviousScreenButtonPressed();
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorHandler.HandleException(ex);
-            }
-        }
+        }*/
 
         /*
         private void gameSearchWindow_KeyDown(object sender, KeyEventArgs e)
@@ -1447,9 +1539,5 @@ namespace HyperSearch.Windows
         }
 
        
-
-
-
-
     }
 }

@@ -264,7 +264,7 @@ namespace HyperSearch.Classes
 
             [JsonProperty]
             [DefaultValue(TextInputType.Orb)]
-            [SettingType(Type = SettingsType.MultiOption, Title = "Keyboard type", Description = "Specifies the keyboard type to use for search criteria input.", MutliValueCsv = "AtoZ,Qwerty,Azerty,Orb")]
+            [SettingType(Type = SettingsType.MultiOption, Title = "Keyboard type", Description = "Specifies the keyboard type to use for search criteria input.", MutliValueCsv = "AtoZ,Qwerty,Azerty")]
             public TextInputType? KeyboardType { get; set; }
 
             [JsonProperty]

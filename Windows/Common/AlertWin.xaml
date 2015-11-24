@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:HyperSearch.Windows.Common"
         mc:Ignorable="d"
         Title="AlertWin" Height="350" Width="450" 
-        Style="{DynamicResource DialogWindow}" PreviewKeyDown="Window_PreviewKeyDown" Loaded="Window_Loaded"
+
+        Style="{DynamicResource DialogWindow}" PreviewKeyDown="Window_PreviewKeyDown" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner"
         >
     <Border Style="{DynamicResource WindowBorder}" >
         <Grid>
@@ -15,7 +16,7 @@
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Source="pack://siteoforigin:,,,/Resources/Icons/Exclamation.png"/>
+            <Image Source="/HyperSearch;component/Resources/Icons/Exclamation.png"/>
 
             <TextBlock x:Name="txt" FontFamily="Arial" VerticalAlignment="Center" FontSize="20" Foreground="White" Grid.Column="2" TextWrapping="Wrap"></TextBlock>
 

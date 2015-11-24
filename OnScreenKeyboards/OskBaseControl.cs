@@ -85,7 +85,7 @@ namespace HyperSearch
                 e.Handled = true;
                 var elementWithFocus = Keyboard.FocusedElement as UIElement;
                 var settings = HyperSearchSettings.Instance().Input;
-                
+
                 if (settings.Action.Is(e.Key))
                 {
                     if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
@@ -130,6 +130,13 @@ namespace HyperSearch
                     listView.SelectedItem = backspace;
                     HandleOskButtonPressed(backspace);
                 }
+                else if (settings.Clear.Is(e.Key))
+                {
+                    listView.SelectedItem = clear;
+                    HandleOskButtonPressed(clear);
+                    return;
+                }
+
 
                 // if not in Cab Mode we'll allow the user to type on his keyboard
                 if (!(HyperSearchSettings.Instance().General.CabMode?? false))

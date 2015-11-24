@@ -141,6 +141,14 @@ namespace HyperSearch.Windows.Settings
         private void Window_Closed(object sender, EventArgs e)
         {
             IsSettingsOpen = false;
+
+            if (HyperSearchSettings.Instance().Input.Action == null || HyperSearchSettings.Instance().Input.Action.Keys.Count == 0)
+            {
+                Alert.ShowExclamation("No Action key configured, defaulting to ENTER.", App.Current.MainWindow);
+
+                HyperSearchSettings.Instance().Input.Action = new KeyList(Key.Enter);
+            }
+
             HyperSearchSettings.Instance().Save();
         }
 
@@ -169,7 +177,12 @@ namespace HyperSearch.Windows.Settings
 
                 if (item != null) attrib = item.SettingType;
 
-                if (settings.Action.Is(e.Key) && attrib != null)
+                var actionKey = new KeyList(Key.Enter);
+
+                if (settings.Action != null && settings.Action.Keys.Count > 0) actionKey = settings.Action;
+
+
+                if (actionKey.Is(e.Key) && attrib != null)
                 {
                     if (ctrl != null)
                     {
@@ -252,7 +265,6 @@ namespace HyperSearch.Windows.Settings
                 }
                 else if (settings.Exit.Is(e.Key))
                 {
-                    if (item.Property.PropertyType == typeof(KeyList) && item.Property.Name.Equals("Exit")) return;
                     this.Close();
                 }
                 else if (settings.Down.Is(e.Key))
@@ -263,21 +275,30 @@ namespace HyperSearch.Windows.Settings
                     }
                     else
                     {
-                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                        if (listView.SelectedIndex >= listView.Items.Count - 1)
+                        {
+                            listView.SelectedIndex = 0;
+                            listView.ScrollIntoView(listView.SelectedItem);
+                            listView.SelectAndFocusItem(0);
+                        }
+                        else
+                        {
+                            elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                        }
                     }
                 }
                 else if (settings.Up.Is(e.Key))
                 {
-                    //if (focussedLV == listView &&  listView.SelectedIndex == 0)
-                    //{
-                    //    if (sectionListView.SelectedItem != null)
-                    //    {
-                    //        sectionListView.SelectAndFocusItem(sectionListView.SelectedIndex);
-                    //        return;
-                    //    }
-                    //}
-
-                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+                    if (listView.SelectedIndex == 0)
+                    {
+                        listView.SelectedIndex = listView.Items.Count - 1;
+                        listView.ScrollIntoView(listView.SelectedItem);
+                        listView.SelectAndFocusItem(listView.Items.Count - 1);
+                    }
+                    else
+                    {
+                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+                    }
                 }
                 else if (settings.Left.Is(e.Key))
                 {
@@ -286,6 +307,10 @@ namespace HyperSearch.Windows.Settings
                         sectionListView.SelectedIndex = sectionListView.SelectedIndex - 1;
                         sectionListView.ScrollIntoView(sectionListView.SelectedItem);
                     }
+                    else
+                    {
+                        sectionListView.SelectAndFocusItem(sectionListView.Items.Count - 1);
+                    }
                 }
                 else if (settings.Right.Is(e.Key))
                 {
@@ -293,6 +318,10 @@ namespace HyperSearch.Windows.Settings
                     {
                         sectionListView.SelectedIndex = sectionListView.SelectedIndex + 1;
                         sectionListView.ScrollIntoView(sectionListView.SelectedItem);
+                    }
+                    else
+                    {
+                        sectionListView.SelectAndFocusItem(0);
                     }
                 }
             }
@@ -308,6 +337,8 @@ namespace HyperSearch.Windows.Settings
         
             if (attrib.ActionType == SettingActionType.ConfigureButtonLayout)
             {
+                Alert.ShowExclamation("Not yet implemented.", this);
+                return;
                 var controllerLayoutWin = new ControllerLayoutWin();
 
                 if (Win.Modal(controllerLayoutWin, this))
