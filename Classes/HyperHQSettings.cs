@@ -141,7 +141,7 @@ namespace HyperSearch
         [IniHeader(Name = "Main")]
         public class Main
         {
-            [SettingType(Type = SettingsType.MultiOption, Title = "Menu mode", Description = "Provides the ability to run only a single sub-wheel.", MutliValueCsv = "multi, single")]
+            //[SettingType(Type = SettingsType.MultiOption, Title = "Menu mode", Description = "Provides the ability to run only a single sub-wheel.", MutliValueCsv = "multi, single")]
             [IniField(Name = "Menu_Mode")]
             public string MenuMode { get; set; }
 
@@ -167,12 +167,12 @@ namespace HyperSearch
             public bool EnableExit { get; set; }
 
             [SettingSection("Startup/Exit")]
-            [SettingType(Type = SettingsType.MultiOption, Title = "Exit default", Description = "The default selected option in the exit menu.", MutliValueCsv = "yes,no")]
+            //[SettingType(Type = SettingsType.MultiOption, Title = "Exit default", Description = "The default selected option in the exit menu.", MutliValueCsv = "yes,no")]
             [IniField(Name = "Exit_Default")]
             public string ExitDefault { get; set; }
 
             [SettingSection("Startup/Exit")]
-            [SettingType(Type = SettingsType.MultiOption, Title = "Exit action", Description = "Controls whether the exit action just exits the application or alternatively shuts down the PC.", MutliValueCsv = "exit,shutdown")]
+            //[SettingType(Type = SettingsType.MultiOption, Title = "Exit action", Description = "Controls whether the exit action just exits the application or alternatively shuts down the PC.", MutliValueCsv = "exit,shutdown")]
             [IniField(Name = "Exit_Action")]
             public string ExitAction { get; set; }
 
@@ -210,7 +210,7 @@ namespace HyperSearch
             [IniField(Name = "Scanlines_Image")]
             public string ScanlinesImage { get; set; }
 
-            [SettingType(Type = SettingsType.MultiOption, Title = "Scanline scale", Description = "A scale factor to apply to the scanline image.", MutliValueCsv = "1,2,3,4,5,6,7,8,9")]
+            //[SettingType(Type = SettingsType.MultiOption, Title = "Scanline scale", Description = "A scale factor to apply to the scanline image.", MutliValueCsv = "1,2,3,4,5,6,7,8,9")]
             [IniField(Name = "Scanlines_Scale")]
             public int? ScanlinesScale { get; set; }
 

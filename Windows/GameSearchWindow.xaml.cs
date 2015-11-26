@@ -730,7 +730,7 @@ namespace HyperSearch.Windows
 
         private void resultListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            RunSelectedResult();
+            //?RunSelectedResult();
         }
 
         private void systemSummaryListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

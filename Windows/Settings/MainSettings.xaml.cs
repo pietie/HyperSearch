@@ -223,9 +223,10 @@ namespace HyperSearch.Windows.Settings
                                 }
                                 else // default
                                 {
-                                    if (!string.IsNullOrEmpty(attrib.MutliValueCsv))
+                                    if (attrib.EnumSource != null)
                                     {
-                                        var items = attrib.MutliValueCsv.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                        //var items = attrib.MutliValueCsv.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                        var items = Enum.GetNames(attrib.EnumSource);
 
                                         MultiOptionSelector win = new MultiOptionSelector();
 
@@ -235,7 +236,16 @@ namespace HyperSearch.Windows.Settings
                                         {
                                             if (win.SelectedItem != null)
                                             {
+                                                var o = (TextInputType)Enum.Parse(attrib.EnumSource, win.SelectedItem.ToString());
+
+                                                if (o == TextInputType.Orb)
+                                                {
+                                                    Alert.ShowExclamation("Orb type not yet supported", secondsBeforeWeMayClose:0);
+                                                    return;
+                                                }
+
                                                 item.Value = win.SelectedItem.ToString();
+                                                item.Property.SetValue(item.ParentObject, o, null);
                                             }
                                         }
                                     }

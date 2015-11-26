@@ -8,9 +8,9 @@ namespace HyperSearch.Classes
 {
     public static class Alert
     {
-        public static void ShowExclamation(string msg, Window parent = null)
+        public static void ShowExclamation(string msg, Window parent = null, int secondsBeforeWeMayClose = 2)
         {
-            var win = new Windows.Common.AlertWin();
+            var win = new Windows.Common.AlertWin() { SecondsBeforeWeMayClose = secondsBeforeWeMayClose };
 
             win.Owner = parent;
             win.Text = msg;

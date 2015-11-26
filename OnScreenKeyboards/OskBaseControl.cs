@@ -62,18 +62,18 @@ namespace HyperSearch
 
         private void OskBaseControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            try
-            {
-                var button = listView.SelectedItem as OnScreenKeyboardButton;
+            //try
+            //{
+            //    var button = listView.SelectedItem as OnScreenKeyboardButton;
 
-                if (button == null) return;
+            //    if (button == null) return;
 
-                HandleOskButtonPressed(button);
-            }
-            catch (Exception ex)
-            {
-                ErrorHandler.HandleException(ex);
-            }
+            //    HandleOskButtonPressed(button);
+            //}
+            //catch (Exception ex)
+            //{
+            //    ErrorHandler.HandleException(ex);
+            //}
         }
 
         private void listView_PreviewKeyDown(object sender, KeyEventArgs e)

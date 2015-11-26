@@ -73,7 +73,33 @@ namespace HscLib.Controls
             this.SelectionChanged += OnSelectionChanged;
             this.Loaded += OnLoaded;
             this.PreviewKeyDown += ListViewHSC_PreviewKeyDown;
+            this.MouseDoubleClick += ListViewHSC_MouseDoubleClick;
             
+        }
+
+        private void ListViewHSC_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine("DirectlyOver = {0}", Mouse.DirectlyOver == Keyboard.FocusedElement);
+            var target = Keyboard.FocusedElement as FrameworkElement;
+
+            if (target == null) return;
+
+            var htr = VisualTreeHelper.HitTest(target, e.GetPosition(target));
+
+            if (htr == null) return;
+
+            var key = HyperSearchSettings.Instance().Input.Action.FirstKey;
+            
+            var routedEvent = Keyboard.PreviewKeyDownEvent;
+
+            target.RaiseEvent(
+              new KeyEventArgs(
+                Keyboard.PrimaryDevice,
+                Keyboard.PrimaryDevice.ActiveSource,
+                0,
+                key)
+              { RoutedEvent = routedEvent }
+            );
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -156,41 +182,40 @@ namespace HscLib.Controls
 
         private void ListViewHSC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            return;
-            try
-            {
-                e.Handled = true;
-                var elementWithFocus = Keyboard.FocusedElement as UIElement;
+            //try
+            //{
+            //    e.Handled = true;
+            //    var elementWithFocus = Keyboard.FocusedElement as UIElement;
 
-                if (HyperSearchSettings.Instance().Input.Down.Is(e.Key))
-                {
-                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-                    return;
-                }
-                else if (HyperSearchSettings.Instance().Input.Up.Is(e.Key))
-                {
-                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
-                    return;
-                }
-                else if (HyperSearchSettings.Instance().Input.Left.Is(e.Key))
-                {
-                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
-                    return;
-                }
-                else if (HyperSearchSettings.Instance().Input.Right.Is(e.Key))
-                {
-                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
-                    return;
-                }
-                else if (HyperSearchSettings.Instance().Input.Back.Is(e.Key))
-                {
+            //    if (HyperSearchSettings.Instance().Input.Down.Is(e.Key))
+            //    {
+            //            elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+            //        return;
+            //    }
+            //    else if (HyperSearchSettings.Instance().Input.Up.Is(e.Key))
+            //    {
+            //        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
+            //        return;
+            //    }
+            //    else if (HyperSearchSettings.Instance().Input.Left.Is(e.Key))
+            //    {
+            //        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
+            //        return;
+            //    }
+            //    else if (HyperSearchSettings.Instance().Input.Right.Is(e.Key))
+            //    {
+            //        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
+            //        return;
+            //    }
+            //    else if (HyperSearchSettings.Instance().Input.Back.Is(e.Key))
+            //    {
                     
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorHandler.HandleException(ex);
-            }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    ErrorHandler.HandleException(ex);
+            //}
         }
 
     }

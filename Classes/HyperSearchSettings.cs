@@ -263,13 +263,13 @@ namespace HyperSearch.Classes
             public string RocketLauncherExePath { get; set; }
 
             [JsonProperty]
-            [DefaultValue(TextInputType.Orb)]
-            [SettingType(Type = SettingsType.MultiOption, Title = "Keyboard type", Description = "Specifies the keyboard type to use for search criteria input.", MutliValueCsv = "AtoZ,Qwerty,Azerty")]
+            [DefaultValue(TextInputType.Qwerty)]
+            [SettingType(Type = SettingsType.MultiOption, Title = "Keyboard type", Description = "Specifies the keyboard type to use for search criteria input.", EnumSource = typeof(TextInputType))]
             public TextInputType? KeyboardType { get; set; }
 
             [JsonProperty]
             [DefaultValue(SearchMode.Contains)]
-            [SettingType(Type = SettingsType.MultiOption, Title = "Search mode", Description = "'Contains' search is slower but yields the best results.", MutliValueCsv = "Contains, StartsWith")]
+            [SettingType(Type = SettingsType.MultiOption, Title = "Search mode", Description = "'Contains' search is slower but yields the best results.", EnumSource =typeof(SearchMode))]
             public SearchMode SearchMode { get; set; }
 
             [JsonProperty]
