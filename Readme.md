@@ -30,7 +30,7 @@ All config is stored in **Settings.json**.
 
 Most of the settings can be configured using the built-in UI but some require manually changing the settings in the file.
 
-**NOTE:** When specifying paths with backslashes be sure to double-up on each slash, e.g. "C:\\\Foo\\\Bar"
+>**NOTE:** When specifying paths with backslashes be sure to double-up on each slash, e.g. "C:\\\Foo\\\Bar"
 
 ```javascript
 {
