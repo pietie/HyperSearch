@@ -47,9 +47,10 @@ namespace HyperSearch
             return null;
         }
 
-        public static string AbsolutePath(string path)
+        public static string AbsolutePath(string path, out bool isRelative)
         {
             Uri uriTester;
+            isRelative = false;
 
             if (!Uri.TryCreate(path, UriKind.RelativeOrAbsolute, out uriTester))
             {
@@ -57,6 +58,7 @@ namespace HyperSearch
             }
             else if (!uriTester.IsAbsoluteUri)
             {// convert relative Uri to absolute
+                isRelative = true;
                 return new Uri(new Uri(System.AppDomain.CurrentDomain.BaseDirectory, UriKind.Absolute), uriTester.ToString()).LocalPath;
             }
             else

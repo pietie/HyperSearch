@@ -1,7 +1,7 @@
 ﻿<Window x:Class="HyperSearch.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Minimize to hide in systray" Height="350" Width="800" Closing="Window_Closing" Loaded="Window_Loaded" Icon="search.ico" 
+        Title="Minimize to hide in systray" Height="350" Width="800" Closing="Window_Closing" Icon="search.ico" 
         
         >
     <Grid x:Name="mainGrid">

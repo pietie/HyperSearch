@@ -12,7 +12,8 @@
         Style="{DynamicResource DialogWindow}"  
         Loaded="Window_Loaded"
         Closed="Window_Closed"
-        PreviewKeyDown="Window_PreviewKeyDown"
+        Topmost="True"
+        PreviewKeyDown="Window_PreviewKeyDown" WindowStartupLocation="CenterOwner"
         >
     <Window.Resources>
         <conv:DoubleOffsetConverter x:Key="listViewWidthConverter" Offset="-10"/>

@@ -9,11 +9,12 @@ namespace HyperSearch
 {
     public static class Global
     {
+        public static string AlternativeSystemWheelSourceFolder;
         public static string AlternativeGameWheelSourceFolder;
 
         public static string BuildFilePathInHyperspinDir(string filename, params object[] args)
         {
-            return Path.Combine(HyperSearchSettings.Instance().General.HyperSpinPath ?? "", string.Format(filename, args));
+            return Path.Combine(HyperSearchSettings.Instance().General.HyperSpinPathAbsolute ?? "", string.Format(filename, args));
         }
 
         public static string BuildFilePathInAppDir(string filename)

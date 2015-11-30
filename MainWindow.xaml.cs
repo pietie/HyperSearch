@@ -1,5 +1,6 @@
 ﻿using HyperSearch.Classes;
 using HyperSearch.Windows.Settings;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -223,43 +224,46 @@ namespace HyperSearch
 
                 var hsPath = Settings.General.HyperSpinPath;
                 Log("Hyperspin path: {0}", hsPath);
+                bool isRelative;
+
+                try
+                {
+                    hsPath = Util.AbsolutePath(hsPath, out isRelative);
+
+                    if (isRelative) Log("Specified HyperSpin path is a relative path, translating to absolute path: {0}", hsPath);
+
+                    HyperSearchSettings.Instance().General.HyperSpinPathAbsolute = hsPath;
+                }
+                catch (Exception ex)
+                {
+                    ErrorHandler.LogException(ex);
+                    Log("ERROR: The specified HyperSpin path is not a valid URI!");
+                }
 
                 var launcherPath = Settings.General.RocketLauncherExePath;
 
                 if (string.IsNullOrEmpty(launcherPath))
                 {
-                    Log("LauncherPath not set. Defaulting to HyperSpin config and HyperLaunch.exe");
+                    Log("General.RocketLauncherExePath not set. Defaulting to HyperSpin config and HyperLaunch.exe");
                 }
                 else
                 {
-                    Uri uriTester;
 
-                    if (!Uri.TryCreate(launcherPath, UriKind.RelativeOrAbsolute, out uriTester))
+                    try
                     {
+                        launcherPath = Util.AbsolutePath(launcherPath, out isRelative);
+
+                        if (isRelative) Log("Specified Launcher path is a relative path, translating to absolute path: {0}", launcherPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorHandler.LogException(ex);
                         Log("ERROR: The specified Launcher path is not a valid URI!");
                     }
-                    else if (!uriTester.IsAbsoluteUri)
-                    {// convert relative Uri to absolute
-                        launcherPath = new Uri(new Uri(System.AppDomain.CurrentDomain.BaseDirectory, UriKind.Absolute), uriTester.ToString()).LocalPath;
-                        Log("Specified Launcher path is a relative path, translating to absolute path: {0}", launcherPath);
-                    }
-
 
                     Log("LauncherPath: {0}", launcherPath);
                 }
 
-                Uri hsPathUriTester;
-
-                if (!Uri.TryCreate(hsPath, UriKind.RelativeOrAbsolute, out hsPathUriTester))
-                {
-                    Log("ERROR: The specified HyperSpin path is not a valid URI!");
-                }
-                else if (!hsPathUriTester.IsAbsoluteUri)
-                {// convert relative Uri to absolute
-                    hsPath = new Uri(new Uri(System.AppDomain.CurrentDomain.BaseDirectory, UriKind.Absolute), hsPathUriTester.ToString()).LocalPath;
-                    Log("Specified HyperSpin path is a relative path, translating to absolute path: {0}", hsPath);
-                }
-             
                 var settingsPath = Global.BuildFilePathInHyperspinDir("Settings\\Settings.ini");
                 HqSettings = new HyperHQSettings();
 
@@ -279,28 +283,40 @@ namespace HyperSearch
                 {
                     Log("WARNING! HQ Settings file does not exist at: {0}", settingsPath);
                 }
-                 
-                //Uri hlPathUriTester;
-
-                //if (!Uri.TryCreate(HqSettings.MainSection.HyperlaunchPath, UriKind.RelativeOrAbsolute, out hlPathUriTester))
-                //{
-                //    Log("ERROR: The specified HyperLaunch path is not a valid URI!");
-                //}
-                //else if (!hlPathUriTester.IsAbsoluteUri)
-                //{// convert relative Uri to absolute
-                //    HqSettings.MainSection.HyperlaunchPath = new Uri(new Uri(System.AppDomain.CurrentDomain.BaseDirectory, UriKind.Absolute), hlPathUriTester.ToString()).LocalPath;
-                //    Log("Specified HyperLaunch path is a relative path, translating to absolute path: {0}", HqSettings.MainSection.HyperlaunchPath);
-                //}
-
 
                 Log("CabMode: {0}", Settings.General.CabMode ?? false);
 
-                var altGameWheelSourceFolder = ConfigurationManager.AppSettings["AlternativeGameWheelSourceFolder"];
+
+                var altSystemWheelSourceFolder = HyperSearchSettings.Instance().Misc.AlternativeSystemWheelImagePath;
+
+                if (!string.IsNullOrEmpty(altSystemWheelSourceFolder))
+                {
+                    altSystemWheelSourceFolder = Util.AbsolutePath(altSystemWheelSourceFolder, out isRelative);
+
+                    try
+                    {
+                        if (isRelative) Log("Specified AlternativeSystemWheelImagePath path is a relative path, translating to absolute path: {0}", altSystemWheelSourceFolder);
+                        else Log("AlternativeSystemWheelSourceFolder: {0}", altSystemWheelSourceFolder);
+
+                        Global.AlternativeSystemWheelSourceFolder = altSystemWheelSourceFolder;
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorHandler.LogException(ex);
+                        Log("ERROR: The specified AlternativeSystemWheelImagePath is not a valid URI!");
+                    }
+                }
+                else
+                {
+                    Log("AlternativeSystemWheelImagePath not specified. Defaulting to 'Wheel'.");
+                }
+
+                var altGameWheelSourceFolder = HyperSearchSettings.Instance().Misc.AlternativeGameWheelSourceFolder;
 
                 if (!string.IsNullOrEmpty(altGameWheelSourceFolder))
                 {
-                    Global.AlternativeGameWheelSourceFolder = altGameWheelSourceFolder;
                     Log("AlternativeGameWheelSourceFolder: {0}", altGameWheelSourceFolder);
+                    Global.AlternativeGameWheelSourceFolder = altGameWheelSourceFolder;
                 }
                 else
                 {
@@ -368,36 +384,6 @@ namespace HyperSearch
                 ni.ShowBalloonTip(balloonToolTipTimeoutInsMS, "HyperSearch started", "Double click tray icon to bring up log window.", System.Windows.Forms.ToolTipIcon.Info);
             }
         }
-
-        //private KeyList GetKeyFromAppSetting(string appKey, Key defaultVal = Key.None)
-        //{
-        //    var str = ConfigurationManager.AppSettings[appKey];
-
-        //    if (!string.IsNullOrEmpty(str))
-        //    {
-        //        KeyList kl = new KeyList();
-
-        //        var entries = str.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-        //        foreach (var e in entries)
-        //        {
-        //            System.Windows.Input.Key key;
-
-        //            if (Enum.TryParse<System.Windows.Input.Key>(e, out key))
-        //            {
-        //                kl.Add(key);
-        //            }
-        //        }
-
-        //        return kl;
-        //    }
-        //    else
-        //    {
-        //        var def= new KeyList();
-        //        def.Add(defaultVal);
-        //        return def;
-        //    }
-        //}
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
@@ -618,17 +604,6 @@ namespace HyperSearch
             
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-            }
-        }
 
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -644,7 +619,6 @@ namespace HyperSearch
         {
             return Path.Combine(HqSettings.LEDBlinkySection.Path, "LEDBlinky.exe");
         }
-
 
         public static void LEDBlinkSystemSelected(string systemName)
         {
@@ -685,8 +659,6 @@ namespace HyperSearch
             }
         }
 
-
-
         public static void LogStatic(string line, params object[] args)
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -723,11 +695,7 @@ namespace HyperSearch
         {
             try
             {
-                Windows.Settings.ControllerLayoutWin win = new Windows.Settings.ControllerLayoutWin();
-
-                //Win.Modal(win, this);
                 Win.Modal(new Windows.Settings.MainSettings(), this);
-                
             }
             catch (Exception ex)
             {

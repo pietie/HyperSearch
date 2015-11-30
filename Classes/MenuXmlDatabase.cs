@@ -177,6 +177,9 @@ namespace HyperSpinClone.Classes
             else
             {
                 var p = Global.BuildFilePathInHyperspinDir(@"Media\{0}\Images\{2}\{1}.png", ParentMenu.SystemName, name, Global.AlternativeGameWheelSourceFolder);
+
+            
+
                 GameImageSourceUri = GetSafeUri(p);
             }
         }

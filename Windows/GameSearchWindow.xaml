@@ -6,7 +6,7 @@
         xmlns:conv2="clr-namespace:HyperSearch.Converters"
         Title="GameSearchWindow" Height="480" Width="640"
         Style="{DynamicResource DialogWindow}"        
-        ShowInTaskbar="False" Topmost="False"
+        ShowInTaskbar="False" Topmost="True"
         PreviewKeyDown="Window_PreviewKeyDown" Loaded="Window_Loaded"  Focusable="True"
         x:Name="gameSearchWindow" >
     <Window.Resources>

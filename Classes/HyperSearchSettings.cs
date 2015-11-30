@@ -254,6 +254,9 @@ namespace HyperSearch.Classes
         [SettingSection("General")]
         public class GeneralSection
         {
+            [JsonIgnore]
+            public string HyperSpinPathAbsolute { get; set; }
+
             [JsonProperty]
             [SettingType(Type = SettingsType.FolderPath, Title = "HyperSpin path", Description = "Specifies the location of the main HyperSpin folder.")]
             public string HyperSpinPath { get; set; }
@@ -305,6 +308,11 @@ namespace HyperSearch.Classes
         [SettingSection("Misc")]
         public class MiscSection
         {
+            public MiscSection()
+            {
+                this.GenreWheelImageLocations = new List<string>();
+            }
+
             [JsonProperty]
             [DefaultValue(true)]
             [SettingType(Type = SettingsType.TrueFalse, Title = "Show game videos", Description = "If enabled displays the selected game's video if available.")]
@@ -327,6 +335,15 @@ namespace HyperSearch.Classes
             [DefaultValue(true)]
             [SettingType(Type = SettingsType.TrueFalse, Title = "Show wheel images on results", Description = "If enabled displays wheel images on the results view.")]
             public bool ShowWheelImagesOnResults { get; set; }
+
+            [JsonProperty]
+            public string AlternativeSystemWheelImagePath { get; set; }
+
+            [JsonProperty]
+            public string AlternativeGameWheelSourceFolder { get; set; }
+
+            [JsonProperty]
+            public List<string> GenreWheelImageLocations { get; set; }
         }
 
 }
@@ -384,4 +401,5 @@ namespace HyperSearch.Classes
         Contains,
         StartsWith
     }
+
 }

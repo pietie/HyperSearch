@@ -1112,16 +1112,18 @@ namespace HyperSearch.Windows
                 {
                     _genreImageLocations = new List<string>();
 
-                    int ix = 0;
+                    var locations = HyperSearchSettings.Instance().Misc.GenreWheelImageLocations;
 
-                    var keyVal = System.Configuration.ConfigurationManager.AppSettings[string.Format("GenreWheelImageLocation{0}", ix)];
-
-                    while (!string.IsNullOrEmpty(keyVal))
+                    if (locations != null && locations.Count > 0)
                     {
-                        _genreImageLocations.Add(Util.AbsolutePath(keyVal));
-                        ix++;
-                        keyVal = System.Configuration.ConfigurationManager.AppSettings[string.Format("GenreWheelImageLocation{0}", ix)];
+                        bool isRelative;
+
+                        foreach(var loc in locations)
+                        {
+                            _genreImageLocations.Add(Util.AbsolutePath(loc, out isRelative));
+                        }
                     }
+
                 }
                 catch(Exception ex)
                 {
@@ -1419,12 +1421,7 @@ namespace HyperSearch.Windows
                     searchPerf.End();
 
                     var systemWheelImageBasePath = Global.BuildFilePathInHyperspinDir(@"Media\Main Menu\Images\Wheel");
-                    var altPath = System.Configuration.ConfigurationManager.AppSettings["AlternativeSystemWheelImagePath"];
-
-                    if (!string.IsNullOrEmpty(altPath))
-                    {
-                        altPath = Util.AbsolutePath(altPath);
-                    }
+                    var altPath = Global.AlternativeSystemWheelSourceFolder;
 
                     if (!string.IsNullOrEmpty(altPath) && Directory.Exists(altPath))
                     {
@@ -1519,6 +1516,13 @@ namespace HyperSearch.Windows
                 foreach (var loc in _genreImageLocations)
                 {
                     path = string.Format("{0}\\{1}.png", loc.TrimEnd('\\'), genre);
+
+                    if (!File.Exists(path))
+                    {
+                        // try adding " Games" as this seems to be the HyperSpin convention 
+                        path = string.Format("{0}\\{1} Games.png", loc.TrimEnd('\\'), genre);
+                    }
+
                     if (File.Exists(path)) return new Uri(path, UriKind.Absolute);
                 }
 
