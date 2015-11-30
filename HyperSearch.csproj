@@ -154,9 +154,6 @@
       <DependentUpon>Slider.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Settings\Controls\TrueFalse.cs" />
-    <Compile Include="Windows\VideoPopupWin.xaml.cs">
-      <DependentUpon>VideoPopupWin.xaml</DependentUpon>
-    </Compile>
     <Page Include="OnScreenKeyboards\AtoZKeyboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -239,10 +236,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Settings\Controls\Slider.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\VideoPopupWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

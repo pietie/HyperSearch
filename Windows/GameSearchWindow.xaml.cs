@@ -522,6 +522,17 @@ namespace HyperSearch.Windows
 
                         customVideoPath = wheelSettings.VideoDefaultsSection.CustomVideoPath;
 
+                        Uri uriTester;
+
+                        if (Uri.TryCreate(customVideoPath, UriKind.RelativeOrAbsolute, out uriTester))
+                        {
+                            // relative path
+                            if (!uriTester.IsAbsoluteUri)
+                            {
+                                customVideoPath = new Uri(new Uri(HyperSearchSettings.Instance().General.HyperSpinPathAbsolute, UriKind.Absolute), uriTester.ToString()).LocalPath;
+                            }
+                        }
+
                         if (!string.IsNullOrEmpty(customVideoPath) && !Directory.Exists(customVideoPath))
                         {
                             MainWindow.LogStatic("{0} has a custom video path defined ({1}) but that path does not exist, so reverting back to default.", systemName, customVideoPath);
@@ -540,8 +551,9 @@ namespace HyperSearch.Windows
                 if (!string.IsNullOrEmpty(customVideoPath))
                 {
                     baseVideoPath = customVideoPath.TrimEnd('\\');
+                    
                 }
-
+                
                 var mp4Path = string.Format("{0}\\{1}.mp4", baseVideoPath, gameName);
                 var flvPath = string.Format("{0}\\{1}.flv", baseVideoPath, gameName);
                 var pngPath = string.Format("{0}\\{1}.png", baseVideoPath, gameName);

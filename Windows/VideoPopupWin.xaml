@@ -4,7 +4,7 @@
         xmlns:conv="clr-namespace:HyperSearch.Converters"
         Title="VideoPopupWin" Height="240" Width="320"
         Style="{StaticResource DialogWindow}"
-        Topmost="True" PreviewKeyDown="Window_PreviewKeyDown" SizeChanged="Window_SizeChanged" Loaded="Window_Loaded"
+        Topmost="True" PreviewKeyDown="Window_PreviewKeyDown" 
         >
     <Window.Resources>
         <conv:ClipRectConverter x:Key="clipConverter"/>

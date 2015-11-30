@@ -44,49 +44,40 @@ namespace HyperSearch.Windows
             }));
         }
 
-        public void LoadVideo(string systemName, string gameName)
-        {
-            try
-            {
-                _lastRequestGuid = Guid.NewGuid();
+        //public void LoadVideo(string systemName, string gameName)
+        //{
+        //    try
+        //    {
+        //        _lastRequestGuid = Guid.NewGuid();
 
-                var mp4Path = Global.BuildFilePathInHyperspinDir("Media\\{0}\\Video\\{1}.mp4", systemName, gameName);
-                var flvPath = Global.BuildFilePathInHyperspinDir("Media\\{0}\\Video\\{1}.mp4", systemName, gameName);
+        //        var mp4Path = Global.BuildFilePathInHyperspinDir("Media\\{0}\\Video\\{1}.mp4", systemName, gameName);
+        //        var flvPath = Global.BuildFilePathInHyperspinDir("Media\\{0}\\Video\\{1}.mp4", systemName, gameName);
 
-                if (File.Exists(mp4Path))
-                {
-                    video.Source = new Uri(mp4Path, UriKind.Absolute);
-                }
-                else if (File.Exists(flvPath))
-                {
-                    video.Source = new Uri(flvPath, UriKind.Absolute);
-                }
+        //        if (File.Exists(mp4Path))
+        //        {
+        //            video.Source = new Uri(mp4Path, UriKind.Absolute);
+        //        }
+        //        else if (File.Exists(flvPath))
+        //        {
+        //            video.Source = new Uri(flvPath, UriKind.Absolute);
+        //        }
 
-                else
-                {
-                    var mp4NoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.mp4");
-                    var flvNoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.flv");
+        //        else
+        //        {
+        //            var mp4NoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.mp4");
+        //            var flvNoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.flv");
 
-                    if (File.Exists(mp4NoVideo)) video.Source = new Uri(mp4NoVideo, UriKind.Absolute);
-                    else video.Source = new Uri(flvNoVideo, UriKind.Absolute);
-                }
+        //            if (File.Exists(mp4NoVideo)) video.Source = new Uri(mp4NoVideo, UriKind.Absolute);
+        //            else video.Source = new Uri(flvNoVideo, UriKind.Absolute);
+        //        }
 
-                if (video.Source != null) video.Play();
-            }
-            catch (Exception ex)
-            {
-                ErrorHandler.HandleException(ex);
-            }
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
+        //        if (video.Source != null) video.Play();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ErrorHandler.HandleException(ex);
+        //    }
+        //}
 
         private void video_MediaOpened(object sender, RoutedEventArgs e)
         {
