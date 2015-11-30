@@ -6,6 +6,10 @@ Development requirements:
 * C#
 * .NET Framework 4.0
 
+## Setting up HyperSearch
+
+Refer to the [wiki]( https://github.com/pietie/HyperSearch/wiki "HyperSearch Wiki").
+
 
 ## CLI options
 
@@ -28,20 +32,6 @@ Most of the settings can be configured using the built-in UI but some require ma
 
 ```javascript
 {
-    // The following controls how long (in milliseconds) a certain trigger key needs to be held down before it triggers. Set to 0 to trigger immediately.
-    "Input": {
-        "Triggers": {
-            "SearchTriggerDelayInMilliseconds": 0,
-            "FavouritesTriggerDelayInMilliseconds": 0,
-            "GenreTriggerDelayInMilliseconds": 0,
-            "SettingsTriggerDelayInMilliseconds": 0,
-    }
-}
-
-```
-
-```javascript
-{
     "General": {
         // Controls the width and height of the main HyperSearch windows if Standalone mode is enabled.
         "StandaloneWidth": 1600,
@@ -53,6 +43,19 @@ Most of the settings can be configured using the built-in UI but some require ma
 }
 ```
 
+```javascript
+{
+    // The following controls how long (in milliseconds) a certain trigger key needs to be held down before it fires. Set to 0 to fire immediately.
+    "Input": {
+        "Triggers": {
+            "SearchTriggerDelayInMilliseconds": 0,
+            "FavouritesTriggerDelayInMilliseconds": 0,
+            "GenreTriggerDelayInMilliseconds": 0,
+            "SettingsTriggerDelayInMilliseconds": 0,
+    }
+}
+
+```
 
 ```javascript
 {
@@ -69,50 +72,3 @@ Most of the settings can be configured using the built-in UI but some require ma
     }
 }
 ```
-
-<!-- 
-#### Input configuration 
-
-Each input configuration can be setup with one or more keys.
-
-
-##### Cab Mode
-Just a note about Cab Mode. If disabled the user is allowed to type keys on the keyboard as per normal. However, any key configured as an input key will take precedence. 
-
-For example if your input keys are configured as follows:
-
-Config | Binding
----- | ----
-Up|W
-Right|D
-Down|S
-Left|A
-
-Hitting W,D,S or A will navigate the onscreen keyboard so those keys will not be *typed*.
-
-    -->
-
-<!-- 
-#### Default config
-
-The default configuration is setup with:
-
-
-Config Key | Binding | Description
-------------- | ------------- | -------------
-Keys.Trigger.Search | F3 | Opens up the default search window
-Keys.Trigger.Favourites | F4 | Searches the favourites database
-Keys.Trigger.Genre | F5 | Searches the genres database
-Keys.Trigger.Settings | F10 | Settings
-&nbsp; | | |
-Keys.Action | Enter | Confirm/Launch
-Keys.Back|Backspace| Navigate back to previous screen
-Keys.Exit|Escape| Closes the search window
-Keys.Minimize|Tilde| Minimizes the search window. Reactivating should bring up the search window in its previous state.
-&nbsp; | | |
-Keys.Up|Up Arrow|Moves current selection upwards
-Keys.Right|Right Arrow|Moves current selection rightwards
-Keys.Down|Down Arrow|Moves current selection downwards
-Keys.Left|Left Arrow|Moves current selection leftwards
-
-    -->
