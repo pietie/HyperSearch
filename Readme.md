@@ -58,7 +58,14 @@ Most of the settings can be configured using the built-in UI but some require ma
 {
     "Misc": {
         // Controls how long to wait after game selection before showing the game video
-        "GameVideoPopupTimeoutInMilliseconds": 1600
+        "GameVideoPopupTimeoutInMilliseconds": 1600,
+
+        // Controls the location of System wheel images. If not specified, uses Hyperspin\Media\Main Menu\Images\Wheel by default
+        AlternativeSystemWheelImagePath: "c:\\SystemImagesPath",
+
+        // If not specified uses the default Hyperspin\Media\[System]\Images\Wheel
+        // If specified uses Hyperspin\Media\[SystemName]\Images\[AlternativeGameWheelSourceFolder]
+        AlternativeGameWheelSourceFolder: "AltWheelImages"
     }
 }
 ```
