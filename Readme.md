@@ -6,9 +6,9 @@ Development requirements:
 * C#
 * .NET Framework 4.0
 
-## Setting up HyperSearch
+## Getting started
 
-Refer to the [wiki]( https://github.com/pietie/HyperSearch/wiki "HyperSearch Wiki").
+Refer to the [wiki]( https://github.com/pietie/HyperSearch/wiki "HyperSearch Wiki") for instructions on initial setup and usage.
 
 
 ## CLI options
@@ -29,6 +29,8 @@ All config is stored in **Settings.json**.
 #### Non-UI supported settings 
 
 Most of the settings can be configured using the built-in UI but some require manually changing the settings in the file.
+
+**NOTE:** When specifying paths with backslashes be sure to double-up on each slash, e.g. "C:\\\Foo\\\Bar"
 
 ```javascript
 {
@@ -68,7 +70,10 @@ Most of the settings can be configured using the built-in UI but some require ma
 
         // If not specified uses the default Hyperspin\Media\[System]\Images\Wheel
         // If specified uses Hyperspin\Media\[SystemName]\Images\[AlternativeGameWheelSourceFolder]
-        "AlternativeGameWheelSourceFolder": "AltWheelImages"
+        "AlternativeGameWheelSourceFolder": "AltWheelImages",
+    
+        // Specify one or more locations to source the Genre wheel images from. Paths may be relative
+        "GenreWheelImageLocations": ["c:\\Path1", "c:\\Path2" ]
     }
 }
 ```
