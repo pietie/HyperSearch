@@ -61,11 +61,11 @@ Most of the settings can be configured using the built-in UI but some require ma
         "GameVideoPopupTimeoutInMilliseconds": 1600,
 
         // Controls the location of System wheel images. If not specified, uses Hyperspin\Media\Main Menu\Images\Wheel by default
-        AlternativeSystemWheelImagePath: "c:\\SystemImagesPath",
+        "AlternativeSystemWheelImagePath": "c:\\SystemImagesPath",
 
         // If not specified uses the default Hyperspin\Media\[System]\Images\Wheel
         // If specified uses Hyperspin\Media\[SystemName]\Images\[AlternativeGameWheelSourceFolder]
-        AlternativeGameWheelSourceFolder: "AltWheelImages"
+        "AlternativeGameWheelSourceFolder": "AltWheelImages"
     }
 }
 ```
