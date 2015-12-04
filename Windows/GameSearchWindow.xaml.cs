@@ -553,30 +553,49 @@ namespace HyperSearch.Windows
                     baseVideoPath = customVideoPath.TrimEnd('\\');
                     
                 }
-                
+
+                MainWindow.LogStaticVerbose("Base video path={0}", customVideoPath);
+
                 var mp4Path = string.Format("{0}\\{1}.mp4", baseVideoPath, gameName);
                 var flvPath = string.Format("{0}\\{1}.flv", baseVideoPath, gameName);
                 var pngPath = string.Format("{0}\\{1}.png", baseVideoPath, gameName);
 
                 if (File.Exists(mp4Path))
                 {
+                    MainWindow.LogStaticVerbose("Video.Source={0}", mp4Path);
                     video.Source = new Uri(mp4Path, UriKind.Absolute);
                 }
                 else if (File.Exists(flvPath))
                 {
+                    MainWindow.LogStaticVerbose("Video.Source={0}", flvPath);
                     video.Source = new Uri(flvPath, UriKind.Absolute);
                 }
                 else if (File.Exists(pngPath))
                 {
+                    MainWindow.LogStaticVerbose("Video.Source={0}", pngPath);
                     video.Source = new Uri(pngPath, UriKind.Absolute);
                 }
                 else
                 {
+                    MainWindow.LogStaticVerbose("No video found for {0}/{1}. Looking for placeholder.",systemName, gameName);
+
                     var mp4NoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.mp4");
                     var flvNoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.flv");
 
-                    if (File.Exists(mp4NoVideo)) video.Source = new Uri(mp4NoVideo, UriKind.Absolute);
-                    else video.Source = new Uri(flvNoVideo, UriKind.Absolute);
+                    if (File.Exists(mp4NoVideo))
+                    {
+                        MainWindow.LogStaticVerbose("Video.Source={0}", mp4NoVideo);
+                        video.Source = new Uri(mp4NoVideo, UriKind.Absolute);
+                    }
+                    else if (File.Exists(flvNoVideo))
+                    {
+                        MainWindow.LogStaticVerbose("Video.Source={0}", flvNoVideo);
+                        video.Source = new Uri(flvNoVideo, UriKind.Absolute);
+                    }
+                    else
+                    {
+                        MainWindow.LogStaticVerbose("No placeholder video found!");
+                    }
                 }
 
                 if (video.Source != null && this.CurrentViewState == ViewState.Results) video.Play();
@@ -1551,7 +1570,7 @@ namespace HyperSearch.Windows
 
         private void video_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            MainWindow.LogStatic("Video failed to open: {0}, with error: {1}", e.Source.ToString(), e.ErrorException.ToString());
+            MainWindow.LogStatic("Video failed: {0}, with error: {1}", (e.Source as MediaElement).Source.ToString(), e.ErrorException.ToString());
         }
 
        

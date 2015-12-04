@@ -302,6 +302,12 @@ namespace HyperSearch.Classes
             [DefaultValue(0)]
             public int BalloonToolTipTimeOutInMilliseconds { get; set; }
 
+
+            [JsonProperty]
+            [DefaultValue(false)]
+            [SettingType(Type = SettingsType.TrueFalse, Title = "Verbose logging", Description = "Turn on to get extended debugging info added to the log.")]
+            public bool VerboseLogging { get; set; }
+
         }
 
 

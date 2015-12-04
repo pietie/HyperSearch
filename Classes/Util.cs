@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Reflection;
 using HyperSearch;
+using HyperSearch.Classes;
 
 namespace HyperSearch
 {
@@ -98,9 +99,9 @@ namespace HyperSearch
                 return false;
         }
 
-        public static void StartProcess(string process, string args, bool log = false)
+        public static void StartProcess(string process, string args)
         {
-            if (log)
+            if (HyperSearchSettings.Instance().General.VerboseLogging)
             {
                 MainWindow.LogStatic("Launching: {0}", string.Format("{0} {1}", process, args));
             }

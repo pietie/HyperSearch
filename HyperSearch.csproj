@@ -70,6 +70,7 @@
     <Compile Include="Classes\Alert.cs" />
     <Compile Include="Classes\AnimationExtensions.cs" />
     <Compile Include="Classes\CanvasEx.cs" />
+    <Compile Include="Classes\FFMPEG.cs" />
     <Compile Include="Classes\HyperSearchSettings.cs" />
     <Compile Include="Classes\KeyList.cs" />
     <Compile Include="Classes\SystemSoundPlayer.cs" />

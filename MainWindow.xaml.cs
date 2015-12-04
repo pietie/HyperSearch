@@ -625,7 +625,7 @@ namespace HyperSearch
             try
             {
                 if (!MayCallLEDBlinky()) return;
-                Util.StartProcess(LEDBlinkyPath(), string.Format("7 \"{0}\"", systemName), false);
+                Util.StartProcess(LEDBlinkyPath(), string.Format("7 \"{0}\"", systemName));
             }
             catch (Exception ex)
             {
@@ -638,7 +638,7 @@ namespace HyperSearch
             try
             {
                 if (!MayCallLEDBlinky()) return;
-                Util.StartProcess(LEDBlinkyPath(), string.Format("3 \"{0}\" \"{1}\"", gameName, systemName), false);
+                Util.StartProcess(LEDBlinkyPath(), string.Format("3 \"{0}\" \"{1}\"", gameName, systemName));
             }
             catch(Exception ex)
             {
@@ -651,12 +651,18 @@ namespace HyperSearch
             try
             {
                 if (!MayCallLEDBlinky()) return;
-                Util.StartProcess(LEDBlinkyPath(), string.Format("9 \"{0}\"", gameName), false);
+                Util.StartProcess(LEDBlinkyPath(), string.Format("9 \"{0}\"", gameName));
             }
             catch (Exception ex)
             {
                 LogStatic(ex.ToString());
             }
+        }
+
+        public static void LogStaticVerbose(string line, params object[] args)
+        {
+            if (!HyperSearchSettings.Instance().General.VerboseLogging) return;
+            LogStatic(line, args);
         }
 
         public static void LogStatic(string line, params object[] args)
