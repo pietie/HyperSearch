@@ -115,6 +115,8 @@ namespace HyperSearch
                         server.Disconnect();
                         connectedOrWaiting = false;
                     }
+
+                    System.Threading.Thread.Sleep(80);
                 }
             });
         }
