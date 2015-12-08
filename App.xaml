@@ -3,8 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:eff="clr-namespace:HscLib.ShaderEffects"
              xmlns:local="clr-namespace:HyperSearch"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+
+        <sys:String x:Key="OSK.Text.Space">SPC</sys:String>
+        <sys:String x:Key="OSK.Text.Backspace">BS</sys:String>
+        <sys:String x:Key="OSK.Text.Clear">CLR</sys:String>
+        <sys:String x:Key="OSK.Text.Search">SEARCH</sys:String>
 
         <Style x:Key="OSKButtonBaseStyle" TargetType="local:OnScreenKeyboardButton" >
             <Setter Property="Width" Value="30"/>
