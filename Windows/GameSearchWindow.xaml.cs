@@ -522,21 +522,25 @@ namespace HyperSearch.Windows
 
                         customVideoPath = wheelSettings.VideoDefaultsSection.CustomVideoPath;
 
-                        Uri uriTester;
-
-                        if (Uri.TryCreate(customVideoPath, UriKind.RelativeOrAbsolute, out uriTester))
+                        if (!string.IsNullOrEmpty(customVideoPath))
                         {
-                            // relative path
-                            if (!uriTester.IsAbsoluteUri)
+
+                            Uri uriTester;
+
+                            if (Uri.TryCreate(customVideoPath, UriKind.RelativeOrAbsolute, out uriTester))
                             {
-                                customVideoPath = new Uri(new Uri(HyperSearchSettings.Instance().General.HyperSpinPathAbsolute, UriKind.Absolute), uriTester.ToString()).LocalPath;
+                                // relative path
+                                if (!uriTester.IsAbsoluteUri)
+                                {
+                                    customVideoPath = new Uri(new Uri(HyperSearchSettings.Instance().General.HyperSpinPathAbsolute, UriKind.Absolute), uriTester.ToString()).LocalPath;
+                                }
                             }
-                        }
 
-                        if (!string.IsNullOrEmpty(customVideoPath) && !Directory.Exists(customVideoPath))
-                        {
-                            MainWindow.LogStatic("{0} has a custom video path defined ({1}) but that path does not exist, so reverting back to default.", systemName, customVideoPath);
-                            customVideoPath = null;
+                            if (!string.IsNullOrEmpty(customVideoPath) && !Directory.Exists(customVideoPath))
+                            {
+                                MainWindow.LogStatic("{0} has a custom video path defined ({1}) but that path does not exist, so reverting back to default.", systemName, customVideoPath);
+                                customVideoPath = null;
+                            }
                         }
                     }
                     catch(Exception ex) 
@@ -554,7 +558,7 @@ namespace HyperSearch.Windows
                     
                 }
 
-                MainWindow.LogStaticVerbose("Base video path={0}", customVideoPath);
+                MainWindow.LogStaticVerbose("Base video path={0}", baseVideoPath);
 
                 var mp4Path = string.Format("{0}\\{1}.mp4", baseVideoPath, gameName);
                 var flvPath = string.Format("{0}\\{1}.flv", baseVideoPath, gameName);
@@ -577,7 +581,7 @@ namespace HyperSearch.Windows
                 }
                 else
                 {
-                    MainWindow.LogStaticVerbose("No video found for {0}/{1}. Looking for placeholder.",systemName, gameName);
+                    MainWindow.LogStaticVerbose("No video found for {0}/{1} @ {2}. Looking for placeholder.",systemName, gameName, mp4Path);
 
                     var mp4NoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.mp4");
                     var flvNoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.flv");
@@ -594,7 +598,7 @@ namespace HyperSearch.Windows
                     }
                     else
                     {
-                        MainWindow.LogStaticVerbose("No placeholder video found!");
+                        MainWindow.LogStaticVerbose("No placeholder video found! 'No Video.mp4/flv' expected at: {0}", Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\"));
                     }
                 }
 
@@ -623,6 +627,8 @@ namespace HyperSearch.Windows
             //            keyboard.AnimateOpen();
             try
             {
+                if (System.Diagnostics.Debugger.IsAttached) this.Topmost = false;
+
                 this.ShowGameVideos = HyperSearchSettings.Instance().Misc.EnableGameVideos;
                 this.VideoPopupTimeoutInMilliseconds = HyperSearchSettings.Instance().Misc.GameVideoPopupTimeoutInMilliseconds;
 
