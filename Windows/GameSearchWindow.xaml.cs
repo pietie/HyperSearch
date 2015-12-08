@@ -469,8 +469,8 @@ namespace HyperSearch.Windows
 
             selectedItemText.Text = string.Format("{4}. {0} - {1}, {2}, {3}", selectedItem.SystemName, selectedItem.description, selectedItem.manufacturer, selectedItem.year, ix).Replace(", ,", ",").TrimEnd(' ', ',');
 
-            // do not send the LED Blinky command for the "(All)" collection
-            if (summarySelection.SystemName.EqualsCI(SystemSummaryAllCollectionName))
+            // send the actual game item's System through for the "(All)" collection or if we are in Genre mode
+            if (summarySelection.SystemName.EqualsCI(SystemSummaryAllCollectionName) || SearchListToUse == SearchList.Genre)
             {
                 MainWindow.LEDBlinkSystemSelected(selectedItem.SystemName);
             }
@@ -788,7 +788,7 @@ namespace HyperSearch.Windows
                 }
 
                 // do not send the LED Blinky command for the "(All)" collection
-                if (!item.SystemName.EqualsCI(SystemSummaryAllCollectionName))
+                if (!item.SystemName.EqualsCI(SystemSummaryAllCollectionName) && SearchListToUse != SearchList.Genre)
                 {
                     MainWindow.LEDBlinkSystemSelected(item.SystemName);
                 }

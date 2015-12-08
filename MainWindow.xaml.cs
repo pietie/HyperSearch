@@ -634,7 +634,7 @@ namespace HyperSearch
 
                 if (systemName == _lastLedBlinkySystemSelected)
                 {
-                    MainWindow.LogStaticVerbose("LED blinky skipped. Last game selected already: {0}", systemName);
+                    MainWindow.LogStaticVerbose("LED blinky skipped. Last system selected already: {0}", systemName);
                     return;
                 }
 
