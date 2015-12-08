@@ -622,12 +622,47 @@ namespace HyperSearch
             return Path.Combine(HqSettings.LEDBlinkySection.Path, "LEDBlinky.exe");
         }
 
+        private static string _lastLedBlinkySystemSelected = null;
+        private static string _lastLedBlinkyGameSelected = null;
+
+
         public static void LEDBlinkSystemSelected(string systemName)
         {
             try
             {
                 if (!MayCallLEDBlinky()) return;
+
+                if (systemName == _lastLedBlinkySystemSelected)
+                {
+                    MainWindow.LogStaticVerbose("LED blinky skipped. Last game selected already: {0}", systemName);
+                    return;
+                }
+
                 Util.StartProcess(LEDBlinkyPath(), string.Format("7 \"{0}\"", systemName));
+
+                _lastLedBlinkySystemSelected = systemName;
+                _lastLedBlinkyGameSelected = null;
+            }
+            catch (Exception ex)
+            {
+                LogStatic(ex.ToString());
+            }
+        }
+        public static void LEDBlinkGameSelected(string gameName)
+        {
+            try
+            {
+                if (!MayCallLEDBlinky()) return;
+
+                if (gameName == _lastLedBlinkyGameSelected)
+                {
+                    MainWindow.LogStaticVerbose("LED blinky skipped. Last game selected already: {0}", gameName);
+                    return;
+                }
+
+                Util.StartProcess(LEDBlinkyPath(), string.Format("9 \"{0}\"", gameName));
+
+                _lastLedBlinkyGameSelected = gameName;
             }
             catch (Exception ex)
             {
@@ -641,19 +676,6 @@ namespace HyperSearch
             {
                 if (!MayCallLEDBlinky()) return;
                 Util.StartProcess(LEDBlinkyPath(), string.Format("3 \"{0}\" \"{1}\"", gameName, systemName));
-            }
-            catch(Exception ex)
-            {
-                LogStatic(ex.ToString());
-            }
-        }
-
-        public static void LEDBlinkGameSelected(string gameName)
-        {
-            try
-            {
-                if (!MayCallLEDBlinky()) return;
-                Util.StartProcess(LEDBlinkyPath(), string.Format("9 \"{0}\"", gameName));
             }
             catch (Exception ex)
             {

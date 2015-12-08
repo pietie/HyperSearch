@@ -454,7 +454,6 @@ namespace HyperSearch.Windows
             }
         }
 
-
         private void resultListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (resultListView.SelectedItem == null)
@@ -464,10 +463,17 @@ namespace HyperSearch.Windows
             }
 
             SearchResult selectedItem = resultListView.SelectedItem as SearchResult;
+            SearchResultPerSystem summarySelection = (SearchResultPerSystem)systemSummaryListView.SelectedItem;
 
             int ix = resultListView.SelectedIndex + 1;
 
             selectedItemText.Text = string.Format("{4}. {0} - {1}, {2}, {3}", selectedItem.SystemName, selectedItem.description, selectedItem.manufacturer, selectedItem.year, ix).Replace(", ,", ",").TrimEnd(' ', ',');
+
+            // do not send the LED Blinky command for the "(All)" collection
+            if (summarySelection.SystemName.EqualsCI(SystemSummaryAllCollectionName))
+            {
+                MainWindow.LEDBlinkSystemSelected(selectedItem.SystemName);
+            }
 
             MainWindow.LEDBlinkGameSelected(selectedItem.name);
 
@@ -793,8 +799,6 @@ namespace HyperSearch.Windows
                 
                 if (resultListView.Items.Count > 0)
                 {
-
-                    //resultListView.SelectAndFocusItem(callback: (ss, ee) => resultListView_SelectionChanged(null, null));
                     Util.SetTimeout(0, new Action(() =>
                     {
                         resultListView.SelectedIndex = 0;
