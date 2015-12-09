@@ -162,6 +162,12 @@ namespace HyperSearch
                         HandleOskButtonPressed(space);
                         return;
                     }
+                    else if (e.Key == Key.Back)
+                    {
+                        listView.SelectedItem = backspace;
+                        HandleOskButtonPressed(backspace);
+                        return;
+                    }
                     //if (((int)e.Key >= (int)Key.A && (int)e.Key <= (int)Key.Z)
                     // || e.Key == Key.OemMinus
                     // || e.Key == Key.OemComma

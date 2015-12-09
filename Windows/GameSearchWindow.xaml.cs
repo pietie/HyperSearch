@@ -813,7 +813,7 @@ namespace HyperSearch.Windows
             }
         }
 
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Window_PreviewKeyDown(object sender,KeyEventArgs e)
         {
 
 
@@ -871,10 +871,10 @@ namespace HyperSearch.Windows
                     //    return;
                     //}
 
-                    
-                    
 
-                    if (focussedLV == resultListView )
+
+
+                    if (focussedLV == resultListView)
                     {
                         if (resultListView.SelectedIndex > 0)
                         {
@@ -882,7 +882,7 @@ namespace HyperSearch.Windows
                         }
                         else
                         {
-                            resultListView.SelectedIndex = resultListView.Items.Count-1;
+                            resultListView.SelectedIndex = resultListView.Items.Count - 1;
                             resultListView.ScrollIntoView(resultListView.SelectedItem);
                             resultListView.SelectAndFocusItem(resultListView.Items.Count - 1);
                         }
@@ -960,6 +960,11 @@ namespace HyperSearch.Windows
                 {
                     this.Close();
                 }
+                else
+                {
+                    e.Handled = false;
+                }
+
             }
             catch (Exception ex)
             {

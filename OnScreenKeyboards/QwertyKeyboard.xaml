@@ -14,7 +14,7 @@
                 <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"   ItemHeight="50"  Orientation="Horizontal"/>
             </ItemsPanelTemplate>
         </ListView.ItemsPanel>
-
+  
         <osk:OnScreenKeyboardButton Text="1"/>
         <osk:OnScreenKeyboardButton Text="2"/>
         <osk:OnScreenKeyboardButton Text="3"/>
@@ -62,12 +62,18 @@
         <ListViewItem IsEnabled="False" Width="50" />
 
         <osk:OnScreenKeyboardButton x:Name="space" Text="SPC" Margin="60 0 0 0" />
-        <osk:OnScreenKeyboardButton x:Name="backspace" Text="BS"/>
+        <osk:OnScreenKeyboardButton x:Name="backspace" Text="BS"  />
+            
+            
+
         <osk:OnScreenKeyboardButton x:Name="clear" Text="CLR"/>
 
         <ListViewItem IsEnabled="False" Width="45" />
         <ListViewItem IsEnabled="False" Width="500" />
 
         <osk:OnScreenKeyboardButton x:Name="done" Text="SEARCH" Width="200" Margin="0 -40 0 0"/>
+
+        <!--<Path Stroke="Black" StrokeThickness="3" 
+Data="M15.673913,1 L46,1 L46,31 L15.673913,31 L1,15.758064 z M37.624989,8.375 L23.089996,22.91 M23.090002,8.375 L37.624996,22.91"/>-->
     </ListView>
 </osk:OskBaseControl>
