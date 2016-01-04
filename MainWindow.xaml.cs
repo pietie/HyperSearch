@@ -54,20 +54,24 @@ namespace HyperSearch
             
             if (args.Length != 2) return;
 
-            switch (args[1].ToLower())
+            var arg1 = args[1].ToLower();
+
+            // use StartsWith as HyperSpin adds a fullstop to the end (presumably for the rom extension)
+            if (arg1.StartsWith("-search"))
             {
-                case "-search":
-                    this.CliOptions.StartupFullSearch = true;
-                    break;
-                case "-genre":
-                    this.CliOptions.StartupGenre = true;
-                    break;
-                case "-fav":
-                    this.CliOptions.StartupFavourites = true;
-                    break;
-                case "-settings":
-                    this.CliOptions.StartupSettings = true;
-                    break;
+                this.CliOptions.StartupFullSearch = true;
+            }
+            else if(arg1.StartsWith("-genre"))
+            {
+                this.CliOptions.StartupGenre = true;
+            }
+            else if (arg1.StartsWith("-fav"))
+            {
+                this.CliOptions.StartupFavourites = true;
+            }
+            else if (arg1.StartsWith("-settings"))
+            {
+                this.CliOptions.StartupSettings = true;
             }
         }
 
@@ -95,20 +99,22 @@ namespace HyperSearch
 
                         if (line != null)
                         {
-                            switch (line.ToLower())
+                            // use StartsWith as HyperSpin adds a fullstop to the end (presumably for the rom extension)
+                            if (line.StartsWith("-search"))
                             {
-                                case "-search":
-                                    main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Search.FirstKey, null);
-                                    break;
-                                case "-genre":
-                                    main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Genre.FirstKey, null);
-                                    break;
-                                case "-fav":
-                                    main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Favourites.FirstKey, null);
-                                    break;
-                                case "-settings":
-                                    main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Settings.FirstKey, null);
-                                    break;
+                                main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Search.FirstKey, null);
+                            }
+                            else if (line.StartsWith("-genre"))
+                            {
+                                main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Genre.FirstKey, null);
+                            }
+                            else if (line.StartsWith("-fav"))
+                            {
+                                main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Favourites.FirstKey, null);
+                            }
+                            else if (line.StartsWith("-settings"))
+                            {
+                                main.OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Settings.FirstKey, null);
                             }
                         }
                           

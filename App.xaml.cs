@@ -20,8 +20,7 @@ namespace HyperSearch
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            AttachConsole(-1);
-            
+            //AttachConsole(-1);
         }
 
         protected override void OnExit(ExitEventArgs e)
