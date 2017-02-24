@@ -88,7 +88,10 @@ namespace HyperSearch
 
                 if (settings.Action.Is(e.Key))
                 {
-                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                    var actionKeyIsControlItSelf = e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl;
+
+                    // if the Action key is one of the control button itself do not invoke auto-search
+                    if (!actionKeyIsControlItSelf && ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control))
                     {
                         HandleOskButtonPressed(done);
                     }

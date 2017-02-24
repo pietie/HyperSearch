@@ -1214,6 +1214,19 @@ namespace HyperSearch.Windows
                     
                     var loadXmlDbsPerf = PerformanceTracker.Begin("Load ALL xml databases");
 
+
+                    var ignoreCsv = HyperSearchSettings.Instance().Misc.IgnoreSystemsCsv;
+
+                    if (!string.IsNullOrWhiteSpace(ignoreCsv))
+                    {
+                        MainWindow.LogStaticVerbose("IgnoreSystemsCsv: {0}", ignoreCsv);
+
+                        var systemsToIgnore = ignoreCsv.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i=>i.ToLower().Trim());
+
+                        gameList = gameList.Where(g => !systemsToIgnore.Contains(g.name.ToLower())).ToList();
+                    }
+
+
                     foreach (var system in gameList)
                     {
                         try
@@ -1588,6 +1601,9 @@ namespace HyperSearch.Windows
             MainWindow.LogStatic("Video failed: {0}, with error: {1}", (e.Source as MediaElement).Source.ToString(), e.ErrorException.ToString());
         }
 
-       
+        private void gameSearchWindow_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            //e.Handled = true;
+        }
     }
 }

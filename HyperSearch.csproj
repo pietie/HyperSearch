@@ -281,6 +281,8 @@
     <Resource Include="Resources\Icons\Info.png" />
     <Resource Include="Resources\Icons\Symbol Check.png" />
     <Resource Include="Resources\Icons\Symbol Error.png" />
+    <Resource Include="Resources\Readme\sc1.png" />
+    <Resource Include="Resources\Readme\sc2.png" />
     <Content Include="ShaderEffects\HueShiftEffect.fx" />
     <Content Include="ShaderEffects\MonochromeEffect.fx" />
     <Content Include="ShaderEffects\Saturation.fx" />

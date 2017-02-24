@@ -350,6 +350,9 @@ namespace HyperSearch.Classes
 
             [JsonProperty]
             public List<string> GenreWheelImageLocations { get; set; }
+
+            [JsonProperty]
+            public string IgnoreSystemsCsv { get; set; }
         }
 
 }

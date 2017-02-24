@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Linq;
 
 namespace HyperSearch
 {
@@ -26,6 +27,30 @@ namespace HyperSearch
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e); 
+        }
+
+        protected override void OnDeactivated(EventArgs e)
+        {
+            base.OnDeactivated(e);
+
+            // TODO: Add a config option for this
+            //if (this.Windows != null)
+            //{
+            //    var win = this.Windows.Cast<Window>().FirstOrDefault(w => w is Windows.GameSearchWindow);
+
+            //    if (win != null)
+            //    {
+            //        this.Dispatcher.BeginInvoke(
+            //               new Action(delegate
+            //               {
+            //                   win.Activate();
+            //                   win.Focus();
+            //                   System.Windows.Input.Keyboard.Focus(win);
+            //               }), System.Windows.Threading.DispatcherPriority.Render);
+            //    }
+
+            //}
+
         }
     }
 }

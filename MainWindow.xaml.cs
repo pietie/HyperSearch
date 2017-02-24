@@ -602,6 +602,50 @@ namespace HyperSearch
                 win.ShowSystemImagesOnResults = HyperSearchSettings.Instance().Misc.ShowSystemImagesOnResults;
                 win.ShowWheelImagesOnResults = HyperSearchSettings.Instance().Misc.ShowWheelImagesOnResults;
 
+                // SUSPEND HyperSpin process to prevent it from stealing focus
+                { // TODO: Make this configurable
+                    /******************
+                    var procs = Process.GetProcessesByName("HyperSpin");
+
+                    Process hsProcess = null;
+
+                    if (procs != null && procs.Length > 0) hsProcess = procs[0];
+
+
+                    if (hsProcess != null)
+                    {
+                        MainWindow.LogStaticVerbose("Suspending HyperSearch process");
+                        hsProcess.Suspend();
+                    }
+
+
+                    win.Closed += (sender, args) =>
+                    {
+                        if (hsProcess != null)
+                        {
+                            MainWindow.LogStaticVerbose("Resuming HyperSearch process (win Closed)");
+                            hsProcess.Resume();
+                        }
+                    };
+
+                    win.IsVisibleChanged += (sender, args) =>
+                    {
+                        if (!win.IsVisible)
+                        {
+                            if (hsProcess != null)
+                            {
+                                MainWindow.LogStaticVerbose("Resuming HyperSearch process (win Hidden)");
+                                hsProcess.Resume();
+                                
+                                //?hsProcess.MainWindowHandle
+                            }
+                        }
+
+                    };
+
+    *************/
+                }
+
                 win.Show();
                 win.Activate();
             }

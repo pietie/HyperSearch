@@ -8,6 +8,7 @@
         Style="{DynamicResource DialogWindow}"        
         ShowInTaskbar="False" Topmost="True"
         PreviewKeyDown="Window_PreviewKeyDown" Loaded="Window_Loaded"  Focusable="True"
+        PreviewLostKeyboardFocus="gameSearchWindow_PreviewLostKeyboardFocus"
         x:Name="gameSearchWindow" >
     <Window.Resources>
         <conv2:ClipRectConverter x:Key="clipConverter"/>
