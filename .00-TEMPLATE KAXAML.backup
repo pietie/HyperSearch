@@ -1,0 +1,77 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  Width="400" Height="200" ClipToBounds="False"     
+
+	>
+	 <Grid.Resources>
+
+        <ControlTemplate x:Key="arcadeRoundPushButton" TargetType="{x:Type Control}">
+        <Grid  Background="Yellow">
+            <Ellipse x:Name="inner" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Ellipse.Effect>
+                    <DropShadowEffect Direction="292" ShadowDepth="2" BlurRadius="8"/>
+                </Ellipse.Effect>
+
+                <Ellipse.Fill>
+                    <LinearGradientBrush EndPoint="0.763,0.917" StartPoint="0.162,0.027">
+                        <GradientStop Color="#FF8B2828" Offset="0.15"/>
+                        <GradientStop Color="#FFD41515" Offset="0.5"/>
+                        <GradientStop Color="#FFFFB2B2" Offset="0.9"/>
+                    </LinearGradientBrush>
+                </Ellipse.Fill>
+
+
+            </Ellipse>
+            <Ellipse x:Name="FullOuter" Stroke="#FFF09F11" StrokeThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                <Ellipse.Effect>
+                    <DropShadowEffect ShadowDepth="0.5" Direction="-235" BlurRadius="2" Color="#FFFFB5B5"/>
+                </Ellipse.Effect>
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#00FF3131" Offset="0.554"/>
+                        <GradientStop Color="#FF910505" Offset="1"/>
+                        <GradientStop Color="#FFAD2020" Offset="0.877"/>
+                        <GradientStop Color="#FFD23737" Offset="0.97"/>
+                        <GradientStop Color="#FFFF3838" Offset="0.696"/>
+                        <GradientStop Color="#FF8D0000" Offset="0.679"/>
+                        <GradientStop Color="#FF6F0101" Offset="0.669"/>
+                        <GradientStop Color="#FFFF4747" Offset="0.613"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+
+        </Grid>
+
+    </ControlTemplate>
+    <!-- Used by layout selector -->
+    <ControlTemplate x:Key="arcadeRoundPushButtonWithLabel" TargetType="{x:Type Control}">
+        <Grid>
+            <Control Margin="3" Template="{StaticResource arcadeRoundPushButton}" />
+            <TextBlock Text="9" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial" FontWeight="Bold" FontSize="30"/>
+        </Grid>
+    </ControlTemplate>
+    </Grid.Resources>
+    
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+   <Control  Grid.Row="0" Grid.Column="0" Template="{DynamicResource arcadeRoundPushButtonWithLabel}" />
+   <Control  Grid.Row="0" Grid.Column="1" Template="{DynamicResource arcadeRoundPushButtonWithLabel}" />
+   <Control  Grid.Row="0" Grid.Column="2" Template="{DynamicResource arcadeRoundPushButtonWithLabel}" />
+   <Control  Grid.Row="0" Grid.Column="3" Template="{DynamicResource arcadeRoundPushButtonWithLabel}" />
+
+   <Control  Grid.Row="1" Grid.Column="0" Template="{DynamicResource arcadeRoundPushButtonWithLabel}" />
+   <Control  Grid.Row="1" Grid.Column="1" Template="{DynamicResource arcadeRoundPushButtonWithLabel}" />
+   <Control  Grid.Row="1" Grid.Column="2" Template="{DynamicResource arcadeRoundPushButtonWithLabel}" />
+   <Control  Grid.Row="1" Grid.Column="3" Template="{DynamicResource arcadeRoundPushButtonWithLabel}" />
+   
+</Grid>
+   

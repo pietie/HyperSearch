@@ -42,7 +42,7 @@ namespace HyperSearch.Windows
             Results
         }
 
-  
+
 
         public enum SearchList
         {
@@ -64,7 +64,8 @@ namespace HyperSearch.Windows
 
         public int ResultListViewItemResDependentHeight
         {
-            get {
+            get
+            {
                 //System.Windows.SystemParameters.PrimaryScreenHeight
                 var screenH = this.Height;
                 if (screenH <= 480) // 640x480
@@ -147,9 +148,9 @@ namespace HyperSearch.Windows
         private SearchList SearchListToUse { get; set; }
 
         public GameSearchWindow(SearchList searchList)
-         {
+        {
             InitializeComponent();
-            
+
             if (searchList == SearchList.Normal) searchListIndicator.Text = "(Full search)";
             else if (searchList == SearchList.Favourites) searchListIndicator.Text = "(Favourites search)";
             else if (searchList == SearchList.Genre) searchListIndicator.Text = "(Genre search)";
@@ -332,7 +333,7 @@ namespace HyperSearch.Windows
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MainWindow.LogStatic(ex.ToString());
             }
@@ -410,7 +411,7 @@ namespace HyperSearch.Windows
 
                 _searchThread = new Thread(new ParameterizedThreadStart(task.Run));
 
-                _searchThread.Start(searchTerm.Text);
+                _searchThread.Start((object)(new object[] { searchTerm.Text, this.Dispatcher }));
             });
         }
 
@@ -422,7 +423,7 @@ namespace HyperSearch.Windows
         private void ResizeResultListGridViewColumns(ListView listView)
         {
             try
-            {              
+            {
                 // http://stackoverflow.com/questions/8331940/how-can-i-get-a-listview-gridviewcolumn-to-fill-the-remaining-space-in-my-grid/10526024#10526024
                 GridView gView = listView.View as GridView;
 
@@ -508,7 +509,7 @@ namespace HyperSearch.Windows
 
         private void video_MediaOpened(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         public void LoadVideo(string systemName, string gameName)
@@ -549,7 +550,7 @@ namespace HyperSearch.Windows
                             }
                         }
                     }
-                    catch(Exception ex) 
+                    catch (Exception ex)
                     {
                         MainWindow.LogStatic("Failed to read settings file: {0}", settingsFilePath);
                         ErrorHandler.HandleException(ex);
@@ -561,7 +562,7 @@ namespace HyperSearch.Windows
                 if (!string.IsNullOrEmpty(customVideoPath))
                 {
                     baseVideoPath = customVideoPath.TrimEnd('\\');
-                    
+
                 }
 
                 MainWindow.LogStaticVerbose("Base video path={0}", baseVideoPath);
@@ -587,7 +588,7 @@ namespace HyperSearch.Windows
                 }
                 else
                 {
-                    MainWindow.LogStaticVerbose("No video found for {0}/{1} @ {2}. Looking for placeholder.",systemName, gameName, mp4Path);
+                    MainWindow.LogStaticVerbose("No video found for {0}/{1} @ {2}. Looking for placeholder.", systemName, gameName, mp4Path);
 
                     var mp4NoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.mp4");
                     var flvNoVideo = Global.BuildFilePathInHyperspinDir("Media\\Frontend\\Video\\No Video.flv");
@@ -656,7 +657,7 @@ namespace HyperSearch.Windows
                 }
 
                 var soundsPath = Global.BuildFilePathInHyperspinDir(@"Media\Frontend\Sounds");
-                
+
                 SystemSoundPlayer.Init(mainGrid, soundsPath);
             }
             catch (Exception ex)
@@ -690,7 +691,7 @@ namespace HyperSearch.Windows
             var kb = new AtoZKeyboard();
 
             RegisterName("a2z", kb);
-            
+
             kb.AttachedTextBox = searchTerm;
             kb.OnOskKeyPressed += OnOskKeyPressed;
             keyboardContainer.Child = new Viewbox() { Child = kb };
@@ -796,7 +797,7 @@ namespace HyperSearch.Windows
                 ResizeResultListGridViewColumns(resultListView);
 
                 resultListView.ItemsSource = item.GameList;
-                
+
                 if (resultListView.Items.Count > 0)
                 {
                     Util.SetTimeout(0, new Action(() =>
@@ -813,7 +814,7 @@ namespace HyperSearch.Windows
             }
         }
 
-        private void Window_PreviewKeyDown(object sender,KeyEventArgs e)
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
 
 
@@ -952,6 +953,10 @@ namespace HyperSearch.Windows
                         elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
                     }
                 }
+                else if (CurrentViewState == ViewState.SetupSearch && searchTerm.Text != "" && settings.Back.Is(e.Key)) // allow back to Backspace chars in the search term input as long as there as still characters left
+                {
+                    e.Handled = false;
+                }
                 else if (settings.Back.Is(e.Key))
                 {
                     HandlePreviousScreenButtonPressed();
@@ -973,47 +978,47 @@ namespace HyperSearch.Windows
 
         }
 
-/*        private void systemSummaryListView_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                e.Handled = true;
-                var settings = HyperSearchSettings.Instance().Input;
-                var elementWithFocus = Keyboard.FocusedElement as UIElement;
-
-                if (settings.Down.Is(e.Key))
+        /*        private void systemSummaryListView_PreviewKeyDown(object sender, KeyEventArgs e)
                 {
-                    if (resultListView.Items.Count > 0)
+                    try
                     {
-                        elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-                        resultListView.SelectAndFocusItem();
-                        resultListView_SelectionChanged(null, null);
+                        e.Handled = true;
+                        var settings = HyperSearchSettings.Instance().Input;
+                        var elementWithFocus = Keyboard.FocusedElement as UIElement;
+
+                        if (settings.Down.Is(e.Key))
+                        {
+                            if (resultListView.Items.Count > 0)
+                            {
+                                elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                                resultListView.SelectAndFocusItem();
+                                resultListView_SelectionChanged(null, null);
+                            }
+                        }
+                        else if (settings.Up.Is(e.Key))// block UP as it makes the listview behave stupid
+                        {
+                            return;
+                        }
+                        else if (settings.Left.Is(e.Key))
+                        {
+                            elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
+                            return;
+                        }
+                        else if (settings.Right.Is(e.Key))
+                        {
+                            elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
+                            return;
+                        }
+                        else if (settings.Back.Is(e.Key))
+                        {
+                            HandlePreviousScreenButtonPressed();
+                        }
                     }
-                }
-                else if (settings.Up.Is(e.Key))// block UP as it makes the listview behave stupid
-                {
-                    return;
-                }
-                else if (settings.Left.Is(e.Key))
-                {
-                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
-                    return;
-                }
-                else if (settings.Right.Is(e.Key))
-                {
-                    elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
-                    return;
-                }
-                else if (settings.Back.Is(e.Key))
-                {
-                    HandlePreviousScreenButtonPressed();
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorHandler.HandleException(ex);
-            }
-        }*/
+                    catch (Exception ex)
+                    {
+                        ErrorHandler.HandleException(ex);
+                    }
+                }*/
 
         /*
         private void gameSearchWindow_KeyDown(object sender, KeyEventArgs e)
@@ -1090,13 +1095,13 @@ namespace HyperSearch.Windows
                             systemSummaryListView.SelectedIndex = 0;
                             systemSummaryListView.ScrollIntoView(systemSummaryListView.SelectedItem);
                         }
-                        resultListView.SelectAndFocusItem(callback: (ss,ee)=>resultListView_SelectionChanged(null, null));
+                        resultListView.SelectAndFocusItem(callback: (ss, ee) => resultListView_SelectionChanged(null, null));
                     }
                 });
             }));
         }
 
-        public class SearchResult
+        public class SearchResult : DependencyObject
         {
             public SearchResult()
             {
@@ -1111,15 +1116,64 @@ namespace HyperSearch.Windows
             public SortedSet<string> AllGenres { get; set; }
             public string SystemName { get; set; }
             public Uri SystemImageSourceUri { get; set; }
+            public FileInfo SystemImageSwfSourceFileInfo { get; set; }
             public Uri GameImageSourceUri { get; set; }
+
+
+            public FileInfo GameImageSwfSourceFileInfo { get; set; }
+
+            public bool GameImageShowText { get; set; }
+            public bool GameImageShowPng { get; set; }
+            public bool GameImageShowXaml { get; set; }
+
+
+            public bool SystemImageShowText { get; set; }
+            public bool SystemImageShowPng { get; set; }
+            public bool SystemImageShowXaml { get; set; }
+
+
+            //   public bool GameImageBuildingXaml { get; set; } // TODO: dep property?
+
+
+            public bool GameImageBuildingXaml
+            {
+                get { return (bool)GetValue(GameImageBuildingXamlProperty); }
+                set { SetValue(GameImageBuildingXamlProperty, value); }
+            }
+
+            public static readonly DependencyProperty GameImageBuildingXamlProperty = DependencyProperty.Register("GameImageBuildingXaml", typeof(bool), typeof(SearchResult), new PropertyMetadata(false));
+
+
+
+            public string GameImageXamlPath
+            {
+                get { return (string)GetValue(GameImageXamlPathProperty); }
+                set { SetValue(GameImageXamlPathProperty, value); }
+            }
+
+            public static readonly DependencyProperty GameImageXamlPathProperty = DependencyProperty.Register("GameImageXamlPath", typeof(string), typeof(SearchResult), new PropertyMetadata(null));
+
+
+            public string SystemImageXamlPath
+            {
+                get { return (string)GetValue(SystemImageXamlPathProperty); }
+                set { SetValue(SystemImageXamlPathProperty, value); }
+            }
+
+            public static readonly DependencyProperty SystemImageXamlPathProperty =
+                DependencyProperty.Register("SystemImageXamlPath", typeof(string), typeof(SearchResult), new PropertyMetadata(null));
+
+
+
+            public Uri GameImageSwfUri { get; set; }
 
             public override string ToString()
             {
-                return string.Format("{0}\\{1}", SystemName??"(null)", name??"(null)");
+                return string.Format("{0}\\{1}", SystemName ?? "(null)", name ?? "(null)");
             }
         }
 
-      
+
 
 
         public class PerformSearchTask
@@ -1134,14 +1188,14 @@ namespace HyperSearch.Windows
             private SearchMode SearchMode { get; set; }
 
             //private static Dictionary<string/*SystemName*/, SortedList<string, string/*RomName*/>> _allFavouritesList = new Dictionary<string, SortedList<string, string>>();
-            
+
 
             public bool ShowSystemImagesOnFilter { get; set; }
-            public bool ShowSystemImagesOnResults { get;set; }
+            public bool ShowSystemImagesOnResults { get; set; }
             public bool ShowWheelImagesOnResults { get; set; }
 
             private SearchList SearchList { get; set; }
-            
+
 
             public PerformSearchTask(GameSearchWindow gameSearchWin, SearchList searchList)
             {
@@ -1164,14 +1218,14 @@ namespace HyperSearch.Windows
                     {
                         bool isRelative;
 
-                        foreach(var loc in locations)
+                        foreach (var loc in locations)
                         {
                             _genreImageLocations.Add(Util.AbsolutePath(loc, out isRelative));
                         }
                     }
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ErrorHandler.LogException(ex);
                 }
@@ -1187,7 +1241,7 @@ namespace HyperSearch.Windows
                     var preloadAllXmlDbsPerf = PerformanceTracker.Begin("GAME SEARCH: PRELOAD");
 
                     List<GameXmlDatabase> gameList = null;
-                    
+
                     if (MainWindow.HqSettings != null && MainWindow.HqSettings.MainSection != null && MainWindow.HqSettings.MainSection.MenuMode.EqualsCI("single"))
                     {
                         MainWindow.LogStatic("Single mode: {0}", MainWindow.HqSettings.MainSection.SingleModeName);
@@ -1211,7 +1265,7 @@ namespace HyperSearch.Windows
 
                         gameList = mainMenuDb.GameList;
                     }
-                    
+
                     var loadXmlDbsPerf = PerformanceTracker.Begin("Load ALL xml databases");
 
 
@@ -1221,7 +1275,7 @@ namespace HyperSearch.Windows
                     {
                         MainWindow.LogStaticVerbose("IgnoreSystemsCsv: {0}", ignoreCsv);
 
-                        var systemsToIgnore = ignoreCsv.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i=>i.ToLower().Trim());
+                        var systemsToIgnore = ignoreCsv.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => i.ToLower().Trim());
 
                         gameList = gameList.Where(g => !systemsToIgnore.Contains(g.name.ToLower())).ToList();
                     }
@@ -1257,7 +1311,7 @@ namespace HyperSearch.Windows
 
                                 if (wheelSettings.FilterSection.WheelsOnly)
                                 {
-                                    for (int i = 0 ;i< db.GameList.Count;i++)
+                                    for (int i = 0; i < db.GameList.Count; i++)
                                     {
                                         var expectedWheelImagePath = Global.BuildFilePathInHyperspinDir("Media\\{0}\\Images\\Wheel\\{1}.png", system.name, db.GameList[i].name);
                                         if (!File.Exists(expectedWheelImagePath))
@@ -1334,7 +1388,7 @@ namespace HyperSearch.Windows
                     if (!Directory.Exists(dbPath))
                     {
                         MainWindow.LogStatic("WARNING! Databases folder does not exists at: {0}\r\nMake sure your HyperSpin path is setup correctly.", dbPath);
-                        return 0; 
+                        return 0;
                     }
 
 
@@ -1362,7 +1416,7 @@ namespace HyperSearch.Windows
                             if (favRom == null)
                             {
                                 MainWindow.LogStatic("\tWARNING: FAV failed to match up: {0}. System: {1}", romName ?? "(null)", systemName ?? "(null)");
-                                continue; 
+                                continue;
                             }
 
                             if (!_allFavouritesList.Contains(favRom))
@@ -1389,12 +1443,12 @@ namespace HyperSearch.Windows
                             {
                                 var genreKey = genres[i].ToUpper();
 
-                                lock(_genreLookupSet)
+                                lock (_genreLookupSet)
                                 {
                                     if (!_genreLookupSet.Contains(genreKey, StringComparer.OrdinalIgnoreCase))
                                     {
                                         _genreLookupSet.Add(genreKey);
-                                    }                                 
+                                    }
                                 }
 
                                 if (g.AllGenres == null) g.AllGenres = new SortedSet<string>();
@@ -1405,21 +1459,23 @@ namespace HyperSearch.Windows
                                 }
                             }
 
-                           
+
                         }
                     }));
 
-                
+
                 return _genreLookupSet.Count();
             }
 
-            public void Run(object data)
+            public void Run(object argsObj)
             {
                 try
                 {
                     System.Threading.Thread.CurrentThread.Name = "PerformGameSearchThread";
 
-                    string searchTerm = (string)data;
+                    object[] args = (object[])argsObj;
+                    string searchTerm = (string)args[0];
+                    var dispatcher = (System.Windows.Threading.Dispatcher)args[1];
 
                     List<GameXmlDatabase> sourceDB = null;
 
@@ -1447,7 +1503,7 @@ namespace HyperSearch.Windows
                                    where g != null
                                     && (g.description.Like(searchTerm)
                                     || g.manufacturer.Like(searchTerm)
-                                       //|| g.name.Like(term)
+                                    //|| g.name.Like(term)
                                     || (!string.IsNullOrEmpty(g.year) && g.year.Equals(searchTerm, StringComparison.OrdinalIgnoreCase)))
                                    orderby g.ParentMenu.SystemName, g.description
                                    select g);
@@ -1458,13 +1514,17 @@ namespace HyperSearch.Windows
                                    where g != null &&
                                    (g.description.StartsWithSafe(searchTerm)
                                     || g.manufacturer.StartsWithSafe(searchTerm)
-                                       //|| g.name.StartsWithSafe(term)
+                                    //|| g.name.StartsWithSafe(term)
                                     || (!string.IsNullOrEmpty(g.year) && g.year.Equals(searchTerm, StringComparison.OrdinalIgnoreCase)))
                                    orderby g.ParentMenu.SystemName, g.description
                                    select g);
                     }
 
-                    var results = (from m in matches
+                    List<SearchResult> results = null;
+
+                    dispatcher.Invoke(new Action(() =>
+                    {
+                        results = (from m in matches
                                    select new SearchResult()
                                    {
                                        name = m.name,
@@ -1473,10 +1533,14 @@ namespace HyperSearch.Windows
                                        year = m.year,
                                        AllGenres = m.AllGenres,
                                        SystemName = m.ParentMenu.SystemName,
-                                       SystemImageSourceUri = this.ShowSystemImagesOnResults? m.SystemImageSourceUri : null,
-                                       GameImageSourceUri = this.ShowWheelImagesOnResults? m.GameImageSourceUri : null
-                                   }).Distinct().ToList(); 
-                    
+                                       SystemImageSourceUri = this.ShowSystemImagesOnResults ? m.SystemImageSourceUri : null,
+                                       SystemImageSwfSourceFileInfo = this.ShowSystemImagesOnResults ? m.SystemImageSwfSourceFileInfo : null,
+                                       GameImageSourceUri = this.ShowWheelImagesOnResults ? m.GameImageSourceUri : null,
+                                       GameImageSwfSourceFileInfo = this.ShowWheelImagesOnResults ? m.GameImageSwfSourceFileInfo : null
+                                   }).Distinct().ToList();
+
+                    }));
+
                     searchPerf.End();
 
                     var systemWheelImageBasePath = Global.BuildFilePathInHyperspinDir(@"Media\Main Menu\Images\Wheel");
@@ -1484,75 +1548,244 @@ namespace HyperSearch.Windows
 
                     if (!string.IsNullOrEmpty(altPath) && Directory.Exists(altPath))
                     {
-                        foreach(var r  in results)
+                        foreach (var r in results)
                         {
                             r.SystemImageSourceUri = new Uri(System.IO.Path.Combine(altPath, string.Format("{0}.png", r.SystemName)));
                         }
                     }
 
+                    var uniqueSystemsWithSwf = results.Where(r => r.SystemImageSwfSourceFileInfo != null)
+                                                        .Select(r => new { SystemName = r.SystemName, SwfSource = r.SystemImageSwfSourceFileInfo.FullName })
+                                                        .Distinct()
+                                                        .Select(s => new { s.SystemName, WheelSwfFileInfo = new FileInfo(s.SwfSource) });
+
+                    var systemWheelXamlLookup = new Dictionary<string, string>();
+
+                    foreach (var systemWithSwf in uniqueSystemsWithSwf)
+                    {
+                        var xamlSystemFI = new FileInfo(System.IO.Path.Combine(systemWithSwf.WheelSwfFileInfo.DirectoryName, systemWithSwf.WheelSwfFileInfo.Name.Replace(".swf", ".xaml")));
+
+                        if (!xamlSystemFI.Exists)
+                        {
+                            try
+                            {
+                                HscLib.HyperTheme.HyperThemeHost.GenerateXamlFromSwf(systemWithSwf.WheelSwfFileInfo.DirectoryName, systemWithSwf.WheelSwfFileInfo.Name, out var xamlFilePath, out var resourcePath, out var log);
+
+                                if (!log.EndsWith("Success."))
+                                {
+                                    MainWindow.LogStatic($"Failed to convert: {xamlSystemFI.FullName}");
+                                }
+                                else
+                                {
+                                    systemWheelXamlLookup.Add(systemWithSwf.SystemName, xamlSystemFI.FullName);
+                                }
+
+                            }
+                            catch (Exception ex)
+                            {
+                                ErrorHandler.LogException(ex);
+                            }
+                            finally
+                            {
+                                ///                                dispatcher.BeginInvoke(new Action(() => { r.GameImageBuildingXaml = false; }));
+                            }
+                        }
+                        else
+                        {
+                            systemWheelXamlLookup.Add(systemWithSwf.SystemName, xamlSystemFI.FullName);
+                        }
+                    }
+
+                    foreach (var r in results)
+                    {
+                        r.GameImageShowText = true;
+                        r.GameImageShowPng = false;
+                        r.GameImageShowXaml = false;
+
+                        if (r.GameImageSourceUri != null && File.Exists(r.GameImageSourceUri.LocalPath))
+                        {
+                            r.GameImageShowText = false;
+                            r.GameImageShowPng = true;
+                        }
+
+                        r.SystemImageShowText = true;
+                        r.SystemImageShowPng = false;
+                        r.SystemImageShowXaml = false;
+
+                        if (r.SystemImageSourceUri != null && File.Exists(r.SystemImageSourceUri.LocalPath))
+                        {
+                            r.SystemImageShowText = false;
+                            r.SystemImageShowPng = true;
+                        }
+
+                        if (systemWheelXamlLookup.ContainsKey(r.SystemName))
+                        {
+                            r.SystemImageShowText = r.SystemImageShowPng = false;
+                            r.SystemImageShowXaml = true;
+
+                            dispatcher.BeginInvoke(new Action(() => { r.SystemImageXamlPath = systemWheelXamlLookup[r.SystemName]; }));
+                        }
+
+
+                        if (r.GameImageSwfSourceFileInfo == null || !r.GameImageSwfSourceFileInfo.Exists) continue;
+
+                        var xamlFI = new FileInfo(System.IO.Path.Combine(r.GameImageSwfSourceFileInfo.DirectoryName, r.GameImageSwfSourceFileInfo.Name.Replace(".swf", ".xaml")));
+
+
+                        {
+                            // ?
+                            r.GameImageSwfUri = new Uri(xamlFI.FullName, UriKind.Absolute);
+
+
+                            // if XAML does NOT exist yet
+                            if (!xamlFI.Exists)
+                            {
+                                dispatcher.BeginInvoke(new Action(() => { r.GameImageBuildingXaml = true; }));
+
+
+                                ThreadPool.QueueUserWorkItem((state) =>
+                                {
+                                    try
+                                    {
+                                        HscLib.HyperTheme.HyperThemeHost.GenerateXamlFromSwf(r.GameImageSwfSourceFileInfo.DirectoryName, r.GameImageSwfSourceFileInfo.Name, out var xamlFilePath, out var resourcePath, out var log);
+
+                                        if (!log.EndsWith("Success."))
+                                        {
+                                            MainWindow.LogStatic($"Failed to convert: {xamlFI.FullName}");
+                                        }
+                                        else
+                                        {
+                                            r.GameImageShowText = r.GameImageShowPng = false;
+                                            r.GameImageShowXaml = true;
+
+                                            dispatcher.BeginInvoke(new Action(() => { r.GameImageXamlPath = xamlFI.FullName; }));
+                                        }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        ErrorHandler.LogException(ex);
+                                    }
+                                    finally
+                                    {
+                                        dispatcher.BeginInvoke(new Action(() => { r.GameImageBuildingXaml = false; }));
+                                    }
+
+                                });
+
+                            }
+                            else
+                            { // XAML exists
+
+                                r.GameImageShowText = r.GameImageShowPng = false;
+                                r.GameImageShowXaml = true;
+
+                                dispatcher.BeginInvoke(new Action(() =>
+                                {
+                                    r.GameImageXamlPath = xamlFI.FullName;
+                                }));
+                            }
+
+
+
+                        }
+                    }
+
+
+
                     var p = PerformanceTracker.Begin("Search results - compile per System");
 
                     List<SearchResultPerSystem> perSystemResults = null;
 
-                    if (this.SearchList != GameSearchWindow.SearchList.Genre)
+                    dispatcher.Invoke(new Action(() =>
                     {
 
-                        if (!string.IsNullOrEmpty(altPath) && Directory.Exists(altPath))
+                        if (this.SearchList != GameSearchWindow.SearchList.Genre)
                         {
-                            systemWheelImageBasePath = altPath;
-                        }
 
-                        perSystemResults = (from r in results
+                            if (!string.IsNullOrEmpty(altPath) && Directory.Exists(altPath))
+                            {
+                                systemWheelImageBasePath = altPath;
+                            }
+
+                            perSystemResults = (from r in results
                                                 group r by r.SystemName into g
                                                 orderby g.Key
                                                 select new SearchResultPerSystem()
                                                 {
                                                     SystemName = g.Key,
                                                     GameList = g.ToList(),
-                                                    SystemImageSourceUri = ShowSystemImagesOnFilter ? new Uri(System.IO.Path.Combine(systemWheelImageBasePath, string.Format("{0}.png", g.Key))) : null
+                                                    SystemImageSourceUri = ShowSystemImagesOnFilter ? new Uri(System.IO.Path.Combine(systemWheelImageBasePath, string.Format("{0}.png", g.Key))) : null,
+                                                    SystemImageXamlPath = ShowSystemImagesOnFilter ? (systemWheelXamlLookup.ContainsKey(g.Key) ? systemWheelXamlLookup[g.Key] : null) : null
                                                 }).ToList();
-                    }
-                    else // handle Genre list differently
-                    {
-                        var resultPerGenre = (from genre in _genreLookupSet
-                                              from res in results
-                                              where res.AllGenres != null && res.AllGenres.Contains(genre)
-                                             // select res).ToList();
-                                              select new SearchResult()
-                                              {
-                                                  name = res.name,
-                                                  description = res.description,
-                                                  manufacturer = res.manufacturer,
-                                                  year = res.year,
-                                                  genre = genre,
-                                                  SystemName = res.SystemName,
-                                                  GameImageSourceUri = res.GameImageSourceUri,
-                                                  SystemImageSourceUri = res.SystemImageSourceUri
-                                              }).ToList();
+                        }
+                        else // handle Genre list differently
+                        {
+                            var resultPerGenre = (from genre in _genreLookupSet
+                                                  from res in results
+                                                  where res.AllGenres != null && res.AllGenres.Contains(genre)
+                                                  // select res).ToList();
+                                                  select new SearchResult()
+                                                  {
+                                                      name = res.name,
+                                                      description = res.description,
+                                                      manufacturer = res.manufacturer,
+                                                      year = res.year,
+                                                      genre = genre,
+                                                      SystemName = res.SystemName,
+                                                      GameImageSourceUri = res.GameImageSourceUri,
+                                                      SystemImageSourceUri = res.SystemImageSourceUri,
+                                                      SystemImageXamlPath = systemWheelXamlLookup.ContainsKey(res.SystemName) ? systemWheelXamlLookup[res.SystemName] : null
+                                                  }).ToList();
 
-                        perSystemResults = (from r in resultPerGenre
-                                            group r by r.genre into g
-                                            orderby g.Key
-                                            select new SearchResultPerSystem()
-                                            {
-                                                SystemName = g.Key,
-                                                GameList = g.ToList(),
-                                                SystemImageSourceUri = ShowSystemImagesOnFilter ? GetGenreImageUri(g.Key) : null
-                                            }).ToList();                  
+                            perSystemResults = (from r in resultPerGenre
+                                                group r by r.genre into g
+                                                orderby g.Key
+                                                select new SearchResultPerSystem()
+                                                {
+                                                    SystemName = g.Key,
+                                                    GameList = g.ToList(),
+                                                    SystemImageSourceUri = ShowSystemImagesOnFilter ? GetGenreImageUri(g.Key) : null
 
-                        
-                    }
+                                                }).ToList();
 
 
-                    // TODO: Order by some setting? Like SysName or GameCount asc/desc?
+                        }
 
-                    // we don't need an "(All)"
-                    if (perSystemResults.Count > 1)
-                    {
-                        perSystemResults.Insert(0, new SearchResultPerSystem { SystemName = SystemSummaryAllCollectionName, GameList = results, SystemImageSourceUri = (Uri)null });
-                    }
+
+                        // TODO: Order by some setting? Like SysName or GameCount asc/desc?
+
+                        // we don't need an "(All)"
+                        if (perSystemResults.Count > 1)
+                        {
+                            perSystemResults.Insert(0, new SearchResultPerSystem { SystemName = SystemSummaryAllCollectionName, GameList = results, SystemImageSourceUri = (Uri)null });
+                        }
+
+                        foreach (var res in perSystemResults)
+                        {
+                            res.SystemImageShowText = true;
+                            res.SystemImageShowPng = false;
+                            res.SystemImageShowXaml = false;
+
+                            if (res.SystemImageSourceUri != null && File.Exists(res.SystemImageSourceUri.LocalPath))
+                            {
+                                res.SystemImageShowText = false;
+                                res.SystemImageShowPng = true;
+                            }
+
+                            if (res.SystemImageXamlPath != null)
+                            {
+                                res.SystemImageShowText = res.SystemImageShowPng = false;
+                                res.SystemImageShowXaml = true;
+                            }
+
+                        }
+
+                    }));
 
                     p.End();
+
+
 
                     _gameSearchWindow.HandleSearchComplete(results.Count, perSystemResults, (int)searchPerf.DurationInMilliseconds.Value);
                 }
@@ -1563,10 +1796,35 @@ namespace HyperSearch.Windows
                 catch (Exception ex)
                 {
                     ErrorHandler.HandleException(ex);
+                    _gameSearchWindow.HandleSearchComplete(0, new List<SearchResultPerSystem>(), 0);
                 }
 
             }
 
+            private void CreateSwfHtmlWrapper(FileInfo swf, string htmlPath)
+            {
+                var html = $@"<html>
+                                <head>
+                                    <title></title>
+                                    <style type='text/css'>
+                                        html,body
+                                        {{
+	                                        background-color: transparent;
+	                                        margin: 0;
+	                                        padding: 0;
+	                                        overflow: hidden;
+	                                        width: 100%;
+	                                        height: 100%;
+                                        }}
+                                    </style>
+                                </head>
+                                <body>
+	                                <embed src='{swf.Name}' width='100%' height='100%' wmode='transparent' type='application/x-shockwave-flash'></embed>
+                                </body>
+                                </html>";
+
+                File.WriteAllText(htmlPath, html);
+            }
 
             private Uri GetGenreImageUri(string genre)
             {
@@ -1589,16 +1847,39 @@ namespace HyperSearch.Windows
             }
         }
 
-        public class SearchResultPerSystem
+        public class SearchResultPerSystem : DependencyObject
         {
             public string SystemName { get; set; }
             public List<SearchResult> GameList { get; set; }
             public Uri SystemImageSourceUri { get; set; }
+
+
+
+            public string SystemImageXamlPath
+            {
+                get { return (string)GetValue(SystemImageXamlPathProperty); }
+                set { SetValue(SystemImageXamlPathProperty, value); }
+            }
+
+            public static readonly DependencyProperty SystemImageXamlPathProperty =
+                DependencyProperty.Register("SystemImageXamlPath", typeof(string), typeof(SearchResultPerSystem), new PropertyMetadata(null));
+
+
+            public bool SystemImageShowText { get; set; }
+            public bool SystemImageShowPng { get; set; }
+            public bool SystemImageShowXaml { get; set; }
         }
 
         private void video_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            MainWindow.LogStatic("Video failed: {0}, with error: {1}", (e.Source as MediaElement).Source.ToString(), e.ErrorException.ToString());
+            try
+            {
+                MainWindow.LogStatic("Video failed: {0}, with error: {1}", (e.Source as MediaElement).Source.ToString(), e.ErrorException.ToString());
+            }
+            catch (Exception ex)
+            {
+                MainWindow.LogStatic(ex.ToString());
+            }
         }
 
         private void gameSearchWindow_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

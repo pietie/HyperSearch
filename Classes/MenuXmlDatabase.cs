@@ -39,7 +39,7 @@ namespace HyperSpinClone.Classes
         public static MenuXmlDatabase LoadFromFile(string filePath)
         {
             if (!File.Exists(filePath)) throw new FileNotFoundException(string.Format("File not found: {0}", filePath ?? "(null)"));
-            
+
             string xmlStr = File.ReadAllText(filePath);
 
             XmlSerializer xs = new XmlSerializer(typeof(MenuXmlDatabase), new Type[] { typeof(GameXmlDatabase) });
@@ -81,10 +81,10 @@ namespace HyperSpinClone.Classes
             return db;
         }
 
-        
+
         private static void xs_UnreferencedObject(object sender, UnreferencedObjectEventArgs e)
         {
-            
+
         }
 
         private static void xs_UnknownNode(object sender, XmlNodeEventArgs e)
@@ -122,7 +122,7 @@ namespace HyperSpinClone.Classes
 
 
         // TODO: This is probably what is in HS2.0 ... but not sure if this is an attribue or an element
-        [XmlElement]        
+        [XmlElement]
         public string enabled { get; set; }
 
         [XmlAttribute]
@@ -158,29 +158,55 @@ namespace HyperSpinClone.Classes
         public override string ToString()
         {
             if (this.ParentMenu == null) return this.name;
-            return string.Format("{0}\\{1}", this.ParentMenu.SystemName??"",this.name);
+            return string.Format("{0}\\{1}", this.ParentMenu.SystemName ?? "", this.name);
         }
 
         [XmlIgnore]
         public Uri SystemImageSourceUri { get; private set; }
+
+        [XmlIgnore]
+        public FileInfo SystemImageSwfSourceFileInfo { get; private set; }
+
         [XmlIgnore]
         public Uri GameImageSourceUri { get; private set; }
 
+        [XmlIgnore]
+        public FileInfo GameImageSwfSourceFileInfo { get; private set; }
+
         public void InitUris()
         {
-            SystemImageSourceUri = GetSafeUri(Global.BuildFilePathInHyperspinDir(@"Media\Main Menu\Images\Wheel\{0}.png", ParentMenu.SystemName));
+            SystemImageSourceUri = GetSafeUri(HyperSearch.Global.BuildFilePathInHyperspinDir(@"Media\Main Menu\Images\Wheel\{0}.png", ParentMenu.SystemName));
 
-            if (string.IsNullOrEmpty(Global.AlternativeGameWheelSourceFolder))
+            var systemSwf = HyperSearch.Global.BuildFilePathInHyperspinDir(@"Media\Main Menu\Images\Wheel\{0}.swf", ParentMenu.SystemName);
+
+            if (File.Exists(systemSwf))
             {
-                GameImageSourceUri = GetSafeUri(Global.BuildFilePathInHyperspinDir(@"Media\{0}\Images\Wheel\{1}.png", ParentMenu.SystemName, name));
+                SystemImageSwfSourceFileInfo = new FileInfo(systemSwf);
+            }
+
+            if (string.IsNullOrEmpty(HyperSearch.Global.AlternativeGameWheelSourceFolder))
+            {
+               GameImageSourceUri = GetSafeUri(HyperSearch.Global.BuildFilePathInHyperspinDir(@"Media\{0}\Images\Wheel\{1}.png", ParentMenu.SystemName, name));
+
+                var swfPath = HyperSearch.Global.BuildFilePathInHyperspinDir(@"Media\{0}\Images\Wheel\{1}.swf", ParentMenu.SystemName, name);
+
+                if (File.Exists(swfPath))
+                {
+                    GameImageSwfSourceFileInfo = new FileInfo(swfPath);
+                }
             }
             else
             {
-                var p = Global.BuildFilePathInHyperspinDir(@"Media\{0}\Images\{2}\{1}.png", ParentMenu.SystemName, name, Global.AlternativeGameWheelSourceFolder);
-
-            
+                var p = HyperSearch.Global.BuildFilePathInHyperspinDir(@"Media\{0}\Images\{2}\{1}.png", ParentMenu.SystemName, name, HyperSearch.Global.AlternativeGameWheelSourceFolder);
 
                 GameImageSourceUri = GetSafeUri(p);
+
+                var swfPath = HyperSearch.Global.BuildFilePathInHyperspinDir(@"Media\{0}\Images\{2}\{1}.swf", ParentMenu.SystemName, name, HyperSearch.Global.AlternativeGameWheelSourceFolder);
+
+                if (File.Exists(swfPath))
+                {
+                    GameImageSwfSourceFileInfo = new FileInfo(swfPath);
+                }
             }
         }
 

@@ -331,11 +331,11 @@ namespace HyperSearch
                     Log("AlternativeGameWheelSourceFolder not specified. Defaulting to 'Wheel'.");
                 }
 
-
+                
                 // kick-off background initialising work (e.g. preparing the full search index)
                 new System.Threading.Thread(new System.Threading.ParameterizedThreadStart((new BackgroundThreadInitialiser()).Run)).Start(this); // wow, one line..this is a horrible idea.
 
-
+                
                 this.WindowState = WindowState.Minimized;
                 this.Hide();
                 
@@ -355,6 +355,8 @@ namespace HyperSearch
                 {
                     OnTriggerKeyHit(HyperSearchSettings.Instance().Input.Triggers.Settings.FirstKey, null);
                 }
+
+
             }
             catch (Exception ex)
             {

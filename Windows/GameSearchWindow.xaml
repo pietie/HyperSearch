@@ -2,6 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ctrl="clr-namespace:HscLib.Controls"
+        xmlns:local="clr-namespace:HyperSearch.Controls"
+        xmlns:classes="clr-namespace:HyperSearch.Classes"
         xmlns:conv="clr-namespace:HyperSpinClone.Classes.Converters"
         xmlns:conv2="clr-namespace:HyperSearch.Converters"
         Title="GameSearchWindow" Height="480" Width="640"
@@ -45,7 +47,9 @@
         </Style>
         <conv:NullImageConverter x:Key="nullImgConverter" />
         <conv:DoubleOffsetConverter x:Key="listViewHeightConverter" Offset="-5"/>
-        
+        <BooleanToVisibilityConverter   x:Key="VisibleIfTrueConverter" />
+        <classes:BoolToVisibilityConverter x:Key="VisibleIfNullConverter"  TreatNullAs="True" TreatNotNullAs="False" TrueValue="Visible" FalseValue="Collapsed"   />
+
         <Style x:Key="resultsListViewColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Visibility" Value="Collapsed" />
         </Style>
@@ -115,13 +119,23 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate  >
                                         <Grid>
-                                            <TextBlock Style="{StaticResource resultTextWithImg}" Text="{Binding SystemName}" />
-                                            <Image RenderOptions.BitmapScalingMode="HighQuality" Style="{StaticResource imgStyle}" Margin="3"  Source="{Binding SystemImageSourceUri, Converter={StaticResource nullImgConverter}}" >
+                                            <!--(ALL) 1st Column System image-->
+                                            <TextBlock Style="{StaticResource resultTextWithImg}" Text="{Binding SystemName}" Visibility="{Binding SystemImageShowText, Converter={StaticResource VisibleIfTrueConverter}}" />
+                                            <Image RenderOptions.BitmapScalingMode="HighQuality" Style="{StaticResource imgStyle}" Margin="3"  Source="{Binding SystemImageSourceUri, Converter={StaticResource nullImgConverter}}" Visibility="{Binding SystemImageShowPng, Converter={StaticResource VisibleIfTrueConverter}}" >
                                                 <Image.CacheMode>
                                                     <BitmapCache />
                                                 </Image.CacheMode>
                                             </Image>
 
+
+
+                                            <!--<Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SystemImageShowXaml, Converter={StaticResource VisibleIfTrueConverter}}">-->
+
+                                                <local:SwfXamlHost XamlPath="{Binding SystemImageXamlPath}" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="120" Height="90"  Visibility="{Binding SystemImageShowXaml, Converter={StaticResource VisibleIfTrueConverter}}"></local:SwfXamlHost>
+
+                                            <!--</Viewbox>-->
+                                            
+                                            <!--<Rectangle Fill="Blue" Width="30" Height="30" HorizontalAlignment="Left" VerticalAlignment="Center"></Rectangle>-->
 
                                         </Grid>
 
@@ -132,8 +146,25 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <TextBlock Style="{StaticResource resultTextWithImg}" Text="{Binding description}" FontSize="20"/>
-                                            <Image RenderOptions.BitmapScalingMode="HighQuality"  Style="{StaticResource imgStyle}" Margin="{Binding Path=ResultListViewItemGameImageResDependentMargin, ElementName=gameSearchWindow}" Source="{Binding GameImageSourceUri, Converter={StaticResource nullImgConverter}}"  Stretch="Uniform"/>
+
+                                            
+                                            <TextBlock Style="{StaticResource resultTextWithImg}" Text="{Binding description}" FontSize="20" Visibility="{Binding GameImageShowText, Converter={StaticResource VisibleIfTrueConverter}}" />
+
+                                            <Image RenderOptions.BitmapScalingMode="HighQuality"  Style="{StaticResource imgStyle}" Margin="{Binding Path=ResultListViewItemGameImageResDependentMargin, ElementName=gameSearchWindow}" Source="{Binding GameImageSourceUri, Converter={StaticResource nullImgConverter}}"  Stretch="Uniform"  Visibility="{Binding GameImageShowPng, Converter={StaticResource VisibleIfTrueConverter}}" />
+
+                                            <ProgressBar Width="280" Height="30" IsIndeterminate="True" Visibility="{Binding GameImageBuildingXaml, Converter={StaticResource VisibleIfTrueConverter}}" HorizontalAlignment="Center"></ProgressBar>
+
+                                            <Viewbox HorizontalAlignment="Left" Margin="{Binding Path=ResultListViewItemGameImageResDependentMargin, ElementName=gameSearchWindow}" 
+                                                     Visibility="{Binding GameImageShowXaml, Converter={StaticResource VisibleIfTrueConverter}}">
+                                            
+                                                <local:SwfXamlHost XamlPath="{Binding GameImageXamlPath}" HorizontalAlignment="Left"  Width="100"  Height="155" ></local:SwfXamlHost>
+                                                
+                                            </Viewbox>
+
+                                            <!--<local:SwfXamlHost Background="FloralWhite" XamlPath="{Binding GameImageXamlPath}" HorizontalAlignment="Left"  VerticalAlignment="Center" Height="105"  ></local:SwfXamlHost>-->
+
+                                            <!--<Rectangle Fill="Red" Width="30" Height="30" HorizontalAlignment="Left" VerticalAlignment="Center"></Rectangle>
+                                            <Rectangle Fill="#70FF00FF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Rectangle>-->
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

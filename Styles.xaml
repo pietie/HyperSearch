@@ -3,6 +3,7 @@
                     xmlns:eff="clr-namespace:HscLib.ShaderEffects;assembly=HyperSearch"
                     xmlns:conv="clr-namespace:HyperSpinClone.Classes.Converters;assembly=HyperSearch"
                     xmlns:ctrl="clr-namespace:HscLib.Controls;assembly=HyperSearch"
+                    xmlns:local="clr-namespace:HyperSearch.Controls;assembly=HyperSearch"
                     xmlns:hsc="clr-namespace:HyperSearch.Attached;assembly=HyperSearch" 
                     xmlns:osk="clr-namespace:HyperSearch;assembly=HyperSearch"
                     
@@ -10,7 +11,9 @@
     <conv:NullImageConverter x:Key="nullImgConverter" />
     <conv:DoubleOffsetConverter x:Key="listViewWidthConverter" Offset="-10"/>
     <conv:DoubleOffsetConverter x:Key="listViewHeightConverter" Offset="-5"/>
+    <BooleanToVisibilityConverter   x:Key="VisibleIfTrueConverter"/>
 
+    
     <RadialGradientBrush x:Key="OuterBackgroundGreen">
         <GradientStop Color="#0032FF4E" Offset="0.554"/>
         <GradientStop Color="#FF058C17" Offset="1"/>
@@ -259,9 +262,17 @@
                                 <RowDefinition Height="0.727272*"/>
                                 <RowDefinition Height="0.272727*"/>
                             </Grid.RowDefinitions>
+                            
+                            <!--TOP HEADER IMAGE-->
 
-                            <TextBlock x:Name="title" Style="{DynamicResource resultTextWithImg}" Foreground="White" FontFamily="Arial" FontSize="20" FontWeight="Bold" Margin="0 0 0 3" TextAlignment="Center" Text="{Binding SystemName}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" Style="{DynamicResource imgStyle}" Source="{Binding SystemImageSourceUri, Converter={StaticResource nullImgConverter}}" Stretch="Uniform" VerticalAlignment="Stretch" />
+                            <TextBlock x:Name="title" Style="{DynamicResource resultTextWithImg}" Foreground="White" FontFamily="Arial" FontSize="20" FontWeight="Bold" Margin="0 0 0 3" TextAlignment="Center" Text="{Binding SystemName}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Visibility="{Binding SystemImageShowText, Converter={StaticResource VisibleIfTrueConverter}}" />
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" Style="{DynamicResource imgStyle}" Source="{Binding SystemImageSourceUri, Converter={StaticResource nullImgConverter}}" Stretch="Uniform" VerticalAlignment="Stretch"  Visibility="{Binding SystemImageShowPng, Converter={StaticResource VisibleIfTrueConverter}}" />
+
+
+                            <local:SwfXamlHost XamlPath="{Binding SystemImageXamlPath}" HorizontalAlignment="Left" Visibility="{Binding SystemImageShowXaml, Converter={StaticResource VisibleIfTrueConverter}}"  ></local:SwfXamlHost>
+                            
+
+
                             <Viewbox Grid.Row="1">
                                 <TextBlock Grid.Row="1" x:Name="gameCountLabel" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="Silver" FontFamily="Arial" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="{Binding (GameList).Count, StringFormat={}{0:N0}}"/>
                             </Viewbox>

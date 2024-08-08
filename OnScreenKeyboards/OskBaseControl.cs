@@ -132,6 +132,8 @@ namespace HyperSearch
 
                     listView.SelectedItem = backspace;
                     HandleOskButtonPressed(backspace);
+
+                    return; //?
                 }
                 else if (settings.Clear.Is(e.Key))
                 {
@@ -139,10 +141,18 @@ namespace HyperSearch
                     HandleOskButtonPressed(clear);
                     return;
                 }
+                else if (settings.PerformSearch.Is(e.Key))
+                {
+                    HandleOskButtonPressed(done);
+                }
+                else if (e.Key == Key.Back)
+                {
+
+                }
 
 
                 // if not in Cab Mode we'll allow the user to type on his keyboard
-                if (!(HyperSearchSettings.Instance().General.CabMode?? false))
+                if (!(HyperSearchSettings.Instance().General.CabMode ?? false))
                 {
                     if ((int)e.Key >= (int)Key.D0 && (int)e.Key <= (int)Key.D9) // handle Digits 0-9
                     {
@@ -175,7 +185,8 @@ namespace HyperSearch
                     // || e.Key == Key.OemMinus
                     // || e.Key == Key.OemComma
                     // )
-                    else {
+                    else
+                    {
                         var txt = e.Key.ToString();
 
                         if (e.Key == Key.OemMinus) txt = "-";
@@ -211,10 +222,10 @@ namespace HyperSearch
             }
         }
 
-        
+
 
         private void HandleOskButtonPressed(OnScreenKeyboardButton button)
-        {  
+        {
             if (button == space)
             {
                 this.RaiseOskKeyPressedEvent(" ", OskSpecialKey.Space);

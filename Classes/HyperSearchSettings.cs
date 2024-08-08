@@ -201,6 +201,11 @@ namespace HyperSearch.Classes
             [SettingType(Type = SettingsType.MultiOption, Title = "Exit", Description = "Closes the current window.", ActionType = SettingActionType.SetKeyMultiple)]
             public KeyList Exit { get; set; }
 
+            [JsonProperty]
+            [DefaultValue(Key.None)]
+            [SettingType(Type = SettingsType.MultiOption, Title = "Perform search", Description = "Shortcut to initiate the search function", ActionType = SettingActionType.SetKeyMultiple)]
+            public KeyList PerformSearch { get; set; }
+
             [SettingCreateEmpty]
             [JsonProperty]
             public LayoutConfig LayoutConfig { get; set; }
